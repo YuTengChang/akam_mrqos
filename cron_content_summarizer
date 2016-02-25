@@ -1,0 +1,53 @@
+##################################################################
+# doing flag summarizer (create 
+# "forcount.csv" and try 10 times)
+##################################################################
+#
+ head -1 /home/testgrp/MRQOS/test/temp/output.csv > /home/testgrp/MRQOS/test/temp/forcount.csv
+ count=0
+ lines=$(wc -l /home/testgrp/MRQOS/test/temp/forcount.csv | awk '{print $1}')
+while ( [ $count -lt 10 ] && [ $lines -lt 10 ] );
+ do
+ /a/bin/hive -f /home/testgrp/MRQOS/test/MRQOS_table_summarize.hive | tr '\t' ',' > /home/testgrp/MRQOS/test/temp/output.csv
+ lines=$(wc -l /home/testgrp/MRQOS/test/temp/output.csv | awk '{print $1}')
+ count=$((count+1))
+ echo "count =" $count "; line =" $lines;
+done
+
+# insert the stats into the proper HIVE table
+/a/bin/hive -f /home/testgrp/MRQOS/test/MRQOS_table_summarize_insert.hive
+
+##################################################################
+# doing flag summarizer (create
+# "forcount.csv" and try 10 times)
+##################################################################
+#
+ head -1 /home/testgrp/MRQOS/test/mrqos_stats/hive_result/summarize_flags.csv > /home/testgrp/MRQOS/test/mrqos_stats/hive_result/forcount.csv
+ count=0
+ lines=$(wc -l /home/testgrp/MRQOS/test/mrqos_stats/hive_result/forcount.csv | awk '{print $1}')
+while ( [ $count -lt 10 ] && [ $lines -lt 10 ] );
+ do
+ /a/bin/hive -f /home/testgrp/MRQOS/test/mrqos_stats/hive_script/geo_summarize_flags.hive | tr '\t' ',' > /home/testgrp/MRQOS/test/mrqos_stats/hive_result/summarize_flags.csv
+ lines=$(wc -l /home/testgrp/MRQOS/test/mrqos_stats/hive_result/summarize_flags.csv | awk '{print $1}')
+ count=$((count+1))
+ echo "count =" $count "; line =" $lines;
+done
+
+#####################################################################
+# doing flag_mr summarizer (create 
+# "forcount.csv" and try 10 times)
+#####################################################################
+#
+ head -1 /home/testgrp/MRQOS/test/mrqos_stats/hive_result/summarize_flags_mr.csv > /home/testgrp/MRQOS/test/mrqos_stats/hive_result/forcount.csv
+ count=0
+ lines=$(wc -l /home/testgrp/MRQOS/test/mrqos_stats/hive_result/forcount.csv | awk '{print $1}')
+while ( [ $count -lt 10 ] && [ $lines -lt 10 ] );
+ do
+ /a/bin/hive -f /home/testgrp/MRQOS/test/mrqos_stats/hive_script/geo_mr_summarize_flags.hive | tr '\t' ',' > /home/testgrp/MRQOS/test/mrqos_stats/hive_result/summarize_flags_mr.csv
+ lines=$(wc -l /home/testgrp/MRQOS/test/mrqos_stats/hive_result/summarize_flags_mr.csv | awk '{print $1}')
+ count=$((count+1))
+ echo "count =" $count "; line =" $lines;
+done
+
+
+

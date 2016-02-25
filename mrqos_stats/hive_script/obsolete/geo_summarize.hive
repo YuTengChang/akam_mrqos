@@ -1,0 +1,75 @@
+select 
+	round(sum(b.scr95_flag)/count(*),2) scr95F,
+	round(sum(b.scr50_flag)/count(*),2) scr50F,
+	round(sum(b.dis95_flag)/count(*),2) dis95F,
+	round(sum(b.dis50_flag)/count(*),2) dis50F,
+	round(sum(b.ict05_flag)/count(*),2) ict05F,
+	round(sum(b.ict50_flag)/count(*),2) ict50F,
+	round(sum(b.icy05_flag)/count(*),2) icy05F,
+	round(sum(b.icy50_flag)/count(*),2) icy50F,
+	round(sum(b.ior95_flag)/count(*),2) ior95F,
+	round(sum(b.ior50_flag)/count(*),2) ior50F,	
+	round(sum(b.scr95_flag*b.tbps_med)/sum(b.tbps_med),2) scr95FW,
+	round(sum(b.scr50_flag*b.tbps_med)/sum(b.tbps_med),2) scr50FW,
+	round(sum(b.dis95_flag*b.tbps_med)/sum(b.tbps_med),2) dis95FW,
+	round(sum(b.dis50_flag*b.tbps_med)/sum(b.tbps_med),2) dis50FW,
+	round(sum(b.ict05_flag*b.tbps_med)/sum(b.tbps_med),2) ict05FW,
+	round(sum(b.ict50_flag*b.tbps_med)/sum(b.tbps_med),2) ict50FW,
+	round(sum(b.icy05_flag*b.tbps_med)/sum(b.tbps_med),2) icy05FW,
+	round(sum(b.icy50_flag*b.tbps_med)/sum(b.tbps_med),2) icy50FW,
+	round(sum(b.ior95_flag*b.tbps_med)/sum(b.tbps_med),2) ior95FW,
+	round(sum(b.ior50_flag*b.tbps_med)/sum(b.tbps_med),2) ior50FW,
+	geoname,
+	maprule	
+from
+(
+select 	a.*,
+	CASE WHEN score95_q95 > score_tar
+	 THEN 1
+	 ELSE 0
+	END scr95_flag,
+	CASE WHEN score95_med > score_tar
+	 THEN 1
+	 ELSE 0
+	END scr50_flag,
+	CASE WHEN dis95_q95 > dis_tar
+	 THEN 1
+	 ELSE 0
+	END dis95_flag,
+	CASE WHEN dis95_med > dis_tar
+	 THEN 1
+	 ELSE 0
+	END dis50_flag,
+	CASE WHEN ict_q05 < ict_tar
+	 THEN 1
+	 ELSE 0
+	END ict05_flag,
+	CASE WHEN ict_med < ict_tar
+	 THEN 1
+	 ELSE 0
+	END ict50_flag,
+	CASE WHEN icy_q05 < icy_tar
+	 THEN 1
+	 ELSE 0
+	END icy05_flag,
+	CASE WHEN icy_med < icy_tar
+	 THEN 1
+	 ELSE 0
+	END icy50_flag,
+	CASE WHEN ioratio_q95 > ioratio_tar
+	 THEN 1
+	 ELSE 0
+	END ior95_flag,
+	CASE WHEN ioratio_med > ioratio_tar
+	 THEN 1
+	 ELSE 0
+	END ior50_flag
+from
+(
+select * from 
+mrqos_all 
+where unix_timestamp(from_unixtime(unix_timestamp()))-unix_timestamp(enddate, 'yyyy-MM-dd')<86400
+) a
+) b
+where b.tbps_med>0
+group by geoname, maprule;

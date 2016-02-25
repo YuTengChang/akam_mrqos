@@ -1,0 +1,22 @@
+set mapred.child.java.opts=-Xmx2000m; use mrqos; set hive.cli.print.header=true;
+
+SELECT a.*, b.sp95_t95_2w, b.dp95_t95_2w, b.ocy_t95_2w, b.oct_t95_2w FROM (SELECT maprule, geoname, netname, sp95_t95,
+           dp95_t95,
+           100-icy_t95 ocy_t95,
+           100-ict_t95 oct_t95 
+    from mrqos_sum 
+    where ts='20150924'
+) a
+JOIN
+(
+    select maprule, 
+           geoname, 
+           netname, 
+           sp95_t95 sp95_t95_2w, 
+           dp95_t95 dp95_t95_2w, 
+           100-icy_t95 ocy_t95_2w,
+           100-ict_t95 oct_t95_2w
+    from mrqos_sum 
+    where ts='20150910'
+) b
+ON ( a.maprule = b.maprule AND a.geoname = b.geoname AND a.netname = b.netname )

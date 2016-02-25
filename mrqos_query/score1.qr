@@ -1,0 +1,71 @@
+SELECT current_timestamp,
+       casename,
+       maprule,
+       geoname,
+       netname,    
+         p99, 
+         p95, 
+         p90,
+         p75, 
+      targetvalue,
+	TPCT targetpct
+
+    FROM (
+           SELECT maprule, 
+                  geoname, 
+                  netname, 
+                  MAX(targetvalue) targetvalue,
+		  CASE 
+		   WHEN targetpct = 80
+		   THEN 90
+		   ELSE targetpct
+		  END TPCT
+             FROM mrpm_maprule_qos_objectives
+            WHERE attrname = 'SCORE'
+             GROUP BY 1, 2, 3
+         ) a, 
+
+         (
+           SELECT casename, 
+                  mapruleid, 
+                  geo, 
+                  aslist,
+ 
+                  MAX(CASE
+                   WHEN c.config_percentile = 0.990000
+                   THEN metric_value
+                   ELSE 0
+                  END) p99, 
+
+                  MAX(CASE
+                   WHEN c.config_percentile = 0.950000
+                   THEN metric_value
+                   ELSE 0
+                  END) p95, 
+
+                  MAX(CASE
+                   WHEN c.config_percentile = 0.900000
+                   THEN metric_value
+                   ELSE 0
+                  END) p90, 
+		
+		  MAX(CASE
+                   WHEN c.config_percentile = 0.750000
+                   THEN metric_value
+                   ELSE 0
+                  END) p75
+
+             FROM a_maprule_qos_statistics c, 
+                  a_maprule_qos_overview
+            WHERE metric_type = 'score'
+                  AND name = casename
+            GROUP BY 1, 2, 3, 4
+         ) b
+
+   WHERE a.maprule = b.mapruleid
+         AND (a.geoname = b.geo
+         OR a.geoname = 'GLOBAL'
+         AND b.geo = '')
+         AND (a.netname = b.aslist
+         OR a.netname = 'ANY'
+         AND b.aslist = '');

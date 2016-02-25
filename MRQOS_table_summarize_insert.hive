@@ -1,0 +1,2 @@
+load data local inpath '/home/testgrp/MRQOS/test/temp/output.csv'
+into table MRQOS_all;

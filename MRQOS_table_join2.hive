@@ -1,0 +1,115 @@
+use mrqos;
+INSERT OVERWRITE TABLE mrqos_join PARTITION (ts=%s)
+
+SELECT a.*, 
+       b.dp99, 
+       b.dp95, 
+       b.dp90, 
+       b.dp75, 
+       dtar, 
+       dp99d, 
+       dp95d, 
+       dp90d, 
+       dp75d, 
+       c.icy_pct, 
+       c.icy_tar, 
+       c.icyd, 
+       d.ict_pct, 
+       d.ict_tar, 
+       d.ictd, 
+       e.total_bps, 
+       e.ping_bps, 
+       e.p2t_bps_pct 
+FROM   (SELECT 
+               maprule, 
+               geoname, 
+               netname, 
+               p99         sp99, 
+               p95         sp95, 
+               p90         sp90, 
+               p75         sp75, 
+               targetvalue star, 
+               CASE 
+                 WHEN p99 > targetvalue THEN p99 - targetvalue 
+                 ELSE 0 
+               END         sp99d, 
+               CASE 
+                 WHEN p95 > targetvalue THEN p95 - targetvalue 
+                 ELSE 0 
+               END         sp95d, 
+               CASE 
+                 WHEN p90 > targetvalue THEN p90 - targetvalue 
+                 ELSE 0 
+               END         sp90d, 
+               CASE 
+                 WHEN p75 > targetvalue THEN p75 - targetvalue 
+                 ELSE 0 
+               END         sp75d, 
+               peak 
+        FROM   score 
+        WHERE  ts=%s ) a 
+       JOIN (SELECT maprule, 
+                    geoname, 
+                    netname, 
+                    p99         dp99, 
+                    p95         dp95, 
+                    p90         dp90, 
+                    p75         dp75, 
+                    targetvalue dtar, 
+                    CASE 
+                      WHEN p99 > targetvalue THEN p99 - targetvalue 
+                      ELSE 0 
+                    END         dp99d, 
+                    CASE 
+                      WHEN p95 > targetvalue THEN p95 - targetvalue 
+                      ELSE 0 
+                    END         dp95d, 
+                    CASE 
+                      WHEN p90 > targetvalue THEN p90 - targetvalue 
+                      ELSE 0 
+                    END         dp90d, 
+                    CASE 
+                      WHEN p75 > targetvalue THEN p75 - targetvalue 
+                      ELSE 0 
+                    END         dp75d 
+             FROM   distance 
+             WHERE  ts=%s ) b 
+         ON ( a.geoname = b.geoname 
+              AND a.netname = b.netname 
+              AND a.maprule = b.maprule ) 
+       JOIN (SELECT maprule, 
+                    geoname, 
+                    netname, 
+                    in_country_pct icy_pct, 
+                    targetvalue    icy_tar, 
+                    CASE 
+                      WHEN in_country_pct < targetvalue THEN 
+                      targetvalue - in_country_pct 
+                      ELSE 0 
+                    END            icyd 
+             FROM   in_country 
+             WHERE  ts=%s ) c 
+         ON ( a.geoname = c.geoname 
+              AND a.netname = c.netname 
+              AND a.maprule = c.maprule ) 
+       JOIN (SELECT maprule, 
+                    geoname, 
+                    netname, 
+                    in_continent_pct ict_pct, 
+                    targetvalue      ict_tar, 
+                    CASE 
+                      WHEN in_continent_pct < targetvalue THEN 
+                      targetvalue - in_continent_pct 
+                      ELSE 0 
+                    END              ictd 
+             FROM   in_continent 
+             WHERE  ts=%s ) d 
+         ON ( a.geoname = d.geoname 
+              AND a.netname = d.netname 
+              AND a.maprule = d.maprule ) 
+       JOIN (SELECT * 
+             FROM   ra_load 
+             WHERE  ts=%s ) e 
+         ON ( a.geoname = e.geoname 
+              AND a.netname = e.netname 
+              AND a.maprule = e.maprule ) 

@@ -1,0 +1,10 @@
+use mrqos;
+
+select a.ts, a.ts_order, b.max_ts_order, cos(-2*3.1415926*14*a.k*(b.max_ts_order-a.ts_order)/2016), sin(-2*3.1415926*14*a.k*(b.max_ts_order-a.ts_order)/2016)
+from 
+(select 1 k, ts, ts_order from mrqos_ts) a 
+left outer join 
+(select 1 k, max(ts_order) max_ts_order from mrqos_ts) b 
+on a.k=b.k
+where
+a.ts_order > b.max_ts_order-32;

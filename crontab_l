@@ -1,0 +1,50 @@
+# Edit this file to introduce tasks to be run by cron.
+# 
+# Each task to run has to be defined through a single line
+# indicating with different fields when the task will be run
+# and what command to run for the task
+# 
+# To define the time you can provide concrete values for
+# minute (m), hour (h), day of month (dom), month (mon),
+# and day of week (dow) or use '*' in these fields (for 'any').# 
+# Notice that tasks will be started based on the cron's system
+# daemon's notion of time and timezones.
+# 
+# Output of the crontab jobs (including errors) is sent through
+# email to the user the crontab file belongs to (unless redirected).
+# 
+# For example, you can run a backup of all your user accounts
+# at 5 a.m every week with:
+# 0 5 * * 1 tar -zcf /var/backups/home.tgz /home/
+# 
+# For more information see the manual pages of crontab(5) and cron(8)
+# 
+# m h  dom mon dow   command
+# querying from query system, hive immport, hive join, and hive join import
+
+
+##################################################
+# #################   MRQOS   ####################
+##################################################
+# run the query every 10 minutes and upload the data to HIVE
+5,15,25,35,45,55 * * * * /home/testgrp/doasme_YT /home/testgrp/MRQOS/cron_query >> /home/testgrp/MRQOS/cron_query.log 2>&1
+20 0 * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/hive_summarize.py >> /home/testgrp/MRQOS/cron_summary.log 2>&1
+
+
+##################################################
+# #################   RAANA   ####################
+##################################################
+# grab region information from mcm_regions (daily)
+25 0 * * * /home/testgrp/doasme_YT /home/testgrp/RAAnalysis/ra_shell_scripts/region_info_grab >> /home/testgrp/RAAnalysis/rg_query_process.log 2>&1
+
+# check RA MAPMON updates and save it (per minute)
+*/1 * * * * /home/testgrp/doasme_YT /home/testgrp/RAAnalysis/ra_shell_scripts/ra_save.sh >> /home/testgrp/RAAnalysis/ra_save_process.log 2>&1
+
+# concatenate RA-MAPMON message (per hour)
+55 * * * * /home/testgrp/doasme_YT python /home/testgrp/RAAnalysis/ra_python/ra_concat.py >> /home/testgrp/RAAnalysis/ra_concate_process.log 2>&1
+15 * * * * /home/testgrp/doasme_YT python /home/testgrp/RAAnalysis/ra_python/ra_hadoop_insert.py >> /home/testgrp/RAAnalysis/ra_hadoop_insert.log 2>&1
+
+# uploading NS and RG data into Hadoop (per day)
+13 0 * * * /home/testgrp/doasme_YT python /home/testgrp/RAAnalysis/ra_python/ns_hadoop_insert.py >> /home/testgrp/RAAnalysis/hadoop_ns_insert.log 2>&1
+21 0 * * * /home/testgrp/doasme_YT python /home/testgrp/RAAnalysis/ra_python/rg_hadoop_insert.py >> /home/testgrp/RAAnalysis/hadoop_rg_insert.log 2>&1
+

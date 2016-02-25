@@ -1,0 +1,87 @@
+source /a/etc/akamai.conf
+echo "remove existing files..."
+rm -r /home/testgrp/MRQOS/test/*.tmp
+
+echo "query 1/7: scores"
+ head -1 /home/testgrp/MRQOS/test/score.tmp > /home/testgrp/MRQOS/test/score.tmp
+ count=1
+ lines=$(wc -l /home/testgrp/MRQOS/test/score.tmp | awk '{print $1}')
+while ( [ $count -lt 10 ] && [ $lines -lt 10 ] );
+ do
+ /a/bin/sql2 -q map.devbl.query.akadns.net --csv "`cat /home/testgrp/MRQOS/test/score.qr`" | tail -n+3 > /home/testgrp/MRQOS/test/score.tmp
+ lines=$(wc -l /home/testgrp/MRQOS/test/score.tmp | awk '{print $1}')
+ count=$((count+1))
+ echo "count =" $count "; line =" $lines;
+done
+
+echo "query 2/7: distance"
+ head -1 /home/testgrp/MRQOS/test/distance.tmp > /home/testgrp/MRQOS/test/distance.tmp
+ count=1
+ lines=$(wc -l /home/testgrp/MRQOS/test/distance.tmp | awk '{print $1}')
+while ( [ $count -lt 10 ] && [ $lines -lt 10 ] );
+ do
+ /a/bin/sql2 -q map.devbl.query.akadns.net --csv "`cat /home/testgrp/MRQOS/test/distance.qr`" | tail -n+3 > /home/testgrp/MRQOS/test/distance.tmp
+ lines=$(wc -l /home/testgrp/MRQOS/test/distance.tmp | awk '{print $1}')
+ count=$((count+1))
+ echo "count =" $count "; line =" $lines;
+done
+
+echo "query 3/7: in_country"
+ head -1 /home/testgrp/MRQOS/test/in_country.tmp > /home/testgrp/MRQOS/test/in_country.tmp
+ count=1
+ lines=$(wc -l /home/testgrp/MRQOS/test/in_country.tmp | awk '{print $1}')
+while ( [ $count -lt 10 ] && [ $lines -lt 10 ] );
+ do
+ /a/bin/sql2 -q map.dev.query.akadns.net --csv "`cat /home/testgrp/MRQOS/test/in_country.qr`" | tail -n+3 > /home/testgrp/MRQOS/test/in_country.tmp
+ lines=$(wc -l /home/testgrp/MRQOS/test/in_country.tmp | awk '{print $1}')
+ count=$((count+1))
+ echo "count =" $count "; line =" $lines;
+done
+
+echo "query 4/7: in_continent"
+ head -1 /home/testgrp/MRQOS/test/in_continent.tmp > /home/testgrp/MRQOS/test/in_continent.tmp
+ count=1
+ lines=$(wc -l /home/testgrp/MRQOS/test/in_continent.tmp | awk '{print $1}')
+while ( [ $count -lt 10 ] && [ $lines -lt 10 ] );
+ do
+ /a/bin/sql2 -q map.dev.query.akadns.net --csv "`cat /home/testgrp/MRQOS/test/in_continent.qr`" | tail -n+3 > /home/testgrp/MRQOS/test/in_continent.tmp
+ lines=$(wc -l /home/testgrp/MRQOS/test/in_continent.tmp | awk '{print $1}')
+ count=$((count+1))
+ echo "count =" $count "; line =" $lines;
+done
+
+echo "query 5/7: in_out_ratio"
+ head -1 /home/testgrp/MRQOS/test/in_out_ratio.tmp > /home/testgrp/MRQOS/test/in_out_ratio.tmp
+ count=1
+ lines=$(wc -l /home/testgrp/MRQOS/test/in_out_ratio.tmp | awk '{print $1}')
+while ( [ $count -lt 10 ] && [ $lines -lt 10 ] ); 
+ do
+ /a/bin/sql2 -q mega.pacman.query.akadns.net --csv "`cat /home/testgrp/MRQOS/test/in_out_ratio.qr`" | tail -n+3 > /home/testgrp/MRQOS/test/in_out_ratio.tmp
+ lines=$(wc -l /home/testgrp/MRQOS/test/in_out_ratio.tmp | awk '{print $1}')
+ count=$((count+1))
+ echo "count =" $count "; line =" $lines;
+done
+
+echo "query 6/7: ra_load"
+ head -1 /home/testgrp/MRQOS/test/ra_load.tmp > /home/testgrp/MRQOS/test/ra_load.tmp
+ count=1
+ lines=$(wc -l /home/testgrp/MRQOS/test/ra_load.tmp | awk '{print $1}')
+while ( [ $count -lt 10 ] && [ $lines -lt 10 ] );
+ do
+ /a/bin/sql2 -q map.dev.query.akadns.net --csv "`cat /home/testgrp/MRQOS/test/ra_load.qr`" | tail -n+3 > /home/testgrp/MRQOS/test/ra_load.tmp
+ lines=$(wc -l /home/testgrp/MRQOS/test/ra_load.tmp | awk '{print $1}')
+ count=$((count+1))
+ echo "count =" $count "; line =" $lines;
+done
+
+echo "query 7/7: cog"
+ head -1 /home/testgrp/MRQOS/test/cog.tmp > /home/testgrp/MRQOS/test/cog.tmp
+ count=1
+ lines=$(wc -l /home/testgrp/MRQOS/test/cog.tmp | awk '{print $1}')
+while ( [ $count -lt 10 ] && [ $lines -lt 10 ] );
+ do
+ /a/bin/sql2 -q mega.pacman.query.akadns.net --csv "`cat /home/testgrp/MRQOS/test/cog.qr`" | tail -n+3 > /home/testgrp/MRQOS/test/cog.tmp
+ lines=$(wc -l /home/testgrp/MRQOS/test/cog.tmp | awk '{print $1}')
+ count=$((count+1))
+ echo "count =" $count "; line =" $lines;
+done
