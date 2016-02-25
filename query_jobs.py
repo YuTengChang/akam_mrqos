@@ -81,9 +81,9 @@ def main():
             f = open('/home/testgrp/MRQOS/MRQOS_table_join2.hive','r')
             strcmd = f.read()
             strcmd_s = strcmd % (str(timenow), str(timenow), str(timenow), str(timenow), str(timenow), str(timenow))
-            #cmd_list = ['hive','-e',strcmd_s]
-            #sp.check_call( cmd_list )
-            beeline.BL_e(strcmd_s)
+            cmd_list = ['hive','-e',strcmd_s]
+            sp.check_call( cmd_list )
+            #beeline.BL_e(strcmd_s)
             hdfsutil.get( hdfs_file, config.mrqos_data )
         except:
             print "direct join and insert failed, trying to copy the last successed one"
@@ -91,8 +91,8 @@ def main():
                 hdfsutil.put( local_file, hdfs_file )
                 try:
                     hiveql_str = 'use mrqos; alter table mrqos_join add partition(ts=%s);' % str(timenow)
-                    #sp.check_call(['hive','-e',hiveql_str])
-                    beeline.BL_e(hiveql_str)
+                    sp.check_call(['hive','-e',hiveql_str])
+                    #beeline.BL_e(hiveql_str)
                 except sp.CalledProcessError:
                     raise HiveCreatePartitionError
             except:
@@ -132,10 +132,10 @@ def mrqos_table_cleanup():
     #get the lowest partition
     temp_outputfile = '/home/testgrp/MRQOS/mrqos_data/mrqos_table_partitions.txt'
     hiveql_str = 'use mrqos; show partitions score;'
-    beeline.BL_e_outcall(hiveql_str, temp_outputfile)
-    #partition_list = open('/home/testgrp/MRQOS/mrqos_data/temp_file/mrqos_table_partitions.txt','w')
-    #sp.call(['hive','-e','use mrqos; show partitions score;'],stdout=partition_list)
-    #partition_list.close()
+    #beeline.BL_e_outcall(hiveql_str, temp_outputfile)
+    partition_list = open('/home/testgrp/MRQOS/mrqos_data/temp_file/mrqos_table_partitions.txt','w')
+    sp.call(['hive','-e','use mrqos; show partitions score;'],stdout=partition_list)
+    partition_list.close()
     partition_list = open( temp_outputfile,'r' )
     str_parts = partition_list.read()
     partition_list.close()
@@ -152,8 +152,8 @@ def mrqos_table_cleanup():
                 for item in mtype:
                     # drop partitions
                     hiveql_str = 'use mrqos; alter table ' + item + ' drop if exists partition(ts=%s)' % partition
-                    beeline.BL_e( hiveql_str )
-                    #sp.check_call(['hive','-e','use mrqos; alter table ' + item + ' drop if exists partition(ts=%s)' % partition])
+                    #beeline.BL_e( hiveql_str )
+                    sp.check_call(['hive','-e','use mrqos; alter table ' + item + ' drop if exists partition(ts=%s)' % partition])
                     # remove data from HDFS
                     hdfs_d = os.path.join(config.hdfs_table,item,'ts=%s' % partition)
                     sp.check_call(['hadoop','fs','-rm','-r', hdfs_d])
@@ -172,11 +172,11 @@ def mrqos_join_cleanup():
     #get the lowest partition
     temp_outputfile = '/home/testgrp/MRQOS/mrqos_data/mrqos_table_partitions.txt'
     hiveql_str = 'use mrqos; show partitions mrqos_join;'
-    beeline.BL_e_outcall(hiveql_str, temp_outputfile)
+    #beeline.BL_e_outcall(hiveql_str, temp_outputfile)
 
-    #partition_list = open('/tmp/testgrp/mrqos_table_partitions.txt','w')
-    #sp.call(['hive','-e','use mrqos; show partitions mrqos_join;'],stdout=partition_list)
-    #partition_list.close()
+    partition_list = open('/tmp/testgrp/mrqos_table_partitions.txt','w')
+    sp.call(['hive','-e','use mrqos; show partitions mrqos_join;'],stdout=partition_list)
+    partition_list.close()
     partition_list = open(temp_outputfile,'r')
     str_parts = partition_list.read()
     partition_list.close()
@@ -191,8 +191,8 @@ def mrqos_join_cleanup():
             try:
                 # drop partitions
                 hiveql_str = 'use mrqos; alter table mrqos_join drop if exists partition(ts=%s)' % partition
-                beeline.BL_e( hiveql_str )
-                #sp.check_call(['hive','-e','use mrqos; alter table mrqos_join drop if exists partition(ts=%s)' % partition])
+                #beeline.BL_e( hiveql_str )
+                sp.check_call(['hive','-e','use mrqos; alter table mrqos_join drop if exists partition(ts=%s)' % partition])
                 # remove data from HDFS
                 hdfs_d = os.path.join(config.hdfs_table,'mrqos_join','ts=%s' % partition)
                 sp.check_call(['hadoop','fs','-rm','-r', hdfs_d])
@@ -223,8 +223,8 @@ def upload_to_hive(listname, hdfs_d, ts, tablename):
     # add the partition
     try:
         hiveql_str = 'use mrqos; alter table ' + tablename + ' add partition(ts=%s);' % (ts)
-        beeline.BL_e( hiveql_str )
-        #sp.check_call(['hive','-e',hiveql_str])
+        # beeline.BL_e( hiveql_str )
+        sp.check_call(['hive','-e',hiveql_str])
     except sp.CalledProcessError:
         raise HiveCreatePartitionError
 
