@@ -42,8 +42,8 @@ def BL_f(hive_script, outformat='tsv2'):
 
 
 def BL_e_outcall(cmd, outputfile, outformat='tsv2', database=''):
-    ''' create corresponding hive -e + command, add "use $database" if
-    specified. take the output from the command. '''
+    """ create corresponding hive -e + command, add "use $database" if
+    specified. take the output from the command. """
     list_used = BL_prepare_hiveql(outformat) + ['-e']
     if database:
         cmd = 'use %s; ' + cmd
