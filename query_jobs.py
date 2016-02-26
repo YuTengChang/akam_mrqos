@@ -133,7 +133,7 @@ def mrqos_table_cleanup():
     temp_outputfile = '/home/testgrp/MRQOS/mrqos_data/mrqos_table_partitions.txt'
     hiveql_str = 'use mrqos; show partitions score;'
     #beeline.BL_e_outcall(hiveql_str, temp_outputfile)
-    partition_list = open('/home/testgrp/MRQOS/mrqos_data/temp_file/mrqos_table_partitions.txt','w')
+    partition_list = open( temp_outputfile,'w' )
     sp.call(['hive','-e','use mrqos; show partitions score;'],stdout=partition_list)
     partition_list.close()
     partition_list = open( temp_outputfile,'r' )
@@ -174,10 +174,10 @@ def mrqos_join_cleanup():
     hiveql_str = 'use mrqos; show partitions mrqos_join;'
     #beeline.BL_e_outcall(hiveql_str, temp_outputfile)
 
-    partition_list = open('/tmp/testgrp/mrqos_table_partitions.txt','w')
+    partition_list = open( temp_outputfile,'w' )
     sp.call(['hive','-e','use mrqos; show partitions mrqos_join;'],stdout=partition_list)
     partition_list.close()
-    partition_list = open(temp_outputfile,'r')
+    partition_list = open( temp_outputfile,'r' )
     str_parts = partition_list.read()
     partition_list.close()
     os.remove(temp_outputfile)

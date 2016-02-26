@@ -8,19 +8,19 @@ format_csv2 = ['--outputformat=csv2']
 format_csv = ['--outputformat=csv']
 format_dsv = ['--outputformat=dsv']
 
-def BL_prepare_hiveql(formatting):
-    if ((formatting=='csv') | (formatting=='CSV')):
-        return list_hive + format_csv
-    elif ((formatting=='csv2') | (formatting=='CSV2')):
-        return list_hive + format_csv2
-    elif ((formatting=='tsv') | (formatting=='TSV')):
-        return list_hive + format_tsv
-    elif ((formatting=='tsv2') | (formatting=='TSV2')):
-        return list_hive + format_tsv2
-    elif ((formatting=='dsv') | (formatting=='DSV')):
-        return list_hive + format_dsv
-    else:
-        return list_hive
+#def BL_prepare_hiveql(formatting):
+#    if ((formatting=='csv') | (formatting=='CSV')):
+#        return list_hive + format_csv
+#    elif ((formatting=='csv2') | (formatting=='CSV2')):
+#        return list_hive + format_csv2
+#    elif ((formatting=='tsv') | (formatting=='TSV')):
+#        return list_hive + format_tsv
+#    elif ((formatting=='tsv2') | (formatting=='TSV2')):
+#        return list_hive + format_tsv2
+#    elif ((formatting=='dsv') | (formatting=='DSV')):
+#        return list_hive + format_dsv
+#    else:
+#        return list_hive
 
 def BL_e(cmd, outformat='tsv2', database=''):
     'create corresponding hive -e + command, add "use $database" if specified'
