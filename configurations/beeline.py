@@ -49,6 +49,8 @@ def bln_e(cmd, outformat='tsv2', database=''):
         cmd = 'use %s; ' + cmd
     cmd = '"'+cmd+'"'
     list_used.append(cmd)
+    print "this is the list used: "
+    print list_used
     sp.check_call(list_used)
 
 
