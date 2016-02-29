@@ -1,7 +1,8 @@
 import os, sys
 import subprocess as sp
 
-list_hive = ['bln']
+#list_hive = ['bln']
+list_hive = ['beeline','-u','jdbc:hive2://','-n','""','-p','""','--silent=true']
 format_tsv2 = ['--outputformat=tsv2']
 format_tsv = ['--outputformat=tsv']
 format_csv2 = ['--outputformat=csv2']
