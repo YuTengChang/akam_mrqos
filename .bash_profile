@@ -24,4 +24,4 @@ alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 alias hls='hadoop fs -ls'
-alias bln="beeline -u jdbc:hive2:// -n '' -p '' --silent=true -e"
+alias bln="beeline -u jdbc:hive2:// -n '' -p '' --silent=true --outputformat=tsv2"
