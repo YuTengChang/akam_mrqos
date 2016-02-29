@@ -35,6 +35,7 @@ def main():
     print "###################"
 
     # fetch the data through query with retrials
+    print "    ****  querying mrqos data."
     for item in mtype:
         flag = 0
         count = 0
@@ -58,9 +59,11 @@ def main():
             return
 
     # provide SCORE table with peak/off-peak attribute
+    print "    ****  provide PEAK in score."
     sp.call([config.provide_peak], shell=True)
 
     # backup the individual query file by copying to backup folder
+    print "    ****  backing up queried results."
     if not os.path.exists('/home/testgrp/MRQOS/mrqos_data/backup/%s' % str(timenow)):
         os.makedirs('/home/testgrp/MRQOS/mrqos_data/backup/%s' % str(timenow))
         for item in mtype:

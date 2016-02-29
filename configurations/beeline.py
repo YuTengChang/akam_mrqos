@@ -6,12 +6,12 @@ import shlex
 string_hive = 'beeline -u jdbc:hive2:// -n "" -p "" --silent=true --outputformat=tsv2 '
 list_hive = ['/a/third-party/hive/bin/beeline','-u','jdbc:hive2://','-n','""','-p','""','--silent=true']
 
-format_tsv2 = ['--outputformat=tsv2 ']
-format_tsv = ['--outputformat=tsv ']
-format_csv2 = ['--outputformat=csv2 ']
-format_csv = ['--outputformat=csv ']
-format_dsv = ['--outputformat=dsv ']
-format_table = ['--outputformat=table ']
+format_tsv2 = '--outputformat=tsv2 '
+format_tsv = '--outputformat=tsv '
+format_csv2 = '--outputformat=csv2 '
+format_csv = '--outputformat=csv '
+format_dsv = '--outputformat=dsv '
+format_table = '--outputformat=table '
 
 
 def bln_prepare_hiveql(formatting):
