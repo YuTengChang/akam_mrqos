@@ -33,7 +33,7 @@ mrqos_data_backup = '/home/testgrp/MRQOS/mrqos_data/backup'
 #==============================================================================
 # # Constant Configurations
 #==============================================================================
-query_retrial = 20 # 20 times
+query_retrial = 15 # 15 times
 query_timeout = 20 # 20 sec
 
 mrqos_table_delete = 60 * 30 # 1800 sec = 30 minutes
