@@ -122,7 +122,7 @@ def main():
     # clear the expired data in mrqos_table
     mrqos_table_cleanup()
     # clear the expired data in mrqos_join
-    # mrqos_join_cleanup()
+    mrqos_join_cleanup()
 
 
 # ==============================================================================
@@ -146,10 +146,10 @@ def mrqos_table_cleanup():
         if partition < timenow - config.mrqos_table_delete:
             for item in mtype:
                 try:
-                    # drop partitions
+                    # drop partitions (ok even if partition does not exist)
                     hiveql_str = 'use mrqos; alter table ' + item + ' drop if exists partition(ts=%s)' % str(partition)
                     beeline.bln_e(hiveql_str)
-                    # remove data from HDFS
+                    # remove data from HDFS (ok even if folder in hdfs does not exist)
                     hdfs_d = os.path.join(config.hdfs_table, item, 'ts=%s' % partition)
                     hdfsutil.rm(hdfs_d, r=True)
                 except sp.CalledProcessError:
