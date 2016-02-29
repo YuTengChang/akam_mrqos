@@ -16,6 +16,8 @@ Created on Wed Apr 22 10:57:38 2015
 #hdfs_in_continent = '/ghostcache/hadoop/data/MRQOS/in_continent/ts=%s'
 #hdfs_ra_load = '/ghostcache/hadoop/data/MRQOS/ra_load/ts=%s'
 hdfs_table = '/ghostcache/hadoop/data/MRQOS'
+hdfs_table_score = '/ghostcache/hadoop/data/MRQOS/score'
+hdfs_table_join = '/ghostcache/hadoop/data/MRQOS/mrqos_join'
 
 #==============================================================================
 # # Local File Locations
@@ -25,6 +27,7 @@ hdfs_table = '/ghostcache/hadoop/data/MRQOS'
 mrqos_data = '/home/testgrp/MRQOS/mrqos_data'
 mrqos_query = '/home/testgrp/MRQOS/mrqos_query'
 mrqos_data_backup = '/home/testgrp/MRQOS/mrqos_data/backup'
+
 
 #==============================================================================
 # # Constant Configurations

@@ -138,6 +138,8 @@ def mrqos_table_cleanup():
         the clnspp table as long as it is older than the threshold """
 
     # get the lowest partition
+    score_partitions = hdfsutil.ls(config.hdfs_table_score)
+
     temp_outputfile = '/home/testgrp/MRQOS/mrqos_data/mrqos_table_partitions.txt'
     hiveql_str = 'use mrqos; show partitions score;'
     partition_list = open(temp_outputfile, 'w')
