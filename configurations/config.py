@@ -27,6 +27,7 @@ hdfs_table_join = '/ghostcache/hadoop/data/MRQOS/mrqos_join'
 mrqos_data = '/home/testgrp/MRQOS/mrqos_data'
 mrqos_query = '/home/testgrp/MRQOS/mrqos_query'
 mrqos_data_backup = '/home/testgrp/MRQOS/mrqos_data/backup'
+mrqos_data_join_backup = '/home/testgrp/MRQOS/mrqos_data/backup/000000_0.deflate'
 
 
 #==============================================================================

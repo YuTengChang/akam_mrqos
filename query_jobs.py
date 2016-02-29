@@ -101,7 +101,7 @@ def main():
             beeline.bln_e(strcmd_s)
             # have the local copy of the joined file
             print "    ****  copy the joined file for backup."
-            hdfsutil.get(hdfs_file, config.mrqos_data)
+            hdfsutil.get(hdfs_file, config.mrqos_data_join_backup)
         except:
             print ">> direct join and insert failed, trying to copy the last succeeded one"
             try:
@@ -120,9 +120,9 @@ def main():
         print "HDFS upload failed, backup file retains"
 
     # clear the expired data in mrqos_table
-    mrqos_table_cleanup()
+    # mrqos_table_cleanup()
     # clear the expired data in mrqos_join
-    mrqos_join_cleanup()
+    # mrqos_join_cleanup()
 
 
 # ==============================================================================
