@@ -2,7 +2,7 @@ import os, sys
 import subprocess as sp
 
 #list_hive = ['bln']
-list_hive = ['beeline','-u','jdbc:hive2://','-n','""','-p','""','--silent=true']
+list_hive = ['/a/third-party/hive/bin//beeline','-u','jdbc:hive2://','-n','""','-p','""','--silent=true']
 
 format_tsv2 = ['--outputformat=tsv2']
 format_tsv = ['--outputformat=tsv']
