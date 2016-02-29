@@ -90,7 +90,7 @@ def main():
         # specify the new joined file in hdfs
         hdfs_file = os.path.join(config.hdfs_table, 'mrqos_join', 'ts=%s' % str(timenow), '000000_0.deflate')
         # specify the local copy of the joined file
-        local_file = os.path.join(config.mrqos_data, '000000_0.deflate')
+        local_file = os.path.join(config.mrqos_data_backup, '000000_0.deflate')
         try:
             print "    ****  direct join and insert mrqos_join."
             # direct join and insert in hive
@@ -101,7 +101,7 @@ def main():
             beeline.bln_e(strcmd_s)
             # have the local copy of the joined file
             print "    ****  copy the joined file for backup."
-            hdfsutil.get(hdfs_file, config.mrqos_data_join_backup)
+            hdfsutil.get(hdfs_file, local_file)
         except:
             print ">> direct join and insert failed, trying to copy the last succeeded one"
             try:
