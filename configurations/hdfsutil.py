@@ -1,6 +1,5 @@
 import os,sys
 import subprocess as sp
-#sys.path.append('/home/testgrp/perfTMI/perftmi')
 
 
 def ls_full(dir_name):
@@ -40,11 +39,12 @@ def cp(source, target):
 
 
 def rm(pth_to_rm,r=False):
-    #
-    if r:
-        return sp.check_call('hadoop fs -rm -r %s'%pth_to_rm,shell=True)
-    else:
-        return sp.check_call('hadoop fs -rm %s'%pth_to_rm,shell=True)
+    # if the path exist ( check using hdfsutil.ls(path) )
+    if len(ls(pth_to_rm)) > 0:
+        if r:
+            return sp.check_call('hadoop fs -rm -r %s'%pth_to_rm,shell=True)
+        else:
+            return sp.check_call('hadoop fs -rm %s'%pth_to_rm,shell=True)
 
 
 def getmerge(input_dir,out_path):

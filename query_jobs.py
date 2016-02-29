@@ -140,20 +140,22 @@ def mrqos_table_cleanup():
 
     # check if "partitions" is within the threshold, if not, drop in hive table and remove from hdfs
     timenow = int(time.time())
+    mtype = ['score', 'distance', 'in_country', 'in_continent', 'ra_load']
+
     for partition in str_parts_list_int:
         if partition < timenow - config.mrqos_table_delete:
-            try:
-                mtype = ['score', 'distance', 'in_country', 'in_continent', 'ra_load'];
-                for item in mtype:
+            for item in mtype:
+                try:
                     # drop partitions
                     hiveql_str = 'use mrqos; alter table ' + item + ' drop if exists partition(ts=%s)' % str(partition)
                     beeline.bln_e(hiveql_str)
                     # remove data from HDFS
                     hdfs_d = os.path.join(config.hdfs_table, item, 'ts=%s' % partition)
                     hdfsutil.rm(hdfs_d, r=True)
-            except sp.CalledProcessError:
-                print ">> failed in hive table clean up in table: %s." % mtype
-                raise GenericHadoopError
+                except sp.CalledProcessError:
+                    print ">> failed in hive table clean up in table: %s." % item
+                    pass
+                    #raise GenericHadoopError
 
 
 # ==============================================================================
@@ -174,10 +176,10 @@ def mrqos_join_cleanup():
     for partition in str_parts_list_int:
         if partition < timenow - config.mrqos_join_delete:
             try:
-                # drop partitions
+                # drop partitions (ok even if partition does not exist)
                 hiveql_str = 'use mrqos; alter table mrqos_join drop if exists partition(ts=%s)' % partition
                 beeline.bln_e(hiveql_str)
-                # remove data from HDFS
+                # remove data from HDFS (ok even if folder in hdfs does not exist)
                 hdfs_d = os.path.join(config.hdfs_table, 'mrqos_join', 'ts=%s' % partition)
                 hdfsutil.rm(hdfs_d, r=True)
             except sp.CalledProcessError:
