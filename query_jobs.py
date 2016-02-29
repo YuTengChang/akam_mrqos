@@ -150,7 +150,7 @@ def mrqos_table_cleanup():
                 mtype = ['score', 'distance', 'in_country', 'in_continent', 'ra_load'];
                 for item in mtype:
                     # drop partitions
-                    hiveql_str = 'use mrqos; alter table ' + item + ' drop if exists partition(ts=%s)' % partition
+                    hiveql_str = 'use mrqos; alter table ' + item + ' drop if exists partition(ts=%s)' % str(partition)
                     beeline.bln_e(hiveql_str)
                     #sp.check_call(['hive', '-e',
                     #               'use mrqos; alter table ' + item + ' drop if exists partition(ts=%s)' % partition])

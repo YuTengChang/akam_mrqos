@@ -47,6 +47,7 @@ def bln_e(cmd, outformat='tsv2', database=''):
     list_used = bln_prepare_hiveql(outformat) + ['-e']
     if database:
         cmd = 'use %s; ' + cmd
+    cmd = '"'+cmd+'"'
     list_used.append(cmd)
     sp.check_call(list_used)
 
