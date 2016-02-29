@@ -34,6 +34,7 @@ def main():
     print "starting processing time is " + str(timenow)
     print "###################"
 
+
     # fetch the data through query with retrials
     print "    ****  querying mrqos data."
     for item in mtype:
@@ -55,12 +56,14 @@ def main():
                 count += 1
         # if any of the query not fetched successfully, break all and stop running
         if count >= n_retrial:
-            print "data fetch failed in querying table %s" % item
+            print ">> data fetch failed in querying table %s" % item
             return
+
 
     # provide SCORE table with peak/off-peak attribute
     print "    ****  provide PEAK in score."
     sp.call([config.provide_peak], shell=True)
+
 
     # backup the individual query file by copying to backup folder
     print "    ****  backing up queried results."
@@ -71,7 +74,9 @@ def main():
             filedst = '/home/testgrp/MRQOS/mrqos_data/backup/%s/' % str(timenow)
             shutil.copy(filesrc, filedst)
 
+
     # upload to hdfs and link to hive tables
+    print "    ****  uploading to hdfs and hive."
     try:
         # adding the individual query result to hdfs and add hive partitions
         for item in mtype:
@@ -80,51 +85,39 @@ def main():
             upload_to_hive(listname, hdfs_d, str(timenow), item)
         shutil.rmtree('/home/testgrp/MRQOS/mrqos_data/backup/%s' % str(timenow))
 
+
         # new version of the join tables in hive: direct insert
         # specify the new joined file in hdfs
         hdfs_file = os.path.join(config.hdfs_table, 'mrqos_join', 'ts=%s' % str(timenow), '000000_0.deflate')
         # specify the local copy of the joined file
         local_file = os.path.join(config.mrqos_data, '000000_0.deflate')
         try:
+            print "    ****  direct join and insert mrqos_join."
             # direct join and insert in hive
             f = open('/home/testgrp/MRQOS/MRQOS_table_join2.hive', 'r')
             strcmd = f.read()
             strcmd_s = strcmd % (str(timenow), str(timenow), str(timenow), str(timenow), str(timenow), str(timenow))
-            # cmd_list = ['hive', '-e', strcmd_s]
-            # sp.check_call(cmd_list)
+            f.close()
             beeline.bln_e(strcmd_s)
             # have the local copy of the joined file
+            print "    ****  copy the joined file for backup."
             hdfsutil.get(hdfs_file, config.mrqos_data)
         except:
-            print "direct join and insert failed, trying to copy the last succeeded one"
+            print ">> direct join and insert failed, trying to copy the last succeeded one"
             try:
                 # upload the last succeeded one from local
                 hdfsutil.put(local_file, hdfs_file)
                 try:
                     # using hive to add partitions to joined query results
                     hiveql_str = 'use mrqos; alter table mrqos_join add partition(ts=%s);' % str(timenow)
-                    #sp.check_call(['hive', '-e', hiveql_str])
                     beeline.bln_e(hiveql_str)
                 except sp.CalledProcessError:
-                    print "copying from duplicated file for mrqos_join failed in adding partitions"
+                    print ">> copying from duplicated file for mrqos_join failed in adding partitions"
                     raise HiveCreatePartitionError
             except:
                 print "copying from duplicated file for mrqos_join failed in uploading to hdfs"
     except:
         print "HDFS upload failed, backup file retains"
-
-        # # join tables in hive (single timestamp)
-        # sp.call( [config.provide_join], shell=True )
-
-        # # upload the joined table in hive
-        # listname = os.path.join(config.mrqos_data, 'joined_table.tmp')
-        # hdfs_d = os.path.join(config.hdfs_table,'mrqos_join','ts=%s' % str(timenow))
-        # upload_to_hive(listname, hdfs_d, str(timenow), 'mrqos_join')
-
-    # # check whether last upload is empty, if empty, copy from the second latest one (joined_table.tmp)
-    # statinfo = os.stat(listname)
-    # if (statinfo.st_size == 0):
-    #     sp.call( [config.copy_from_last_join], shell=True )
 
     # clear the expired data in mrqos_table
     mrqos_table_cleanup()
@@ -155,13 +148,11 @@ def mrqos_table_cleanup():
                     # drop partitions
                     hiveql_str = 'use mrqos; alter table ' + item + ' drop if exists partition(ts=%s)' % str(partition)
                     beeline.bln_e(hiveql_str)
-                    #sp.check_call(['hive', '-e',
-                    #               'use mrqos; alter table ' + item + ' drop if exists partition(ts=%s)' % partition])
                     # remove data from HDFS
                     hdfs_d = os.path.join(config.hdfs_table, item, 'ts=%s' % partition)
-                    #sp.check_call(['hadoop', 'fs', '-rm', '-r', hdfs_d])
                     hdfsutil.rm(hdfs_d, r=True)
             except sp.CalledProcessError:
+                print ">> failed in hive table clean up in table: %s." % mtype
                 raise GenericHadoopError
 
 
@@ -173,18 +164,9 @@ def mrqos_join_cleanup():
     """ when called, this function will delete all partitions
         the clnspp table as long as it is older than the threshold """
 
-    # get the lowest partition
-    temp_outputfile = '/home/testgrp/MRQOS/mrqos_data/mrqos_table_partitions.txt'
-    hiveql_str = 'use mrqos; show partitions mrqos_join;'
-    partition_list = open(temp_outputfile, 'w')
-    beeline.bln_e_outcall(hiveql_str, temp_outputfile)
-    #sp.call(['hive', '-e', 'use mrqos; show partitions mrqos_join;'], stdout=partition_list)
-    partition_list.close()
-    partition_list = open(temp_outputfile, 'r')
-    str_parts = partition_list.read()
-    partition_list.close()
-    os.remove(temp_outputfile)
-    str_parts_list = [i.split('=', 1)[1] for i in str_parts.strip().split('\n')]
+    # get the lowest partition by checking the HDFS folders
+    joined_partitions = hdfsutil.ls(config.hdfs_table_join)
+    str_parts_list = [i.split('=', 1)[1] for i in joined_partitions]
     str_parts_list_int = map(int, str_parts_list)
 
     # check if "partitions" is within the threshold
@@ -195,12 +177,11 @@ def mrqos_join_cleanup():
                 # drop partitions
                 hiveql_str = 'use mrqos; alter table mrqos_join drop if exists partition(ts=%s)' % partition
                 beeline.bln_e(hiveql_str)
-                #sp.check_call(
-                #        ['hive', '-e', 'use mrqos; alter table mrqos_join drop if exists partition(ts=%s)' % partition])
                 # remove data from HDFS
                 hdfs_d = os.path.join(config.hdfs_table, 'mrqos_join', 'ts=%s' % partition)
-                sp.check_call(['hadoop', 'fs', '-rm', '-r', hdfs_d])
+                hdfsutil.rm(hdfs_d, r=True)
             except sp.CalledProcessError:
+                print ">> failed in hive table clean up in table: mrqos_join."
                 raise GenericHadoopError
 
 

@@ -1,3 +1,6 @@
+set mapreduce.map.memory.mb=4000;
+set mapreduce.reduce.memory.mb=2000;
+
 use mrqos;
 INSERT OVERWRITE TABLE mrqos_join PARTITION (ts=%s)
 
