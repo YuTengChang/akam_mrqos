@@ -10,13 +10,13 @@ sys.path.append('/home/testgrp/MRQOS/')
 import subprocess as sp
 import time
 import datetime
-#import httplib
-#import YT_Timeout as ytt
 import configurations.config as config
+import configurations.hdfsutil as hdfsutil
+import configurations.beeline as beeline
 
 def main():
-    '''  this function will compute the statistics of MRQOS tables within the
-    past two weeks (X-1 day : X-15 days) '''
+    """  this function will compute the statistics of MRQOS tables within the
+    past two weeks (X-1 day : X-15 days) """
     timenow = int(time.time())
     datenow = str(datetime.date.today()-datetime.timedelta(1))
     datenow = datenow[0:4]+datenow[5:7]+datenow[8:10]
@@ -26,11 +26,8 @@ def main():
     print "###################"
 
 
-    # update the ts table for later summarize usage
-    sp.call( [config.create_ts_table], shell=True )
-
-    # update the latest ts table and copy to HDFS
-    #sp.call( [config.copy_from_last_join], shell=True )
+    # update the ts table for later summarize usage. file uploaded to HDFS
+    sp.call([config.create_ts_table], shell=True)
 
     # open the file for writing the results
     f = open('/home/testgrp/MRQOS/mrqos_data/summarized_table.tmp','w')
@@ -39,7 +36,7 @@ def main():
 
     # process the file, take country only
     cmd = """cat /home/testgrp/MRQOS/mrqos_data/summarized_table.tmp | sed s:NULL:0:g | sed 's/\t/,/g' | awk -F',' '{x=length($4); if(x==2){print $0;}}' | awk -F',' '{if($3>0){$1=""; $2=""; print $0;}}' | sed 's/^\s\+//g' > /home/testgrp/MRQOS/mrqos_data/summarized_processed.tmp""";
-    sp.check_call( cmd, shell=True );
+    sp.check_call( cmd, shell=True )
 
     # upload the joined table in hive
     listname = os.path.join(config.mrqos_data, 'summarized_processed.tmp')
@@ -56,25 +53,25 @@ def main():
 
 
 def upload_to_hive(listname, hdfs_d, ts, tablename):
-    ''' this function will create a partition directory in hdfs with the requisite timestamp. It will
-    then add the partition to the table cl_ns_pp with the appropriate timestamp '''
+    """ this function will create a partition directory in hdfs with the requisite timestamp. It will
+    then add the partition to the table cl_ns_pp with the appropriate timestamp """
 
     #hdfs_d = config.hdfsclnspp % (ts)
     # create the partition
     try:
-        sp.check_call(['hadoop','fs','-mkdir',hdfs_d])
+        sp.check_call(['hadoop', 'fs', '-mkdir', hdfs_d])
     # upload the data
     except sp.CalledProcessError:
         raise HadoopDirectoryCreateError
     try:
-        sp.check_call(['hadoop','fs','-put',listname,hdfs_d])
+        sp.check_call(['hadoop', 'fs', '-put', listname, hdfs_d])
     except sp.CalledProcessError:
         raise HadoopDataUploadError
 
     # add the partition
     try:
         hiveql_str = 'use mrqos; alter table ' + tablename + ' add partition(ts=%s);' % (ts)
-        sp.check_call(['hive','-e',hiveql_str])
+        sp.check_call(['hive', '-e', hiveql_str])
     except sp.CalledProcessError:
         raise HiveCreatePartitionError
 

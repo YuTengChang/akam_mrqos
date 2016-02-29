@@ -66,6 +66,21 @@ def bln_f(hive_script, outformat='tsv2'):
     list_used = shlex.split(bln_prepare_hiveql(outformat) + '-f %s' % hive_script)
     sp.check_call(list_used)
 
+
+def bln_f_output(hive_script, output_file, outformat='tsv2'):
+    """
+    create corresponding hive -f + hive_script_file
+
+    :param hive_script: the hive script being run
+    :param outformat: output format of hive
+    :return: no return
+    """
+    f_handle = open(output_file, 'w')
+    list_used = shlex.split(bln_prepare_hiveql(outformat) + '-f %s' % hive_script)
+    sp.check_call(list_used, stdout=f_handle)
+    f_handle.close()
+
+
 # not used function (not updated yet)
 def bln_e_outcall(cmd, outputfile, outformat='tsv2', database=''):
     """
