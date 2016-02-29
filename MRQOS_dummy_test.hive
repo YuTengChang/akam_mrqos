@@ -1,0 +1,9 @@
+use mrqos;
+set hive.cli.print.header=true;
+
+select  casename,
+        maprule,
+        geoname,
+        netname,
+        p95
+from distance limit 10;
