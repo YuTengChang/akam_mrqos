@@ -37,6 +37,7 @@ def bln_e(cmd, outformat='tsv2', database=''):
     """
     create corresponding hive -e + command, add "use $database" if specified
 
+    :rtype: None
     :param cmd: hive command
     :param outformat: output format of hive
     :param database: hive database

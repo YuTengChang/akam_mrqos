@@ -17,8 +17,8 @@ import configurations.beeline as beeline
 
 
 def main():
-    '''  this function will do the query on 5 different measurement and upload
-    the data to hdfs accordingly, this also join tables at single time point '''
+    """  this function will do the query on 5 different measurement and upload
+    the data to hdfs accordingly, this also join tables at single time point """
 
     # different queries (various types)
     mtype = ['score', 'distance', 'in_country', 'in_continent', 'ra_load']
@@ -52,7 +52,7 @@ def main():
                     flag = 1
             except:
                 count += 1
-        # if not fetched successfully, break all
+        # if any of the query not fetched successfully, break all and stop running
         if count >= n_retrial:
             print "data fetch failed in querying table %s" % item
             return
@@ -60,7 +60,7 @@ def main():
     # provide SCORE table with peak/off-peak attribute
     sp.call([config.provide_peak], shell=True)
 
-    # backup the individual query file
+    # backup the individual query file by copying to backup folder
     if not os.path.exists('/home/testgrp/MRQOS/mrqos_data/backup/%s' % str(timenow)):
         os.makedirs('/home/testgrp/MRQOS/mrqos_data/backup/%s' % str(timenow))
         for item in mtype:
@@ -70,6 +70,7 @@ def main():
 
     # upload to hdfs and link to hive tables
     try:
+        # adding the individual query result to hdfs and add hive partitions
         for item in mtype:
             listname = os.path.join(config.mrqos_data, item + '.tmp')
             hdfs_d = os.path.join(config.hdfs_table, item, 'ts=%s' % str(timenow))
@@ -77,28 +78,35 @@ def main():
         shutil.rmtree('/home/testgrp/MRQOS/mrqos_data/backup/%s' % str(timenow))
 
         # new version of the join tables in hive: direct insert
+        # specify the new joined file in hdfs
         hdfs_file = os.path.join(config.hdfs_table, 'mrqos_join', 'ts=%s' % str(timenow), '000000_0.deflate')
+        # specify the local copy of the joined file
         local_file = os.path.join(config.mrqos_data, '000000_0.deflate')
         try:
+            # direct join and insert in hive
             f = open('/home/testgrp/MRQOS/MRQOS_table_join2.hive', 'r')
             strcmd = f.read()
             strcmd_s = strcmd % (str(timenow), str(timenow), str(timenow), str(timenow), str(timenow), str(timenow))
-            cmd_list = ['hive', '-e', strcmd_s]
-            sp.check_call(cmd_list)
-            # beeline.BL_e(strcmd_s)
+            # cmd_list = ['hive', '-e', strcmd_s]
+            # sp.check_call(cmd_list)
+            beeline.bln_e(strcmd_s)
+            # have the local copy of the joined file
             hdfsutil.get(hdfs_file, config.mrqos_data)
         except:
-            print "direct join and insert failed, trying to copy the last successed one"
+            print "direct join and insert failed, trying to copy the last succeeded one"
             try:
+                # upload the last succeeded one from local
                 hdfsutil.put(local_file, hdfs_file)
                 try:
+                    # using hive to add partitions to joined query results
                     hiveql_str = 'use mrqos; alter table mrqos_join add partition(ts=%s);' % str(timenow)
-                    sp.check_call(['hive', '-e', hiveql_str])
-                    # beeline.BL_e(hiveql_str)
+                    #sp.check_call(['hive', '-e', hiveql_str])
+                    beeline.bln_e(hiveql_str)
                 except sp.CalledProcessError:
+                    print "copying from duplicated file for mrqos_join failed in adding partitions"
                     raise HiveCreatePartitionError
             except:
-                print "copy from duplicated file for mrqos_join failed"
+                print "copying from duplicated file for mrqos_join failed in uploading to hdfs"
     except:
         print "HDFS upload failed, backup file retains"
 
@@ -126,15 +134,15 @@ def main():
 # ==============================================================================
 
 def mrqos_table_cleanup():
-    ''' when called, this function will delete all partitions
-        the clnspp table as long as it is older than the threshold '''
+    """ when called, this function will delete all partitions
+        the clnspp table as long as it is older than the threshold """
 
     # get the lowest partition
     temp_outputfile = '/home/testgrp/MRQOS/mrqos_data/mrqos_table_partitions.txt'
     hiveql_str = 'use mrqos; show partitions score;'
-    # beeline.BL_e_outcall(hiveql_str, temp_outputfile)
     partition_list = open(temp_outputfile, 'w')
-    sp.call(['hive', '-e', 'use mrqos; show partitions score;'], stdout=partition_list)
+    beeline.bln_e_outcall(hiveql_str, temp_outputfile)
+    #sp.call(['hive', '-e', 'use mrqos; show partitions score;'], stdout=partition_list)
     partition_list.close()
     partition_list = open(temp_outputfile, 'r')
     str_parts = partition_list.read()
@@ -152,9 +160,9 @@ def mrqos_table_cleanup():
                 for item in mtype:
                     # drop partitions
                     hiveql_str = 'use mrqos; alter table ' + item + ' drop if exists partition(ts=%s)' % partition
-                    # beeline.BL_e( hiveql_str )
-                    sp.check_call(['hive', '-e',
-                                   'use mrqos; alter table ' + item + ' drop if exists partition(ts=%s)' % partition])
+                    beeline.bln_e(hiveql_str)
+                    #sp.check_call(['hive', '-e',
+                    #               'use mrqos; alter table ' + item + ' drop if exists partition(ts=%s)' % partition])
                     # remove data from HDFS
                     hdfs_d = os.path.join(config.hdfs_table, item, 'ts=%s' % partition)
                     sp.check_call(['hadoop', 'fs', '-rm', '-r', hdfs_d])
@@ -167,16 +175,15 @@ def mrqos_table_cleanup():
 # ==============================================================================
 
 def mrqos_join_cleanup():
-    ''' when called, this function will delete all partitions
-        the clnspp table as long as it is older than the threshold '''
+    """ when called, this function will delete all partitions
+        the clnspp table as long as it is older than the threshold """
 
     # get the lowest partition
     temp_outputfile = '/home/testgrp/MRQOS/mrqos_data/mrqos_table_partitions.txt'
     hiveql_str = 'use mrqos; show partitions mrqos_join;'
-    # beeline.BL_e_outcall(hiveql_str, temp_outputfile)
-
     partition_list = open(temp_outputfile, 'w')
-    sp.call(['hive', '-e', 'use mrqos; show partitions mrqos_join;'], stdout=partition_list)
+    beeline.bln_e_outcall(hiveql_str, temp_outputfile)
+    #sp.call(['hive', '-e', 'use mrqos; show partitions mrqos_join;'], stdout=partition_list)
     partition_list.close()
     partition_list = open(temp_outputfile, 'r')
     str_parts = partition_list.read()
@@ -192,9 +199,9 @@ def mrqos_join_cleanup():
             try:
                 # drop partitions
                 hiveql_str = 'use mrqos; alter table mrqos_join drop if exists partition(ts=%s)' % partition
-                # beeline.BL_e( hiveql_str )
-                sp.check_call(
-                        ['hive', '-e', 'use mrqos; alter table mrqos_join drop if exists partition(ts=%s)' % partition])
+                beeline.bln_e(hiveql_str)
+                #sp.check_call(
+                #        ['hive', '-e', 'use mrqos; alter table mrqos_join drop if exists partition(ts=%s)' % partition])
                 # remove data from HDFS
                 hdfs_d = os.path.join(config.hdfs_table, 'mrqos_join', 'ts=%s' % partition)
                 sp.check_call(['hadoop', 'fs', '-rm', '-r', hdfs_d])
@@ -207,8 +214,8 @@ def mrqos_join_cleanup():
 # ==============================================================================
 
 def upload_to_hive(listname, hdfs_d, ts, tablename):
-    ''' this function will create a partition directory in hdfs with the requisite timestamp. It will
-    then add the partition to the table cl_ns_pp with the appropriate timestamp '''
+    """ this function will create a partition directory in hdfs with the requisite timestamp. It will
+    then add the partition to the table cl_ns_pp with the appropriate timestamp """
 
     # hdfs_d = config.hdfsclnspp % (ts)
     # create the partition
@@ -225,8 +232,8 @@ def upload_to_hive(listname, hdfs_d, ts, tablename):
     # add the partition
     try:
         hiveql_str = 'use mrqos; alter table ' + tablename + ' add partition(ts=%s);' % (ts)
-        # beeline.BL_e( hiveql_str )
-        sp.check_call(['hive', '-e', hiveql_str])
+        beeline.bln_e(hiveql_str)
+        #sp.check_call(['hive', '-e', hiveql_str])
     except sp.CalledProcessError:
         raise HiveCreatePartitionError
 
