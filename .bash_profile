@@ -3,7 +3,7 @@ export PATH=$PATH:/a/shark/spark/:/a/third-party/hive/bin/:/a/bin/:/home/testgrp
 source /a/etc/akamai.conf
 export hdfs_d='/ghostcache/hadoop/data'
 export HADOOP_CONF_DIR='/a/third-party/hadoop/share/hadoop/mapreduce1/conf'
-export HADOOP_USER_NAME=testgrp
+export HADOOP_USER_NAME=akamai
 
 # Spark related
 alias pyspark_cluster='MASTER=spark://23.3.136.52:7077  pyspark'

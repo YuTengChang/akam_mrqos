@@ -52,7 +52,7 @@ def bln_e(cmd, outformat='tsv2', database=''):
     list_used.append(cmd)
     print "this is the list used: "
     print list_used
-    sp.check_call(list_used)
+    sp.check_call(list_used, shell=True)
 
 
 def bln_f(hive_script, outformat='tsv2'):
@@ -66,7 +66,7 @@ def bln_f(hive_script, outformat='tsv2'):
 
     list_used = bln_prepare_hiveql(outformat) + ['-f']
     list_used.append(hive_script)
-    sp.check_call(list_used)
+    sp.check_call(list_used, shell=True)
 
 
 def bln_e_outcall(cmd, outputfile, outformat='tsv2', database=''):
@@ -86,5 +86,5 @@ def bln_e_outcall(cmd, outputfile, outformat='tsv2', database=''):
         cmd = 'use %s; ' + cmd
     list_used.append(cmd)
     file_handle = open(outputfile, 'w')
-    sp.call(list_used, stdout=file_handle)
+    sp.call(list_used, stdout=file_handle, shell=True)
     file_handle.close()
