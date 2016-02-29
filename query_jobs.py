@@ -126,7 +126,7 @@ def main():
     # clear the expired data in mrqos_table
     mrqos_table_cleanup()
     # clear the expired data in mrqos_join
-    mrqos_join_cleanup()
+    # mrqos_join_cleanup()
 
 
 # ==============================================================================
@@ -137,23 +137,12 @@ def mrqos_table_cleanup():
     """ when called, this function will delete all partitions
         the clnspp table as long as it is older than the threshold """
 
-    # get the lowest partition
+    # get the lowest partition by checking the HDFS folders
     score_partitions = hdfsutil.ls(config.hdfs_table_score)
-
-    temp_outputfile = '/home/testgrp/MRQOS/mrqos_data/mrqos_table_partitions.txt'
-    hiveql_str = 'use mrqos; show partitions score;'
-    partition_list = open(temp_outputfile, 'w')
-    beeline.bln_e_outcall(hiveql_str, temp_outputfile)
-    #sp.call(['hive', '-e', 'use mrqos; show partitions score;'], stdout=partition_list)
-    partition_list.close()
-    partition_list = open(temp_outputfile, 'r')
-    str_parts = partition_list.read()
-    partition_list.close()
-    os.remove(temp_outputfile)
-    str_parts_list = [i.split('=', 1)[1] for i in str_parts.strip().split('\n')]
+    str_parts_list = [i.split('=', 1)[1] for i in score_partitions]
     str_parts_list_int = map(int, str_parts_list)
 
-    # check if "partitions" is within the threshold
+    # check if "partitions" is within the threshold, if not, drop in hive table and remove from hdfs
     timenow = int(time.time())
     for partition in str_parts_list_int:
         if partition < timenow - config.mrqos_table_delete:
@@ -167,7 +156,8 @@ def mrqos_table_cleanup():
                     #               'use mrqos; alter table ' + item + ' drop if exists partition(ts=%s)' % partition])
                     # remove data from HDFS
                     hdfs_d = os.path.join(config.hdfs_table, item, 'ts=%s' % partition)
-                    sp.check_call(['hadoop', 'fs', '-rm', '-r', hdfs_d])
+                    #sp.check_call(['hadoop', 'fs', '-rm', '-r', hdfs_d])
+                    hdfsutil.rm(hdfs_d, r=True)
             except sp.CalledProcessError:
                 raise GenericHadoopError
 
