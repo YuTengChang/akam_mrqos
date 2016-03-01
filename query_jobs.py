@@ -109,7 +109,7 @@ def main():
                     beeline.bln_e(hiveql_str)
                 except sp.CalledProcessError:
                     print ">> copying from duplicated file for mrqos_join failed in adding partitions"
-                    raise HiveCreatePartitionError
+                    #raise HiveCreatePartitionError
             except:
                 print "copying from duplicated file for mrqos_join failed in uploading to hdfs"
     except:
