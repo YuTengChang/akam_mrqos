@@ -14,4 +14,4 @@ SELECT
  mrqos_ts b
  JOIN
  mrqos_join c
- ON ( b.ts = c.ts )
+ ON ( b.ts = c.ts );
