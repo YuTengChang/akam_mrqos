@@ -87,12 +87,13 @@ def main():
         # specify the local copy of the joined file
         local_file = os.path.join(config.mrqos_data_backup, '000000_0.deflate')
         try:
-            print "    ****  direct join and insert mrqos_join."
+            print "    ****  direct join and insert into mrqos_join."
             # direct join and insert in hive
             f = open('/home/testgrp/MRQOS/MRQOS_table_join2.hive', 'r')
             strcmd = f.read()
             strcmd_s = strcmd % (str(timenow), str(timenow), str(timenow), str(timenow), str(timenow), str(timenow))
             f.close()
+            print "    ****  perform beeline for join."
             beeline.bln_e(strcmd_s)
             # have the local copy of the joined file
             print "    ****  copy the joined file for backup."
