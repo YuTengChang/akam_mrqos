@@ -27,9 +27,11 @@ def main():
 
 
     # update the ts table for later summarize usage. file uploaded to HDFS
+    print "    ****  create new mrqos_ts table."
     sp.call([config.create_ts_table], shell=True)
 
     # open the file for writing the results
+    print "    ****  running hive summarizing script."
     f = open('/home/testgrp/MRQOS/mrqos_data/summarized_table.tmp','w')
     sp.check_call(['hive','-f','/home/testgrp/MRQOS/MRQOS_table_summarize.hive'],stdout=f)
     f.close()
@@ -38,17 +40,20 @@ def main():
     cmd = """cat /home/testgrp/MRQOS/mrqos_data/summarized_table.tmp | sed s:NULL:0:g | sed 's/\t/,/g' | awk -F',' '{x=length($4); if(x==2){print $0;}}' | awk -F',' '{if($3>0){$1=""; $2=""; print $0;}}' | sed 's/^\s\+//g' > /home/testgrp/MRQOS/mrqos_data/summarized_processed.tmp""";
     sp.check_call( cmd, shell=True )
 
-    # upload the joined table in hive
+    # upload the summarized table in hive
+    print "    ****  upload the summarized table to HDFS."
     listname = os.path.join(config.mrqos_data, 'summarized_processed.tmp')
     hdfs_d = os.path.join(config.hdfs_table,'mrqos_sum','ts=%s' % str(datenow))
     upload_to_hive(listname, hdfs_d, str(datenow), 'mrqos_sum')
 
     # compute COMPOUND-ERROR-METRIC
+    print "    ****  running hive script for compound error metrics."
     f = open('/home/testgrp/MRQOS/mrqos_data/compound_metric.tmp','w')
     sp.check_call(['hive','-f','/home/testgrp/MRQOS/MRQOS_table_levels.hive'],stdout=f)
     f.close()
 
     # obtain the summarized statistics that spanned [-28d, -14d]
+    print "    ****  running hive queries for 2w comparisons."
     sp.check_call( [config.obtain_14d], shell=True )
 
 

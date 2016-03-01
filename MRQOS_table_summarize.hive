@@ -1,7 +1,7 @@
-set mapreduce.map.memory.mb=4001;
+set mapreduce.map.memory.mb=4000;
 set mapreduce.reduce.memory.mb=4000;
 SET mapred.child.java.opts=-Xmx4G -XX:+UseConcMarkSweepGC;
-SET mapred.reduce.tasks=112;
+SET mapred.reduce.tasks=200;
 
 use mrqos;
 SET hive.cli.print.header=true;
@@ -302,4 +302,4 @@ from (
          and cast(ts as bigint) < (unix_timestamp()-(unix_timestamp()%86400))
     group by
     geoname, maprule, netname
-    ) a
+    ) a;
