@@ -7,11 +7,9 @@ use mrqos;
 SET hive.cli.print.header=true;
 
 SELECT
- c.*,
- b.Cosine2,
- b.Sine2
- FROM
- mrqos_ts b
- JOIN
- mrqos_join c
- ON ( b.ts = c.ts );
+ *
+ from mrqos_join
+ where
+ geoname='US' and
+ netname='ANY' and
+ maprule=1 ;
