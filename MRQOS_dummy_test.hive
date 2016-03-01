@@ -12,4 +12,5 @@ SELECT
  where
  geoname='US' and
  netname='ANY' and
- maprule=1 ;
+ maprule=1
+ limit 3;
