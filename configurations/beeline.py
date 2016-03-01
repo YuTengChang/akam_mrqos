@@ -62,9 +62,14 @@ def bln_f(hive_script, outformat='tsv2'):
     :param outformat: output format of hive
     :return: no return
     """
-
-    list_used = shlex.split(bln_prepare_hiveql(outformat) + '-f %s' % hive_script)
+    with open(hive_script) as f:
+        hive_query = " ".join(line.strip() for line in f)
+    list_used = shlex.split(bln_prepare_hiveql(outformat) + '-e "%s"' % hive_query)
+    # disable the -f function replaced with -e and (content of the file)
+    #list_used = shlex.split(bln_prepare_hiveql(outformat) + '-f %s' % hive_script)
     sp.check_call(list_used)
+    # """ unit test """
+    # import os, sys; sys.path.append('/home/testgrp/MRQOS/'); import configurations.beeline as beeline; beeline.bln_f('/home/testgrp/MRQOS/MRQOS_dummy_test.hive');
 
 
 def bln_f_output(hive_script, output_file, outformat='tsv2'):
@@ -76,7 +81,11 @@ def bln_f_output(hive_script, output_file, outformat='tsv2'):
     :return: no return
     """
     f_handle = open(output_file, 'w')
-    list_used = shlex.split(bln_prepare_hiveql(outformat) + '-f %s' % hive_script)
+    with open(hive_script) as f:
+        hive_query = " ".join(line.strip() for line in f)
+    list_used = shlex.split(bln_prepare_hiveql(outformat) + '-e "%s"' % hive_query)
+    # disable the -f function replaced with -e and (content of the file)
+    #list_used = shlex.split(bln_prepare_hiveql(outformat) + '-f %s' % hive_script)
     sp.check_call(list_used, stdout=f_handle)
     f_handle.close()
 
