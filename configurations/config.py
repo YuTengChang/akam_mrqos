@@ -37,7 +37,7 @@ query_retrial = 15 # 15 times
 query_timeout = 20 # 20 sec
 
 mrqos_table_delete = 60 * 30 # 1800 sec = 30 minutes
-mrqos_join_delete = 60 * 60 * 24 * 32 # 32 days
+mrqos_join_delete = 60 * 60 * 24 * 15 # 15 days
 
 
 #==============================================================================
