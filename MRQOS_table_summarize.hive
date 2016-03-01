@@ -2,7 +2,6 @@ set mapreduce.map.memory.mb=4000;
 set mapreduce.reduce.memory.mb=4000;
 SET mapred.child.java.opts=-Xmx4G -XX:+UseConcMarkSweepGC;
 SET mapred.reduce.tasks=112;
-set mapred.task.timeout=600000;
 
 use mrqos;
 SET hive.cli.print.header=true;
