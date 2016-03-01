@@ -61,6 +61,8 @@ def get(hdfs_file, local_file):
     copy the hdfs file to local file, remove the local file if exists already
     """
     if os.path.isfile(local_file):
+        print 'local file exist, removing...'
         os.remove(local_file)
+    print 'copying hdfs file to local file %s' % local_file
     return sp.check_Call('hadoop fs -get %s %s' % (hdfs_file, local_file),
                          shell=True)

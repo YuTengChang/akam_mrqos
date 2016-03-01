@@ -34,7 +34,6 @@ def main():
     print "starting processing time is " + str(timenow)
     print "###################"
 
-
     # fetch the data through query with retrials
     print "    ****  querying mrqos data."
     for item in mtype:
@@ -59,11 +58,9 @@ def main():
             print ">> data fetch failed in querying table %s" % item
             return
 
-
     # provide SCORE table with peak/off-peak attribute
     print "    ****  provide PEAK in score."
     sp.call([config.provide_peak], shell=True)
-
 
     # backup the individual query file by copying to backup folder
     print "    ****  backing up queried results."
@@ -73,7 +70,6 @@ def main():
             filesrc = os.path.join(config.mrqos_data, item + '.tmp')
             filedst = '/home/testgrp/MRQOS/mrqos_data/backup/%s/' % str(timenow)
             shutil.copy(filesrc, filedst)
-
 
     # upload to hdfs and link to hive tables
     print "    ****  uploading to hdfs and hive."
@@ -85,8 +81,7 @@ def main():
             upload_to_hive(listname, hdfs_d, str(timenow), item)
         shutil.rmtree('/home/testgrp/MRQOS/mrqos_data/backup/%s' % str(timenow))
 
-
-        # new version of the join tables in hive: direct insert
+        # new version of the join tables in hive: direct insert #
         # specify the new joined file in hdfs
         hdfs_file = os.path.join(config.hdfs_table, 'mrqos_join', 'ts=%s' % str(timenow), '000000_0.deflate')
         # specify the local copy of the joined file
@@ -119,10 +114,10 @@ def main():
     except:
         print "HDFS upload failed, backup file retains"
 
-    # clear the expired data in mrqos_table
-    # mrqos_table_cleanup()
-    # clear the expired data in mrqos_join
-    # mrqos_join_cleanup()
+        # clear the expired data in mrqos_table
+        # mrqos_table_cleanup()
+        # clear the expired data in mrqos_join
+        # mrqos_join_cleanup()
 
 
 # ==============================================================================
@@ -155,7 +150,7 @@ def mrqos_table_cleanup():
                 except sp.CalledProcessError:
                     print ">> failed in hive table clean up in table: %s." % item
                     pass
-                    #raise GenericHadoopError
+                    # raise GenericHadoopError
 
 
 # ==============================================================================
@@ -211,7 +206,7 @@ def upload_to_hive(listname, hdfs_d, ts, tablename):
     try:
         hiveql_str = 'use mrqos; alter table ' + tablename + ' add partition(ts=%s);' % (ts)
         beeline.bln_e(hiveql_str)
-        #sp.check_call(['hive', '-e', hiveql_str])
+        # sp.check_call(['hive', '-e', hiveql_str])
     except sp.CalledProcessError:
         raise HiveCreatePartitionError
 
