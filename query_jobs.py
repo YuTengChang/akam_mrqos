@@ -115,9 +115,9 @@ def main():
         print "HDFS upload failed, backup file retains"
 
         # clear the expired data in mrqos_table
-        # mrqos_table_cleanup()
+        mrqos_table_cleanup()
         # clear the expired data in mrqos_join
-        # mrqos_join_cleanup()
+        mrqos_join_cleanup()
 
 
 # ==============================================================================
