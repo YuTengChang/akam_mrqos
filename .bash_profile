@@ -1,8 +1,10 @@
-export PATH=$PATH:/a/shark/spark/:/a/third-party/hive/bin/:/a/bin/:/home/testgrp/bin/:/a/third-party/hadoop/bin-mapreduce1/:/home/testgrp/pig/pig-0.11.0-cdh4.6.0/bin
+# old cluster:
+#export PATH=$PATH:/a/shark/spark/:/a/third-party/hive/bin/:/a/bin/:/home/testgrp/bin/:/a/third-party/hadoop/bin-mapreduce1/:/home/testgrp/pig/pig-0.11.0-cdh4.6.0/bin
+export PATH=$PATH:/a/third-party/hadoop/bin/:/a/third-party/hive/bin/:/a/bin/:/a/shark/shark/shark-0.8.0/bin/:/a/shark/spark/:/usr/local/akamai/java64/jdk1.7.0/bin/
 #alias python2.7='/a/bin/python2.7'
 source /a/etc/akamai.conf
 export hdfs_d='/ghostcache/hadoop/data'
-export HADOOP_CONF_DIR='/a/third-party/hadoop/share/hadoop/mapreduce1/conf'
+export HADOOP_CONF_DIR='/a/third-party/hadoop/conf'
 export HADOOP_USER_NAME=akamai
 
 # Spark related
@@ -24,4 +26,4 @@ alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 alias hls='hadoop fs -ls'
-alias bln="beeline -u jdbc:hive2:// -n '' -p '' --silent=false --outputformat=tsv2"
+alias bln='beeline -u jdbc:hive2:// -n "" -p "" --silent=false --showHeader=false --outputformat=tsv2'
