@@ -1,5 +1,4 @@
 set mapred.child.java.opts=-Xmx2000m;
-set mapred.task.timeout=600000;
 
 use mrqos;
 
