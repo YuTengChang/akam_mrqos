@@ -20,7 +20,8 @@ def main():
     # variable settings
     query_retry_time = 1
     max_retrial = 60
-    mapmon_machine = "72.246.193.143"
+    mapmon_machine = sp.check_output('/u4/ychang/bin/mapper-leader  mapmon')
+    print "mapmon leader machine:" + mapmon_machine
     mapmon_file = "/home/testgrp/full-table-mrqos-view-by-region"
     local_dir = "/home/ychang/Documents/Projects/18-DDC/MRQOS_local_data"
     mapmon_command = """ /a/bin/sql2 --csv ' select * from _local_a_maprule_qos_view_by_region ' > %s """ % mapmon_file
