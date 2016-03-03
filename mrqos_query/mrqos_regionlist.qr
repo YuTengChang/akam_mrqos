@@ -1,0 +1,1 @@
+select * from a_maprule_qos_view_by_region;
