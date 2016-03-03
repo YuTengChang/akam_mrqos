@@ -17,6 +17,10 @@ def main():
     :return:
     """
 
+    # variable settings
+    mapmon_machine = "72.246.193.143"
+    mapmon_command = """ /a/bin/sql2 --csv ' select * from _local_a_maprule_qos_view_by_region ' > ~/full-table-mrqos-view-by-region """
+
     # current time
     timenow = int(time.time())
 
@@ -26,7 +30,7 @@ def main():
     print "###################"
 
     print "    ****  obtaining from mapmon."
-    cmd_str = """ gwsh -2 $mapmon_machine "/a/bin/sql2 --csv ' select * from _local_a_maprule_qos_view_by_region ' > ~/full-table-mrqos-view-by-region" """
+    cmd_str = """ gwsh -2 %s "%s" """ % ( mapmon_machine, mapmon_command )
     sp.check_call(cmd_str, shell=True)
 
 
