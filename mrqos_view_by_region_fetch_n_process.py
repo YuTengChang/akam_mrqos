@@ -19,7 +19,10 @@ def main():
 
     # variable settings
     mapmon_machine = "72.246.193.143"
-    mapmon_command = """ /a/bin/sql2 --csv ' select * from _local_a_maprule_qos_view_by_region ' > ~/full-table-mrqos-view-by-region """
+    mapmon_file = "/home/testgrp/full-table-mrqos-view-by-region"
+    local_dir = "/home/ychang/Documents/Projects/18-DDC/MRQOS_local_data"
+    mapmon_command = """ /a/bin/sql2 --csv ' select * from _local_a_maprule_qos_view_by_region ' > %s """ % mapmon_file
+    scp_from_mapmon = """ scp -Sgwsh testgrp@%s:%s %s""" % (mapmon_machine, mapmon_file, os.path.join(local_dir, 'temp.csv'))
 
     # current time
     timenow = int(time.time())
@@ -32,6 +35,8 @@ def main():
     print "    ****  obtaining from mapmon."
     cmd_str = """ gwsh -2 %s "%s" """ % ( mapmon_machine, mapmon_command )
     sp.check_call(cmd_str, shell=True)
+    print "    ****  scp file to local"
+    sp.check_call(scp_from_mapmon, shell=True)
 
 
 
