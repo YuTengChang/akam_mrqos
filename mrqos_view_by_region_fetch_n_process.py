@@ -42,6 +42,7 @@ def main():
 
     print "    ****  obtaining from mapmon."
     cmd_str = """ gwsh -2 %s "%s" """ % ( mapmon_machine, mapmon_command )
+    print cmd_str
     sp.check_call(cmd_str, shell=True)
     print "    ****  scp file to local"
     sp.check_call(scp_from_mapmon, shell=True)
@@ -50,7 +51,6 @@ def main():
     while os.stat(os.path.join(local_dir, 'temp.csv')).st_size < 10000:
         print "    ****  obtaining from mapmon."
         cmd_str = """ gwsh -2 %s "%s" """ % ( mapmon_machine, mapmon_command )
-        print cmd_str
         sp.check_call(cmd_str, shell=True)
         print "    ****  scp file to local"
         sp.check_call(scp_from_mapmon, shell=True)
