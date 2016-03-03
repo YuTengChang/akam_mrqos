@@ -1,4 +1,4 @@
-#!/home/ychang/anaconda/bin/python2.7
+#!/opt/anaconda/bin/python2.7
 """
 Created on Thu Apr 16 16:47:15 2015
 
