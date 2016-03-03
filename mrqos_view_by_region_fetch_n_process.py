@@ -24,7 +24,7 @@ def main():
     mapmon_machine = mapmon_machine.strip()
     mapmon_file = "/home/testgrp/full-table-mrqos-view-by-region"
     local_dir = "/home/ychang/Documents/Projects/18-DDC/MRQOS_local_data"
-    mapmon_command = """ count=0; line=0; while([ $count -le 10 ] && [ $line -le 10 ]); do line=` /a/bin/sql2 --csv ' select * from _local_a_maprule_qos_view_by_region ' | tee %s | wc -l`; count=$((count+1)); done; """ % (mapmon_file)
+    mapmon_command = """ count=0; line=0; while([ $count -le 10 ] && [ $line -le 10 ]); do line=` /a/bin/sql2 --csv ' select * from a_maprule_qos_view_by_region ' | tee %s | wc -l`; count=$((count+1)); done; """ % (mapmon_file)
     #mapmon_command = """ /a/bin/sql2 --csv ' select * from _local_a_maprule_qos_view_by_region ' > %s """ % mapmon_file
     scp_from_mapmon = """ scp -Sgwsh testgrp@%s:%s %s""" % (mapmon_machine, mapmon_file, os.path.join(local_dir, 'temp.csv'))
     cleanup_command_1 = """ cat %s | tail -n+3 | sort -t"," -k9gr | awk -F, '{id=$1; count[id]+=1; cum_pert[id]+=$NF; if(count[id]<10){split($1,a,"."); split(a[2],mr,"_"); split(a[3],geo,"_"); split(a[4],net,"_"); print $1, mr[2], geo[2], net[2], $5, $7, $8, $9, cum_pert[id];}}' > %s""" % (os.path.join(local_dir,'temp.csv'),
