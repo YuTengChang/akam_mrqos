@@ -4,8 +4,9 @@ Created on Thu Apr 16 16:47:15 2015
 
 @author: ychang
 """
-import sys, os
-import shutil
+import sys
+import os
+#import shutil
 import subprocess as sp
 import time
 
@@ -28,7 +29,10 @@ def main():
     mapmon_command = """ count=0; line=0; while(( "$count" < "20" )) && (( "$line" < "10" )); do /a/bin/sql2 --csv ' select * from a_maprule_qos_view_by_region ' >  %s; line=`wc -l %s | awk '{print $1;}'`; count=$((count+1)); done; """ % (mapmon_file, mapmon_file)
     scp_from_mapmon = """ scp -Sgwsh testgrp@%s:%s %s""" % (mapmon_machine, mapmon_file, os.path.join(local_dir, 'temp.csv'))
     cleanup_command_1 = """ cat %s | tail -n+3 | sort -t"," -k9gr | awk -F, '{id=$1; count[id]+=1; cum_pert[id]+=$NF; if(count[id]<10){split($1,a,"."); split(a[2],mr,"_"); split(a[3],geo,"_"); split(a[4],net,"_"); print $1, mr[2], geo[2], net[2], $5, $7, $8, $9, cum_pert[id];}}' > %s""" % (os.path.join(local_dir,'temp.csv'),
-                                                                                                                                                                                                                                                                                                   os.path.join(local_dir,'temp1.csv'))
+                                                                                                                                                                                                                                                                                                   os.path.join(local_dir,'temp1.csv') )
+    cleanup_command_2 = """ awk 'NR==FNR{id=$1; count[id]+=$8; if(cum[id]<$9){cum[id]=$9;} next}{id=$1; load_ratio=$8/count[id]; print $0, load_ratio, cum[id];}' %s %s > %s""" %( os.path.join(local_dir,'temp1.csv'),
+                                                                                                                                                                                   os.path.join(local_dir,'temp1.csv'),
+                                                                                                                                                                                   os.path.join(local_dir,'temp2.csv'))
 
     # current time
     timenow = int(time.time())
@@ -65,6 +69,8 @@ def main():
     # clean-up the temp local file
     print "    ****  clean up the file part 1."
     sp.check_call(cleanup_command_1, shell=True)
+    print "    ****  clean up the file part 2."
+    sp.check_call(cleanup_command_2, shell=True)
 
 if __name__ == '__main__':
     sys.exit(main())
