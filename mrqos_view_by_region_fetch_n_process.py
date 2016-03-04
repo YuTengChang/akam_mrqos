@@ -23,6 +23,7 @@ def main():
     max_retrial = 10
     mapmon_machine = sp.check_output('/u4/ychang/bin/mapper-leader mapmon', shell=True)
     mapmon_machine = mapmon_machine.strip()
+    cluster_namenode = "81.52.137.195"
     mapmon_file = "/home/testgrp/full-table-mrqos-view-by-region"
     local_dir = "/home/ychang/Documents/Projects/18-DDC/MRQOS_local_data"
     # already retry 20 times on mapmon machine
@@ -71,6 +72,12 @@ def main():
     sp.check_call(cleanup_command_1, shell=True)
     print "    ****  clean up the file part 2."
     sp.check_call(cleanup_command_2, shell=True)
+
+    # upload to the cluster
+    print "    ****  upload to the cluster."
+    cmd_str = """ scp %s testgrp@%s:/home/testgrp/MRQOS/mrqos_data/qos_region.tmp """ % (os.path.join(local_dir, 'temp2.csv'),
+                                                                                         cluster_namenode)
+    sp.check_call(cmd_str, shell=True)
 
 if __name__ == '__main__':
     sys.exit(main())
