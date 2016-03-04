@@ -75,7 +75,7 @@ def main():
 
     # upload to the cluster
     print "    ****  upload to the cluster."
-    cmd_str = """ scp %s testgrp@%s:/home/testgrp/MRQOS/mrqos_data/qos_region.tmp """ % (os.path.join(local_dir, 'temp2.csv'),
+    cmd_str = """ scp -Sgwsh %s testgrp@%s:/home/testgrp/MRQOS/mrqos_data/qos_region.tmp """ % (os.path.join(local_dir, 'temp2.csv'),
                                                                                          cluster_namenode)
     sp.check_call(cmd_str, shell=True)
 
