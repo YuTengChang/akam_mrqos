@@ -1,3 +1,7 @@
+add jar /a/libexec/ddr-1.0.jar;
+
+USE mrqos;
+
 drop table if exists mrqos_region;
 
 create external table mrqos_region (
