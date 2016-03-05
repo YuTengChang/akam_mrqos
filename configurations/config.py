@@ -19,6 +19,8 @@ hdfs_table = '/ghostcache/hadoop/data/MRQOS'
 hdfs_table_score = '/ghostcache/hadoop/data/MRQOS/score'
 hdfs_table_join = '/ghostcache/hadoop/data/MRQOS/mrqos_join'
 
+hdfs_qos_rg_info = '/ghostcache/hadoop/data/MRQOS/mrqos_region/ts=%s'
+
 #==============================================================================
 # # Local File Locations
 #==============================================================================

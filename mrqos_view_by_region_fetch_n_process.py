@@ -9,6 +9,9 @@ import os
 #import shutil
 import subprocess as sp
 import time
+sys.path.append('/home/ychang/Documents/Projects/18-DDC/MRQOS/')
+import configurations.config as config
+
 
 
 def main():
@@ -75,8 +78,10 @@ def main():
 
     # upload to the cluster
     print "    ****  upload to the cluster."
-    cmd_str = """ scp -Sgwsh %s testgrp@%s:/home/testgrp/MRQOS/mrqos_data/qos_region.tmp """ % (os.path.join(local_dir, 'temp2.csv'),
-                                                                                         cluster_namenode)
+    cmd_str = """ scp -Sgwsh %s testgrp@%s:%s/qos_region_%s.tmp """ % (os.path.join(local_dir, 'temp2.csv'),
+                                                                       cluster_namenode,
+                                                                       config.mrqos_data,
+                                                                       str(timenow))
     sp.check_call(cmd_str, shell=True)
 
 if __name__ == '__main__':

@@ -20,4 +20,4 @@ partitioned by (ts INT)
 row format delimited
 fields terminated by ' '
 lines terminated by '\n'
-location '/ghostcache/hadoop/data/MRQOS/region';
+location '/ghostcache/hadoop/data/MRQOS/mrqos_region';
