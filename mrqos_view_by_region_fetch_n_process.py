@@ -78,7 +78,7 @@ def main():
 
     # upload to the cluster
     print "    ****  upload to the cluster."
-    cmd_str = """ scp -Sgwsh %s testgrp@%s:%s/qos_region_%s.tmp """ % (os.path.join(local_dir, 'temp2.csv'),
+    cmd_str = """ scp -Sgwsh %s testgrp@%s:%s/qos_region.%s.tmp """ % (os.path.join(local_dir, 'temp2.csv'),
                                                                        cluster_namenode,
                                                                        config.mrqos_data,
                                                                        str(timenow))
