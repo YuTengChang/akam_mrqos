@@ -26,6 +26,8 @@ def main():
         infoitem = qos_file.rsplit('.',2)
         ts = infoitem[-2]
         datestamp = time.strftime('%Y%m%d', time.localtime(float(ts)))
+        # do we need hourly partition or not?
+        # hourstamp = time.strftime('%H', time.localtime(float(ts)))
 
         print '    file = ' + qos_file
         print '    timestamp = %s;' % ( ts )
