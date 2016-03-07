@@ -1,0 +1,3 @@
+use MRQOS;
+
+select * from mapper.barebones a inner join mrqos.mrqos_region b on a.region=b.region limit 1;
