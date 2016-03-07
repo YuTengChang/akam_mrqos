@@ -22,17 +22,17 @@ def main():
     list_qos_files = glob.glob( os.path.join(config.mrqos_data,
                                             'qos_region.*.tmp') ) # glob get the full path
     for qos_file in list_qos_files:
-        infoitem = qos_file.rsplit('.',1)
-        ts = infoitem[0]
+        infoitem = qos_file.rsplit('.',2)
+        ts = infoitem[-2]
         print '    file = ' + qos_file
         print '    timestamp = %s;' % ( ts )
 
         # put the file to HDFS folder and remove from Local
         try:
             print '    upload to HDFS'
-            hdfs_ns_destination = config.hdfs_qos_rg_info % ( ts )
-            hdfs.mkdir( hdfs_ns_destination )
-            hdfs.put( qos_file, hdfs_ns_destination )
+            hdfs_rg_destination = config.hdfs_qos_rg_info % ( ts )
+            hdfs.mkdir( hdfs_rg_destination )
+            hdfs.put( qos_file, hdfs_rg_destination )
 
             print '    adding partition'
             hiveql_str = config.add_rg_partition % ( ts )
