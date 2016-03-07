@@ -31,7 +31,6 @@ def main():
     local_dir = "/home/ychang/Documents/Projects/18-DDC/MRQOS_local_data"
     # already retry 20 times on mapmon machine
     mapmon_query_bash_file = "/home/ychang/Documents/Projects/18-DDC/MRQOS/mrqos_shell_scripts/mapmon_query_view_by_region.sh"
-    #mapmon_command = """ for i in {1..10}; do /a/bin/sql2 --csv ' select * from a_maprule_qos_view_by_region ' >  %s; if [ `wc -l %s | awk '{print $1;}'` -gt "10" ]; then break; fi; done; """ % (mapmon_file, mapmon_file)
     scp_from_mapmon = """ scp -Sgwsh testgrp@%s:%s %s""" % (mapmon_machine, mapmon_file, os.path.join(local_dir, 'temp.csv'))
     cleanup_command_1 = """ cat %s | tail -n+3 | sort -t"," -k9gr | awk -F, '{id=$1; count[id]+=1; cum_pert[id]+=$NF; if(count[id]<=20){split($1,a,"."); split(a[2],mr,"_"); split(a[3],geo,"_"); split(a[4],net,"_"); if(length(geo[2])==2){print $1, mr[2], geo[2], net[2], $5, $7, $8, $9, cum_pert[id];}}}' > %s""" % (os.path.join(local_dir,'temp.csv'),
                                                                                                                                                                                                                                                                                                    os.path.join(local_dir,'temp1.csv') )
@@ -50,7 +49,7 @@ def main():
     print "    ****  mapmon leader machine: " + mapmon_machine
 
     print "    ****  obtaining from mapmon."
-    cmd_str = """ gwsh -2 %s "bash -s" <  """ % ( mapmon_machine, mapmon_query_bash_file )
+    cmd_str = """ gwsh -2 %s "bash -s" <  %s """ % ( mapmon_machine, mapmon_query_bash_file )
     print "    ****  command: " + cmd_str
     sp.check_call(cmd_str, shell=True)
     print "    ****  scp file to local"
@@ -62,7 +61,7 @@ def main():
         mapmon_machine = mapmon_machine.strip()
         scp_from_mapmon = """ scp -Sgwsh testgrp@%s:%s %s""" % (mapmon_machine, mapmon_file, os.path.join(local_dir, 'temp.csv'))
         print "    ****  obtaining from mapmon."
-        cmd_str = """ gwsh -2 %s "%s" """ % ( mapmon_machine, mapmon_command )
+        cmd_str = """ gwsh -2 %s "bash -s" < %s """ % ( mapmon_machine, mapmon_query_bash_file )
         sp.check_call(cmd_str, shell=True)
         print "    ****  scp file to local"
         sp.check_call(scp_from_mapmon, shell=True)
