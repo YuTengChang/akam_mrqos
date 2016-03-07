@@ -16,7 +16,7 @@ create external table mrqos_region (
     case_percent_load FLOAT,
     recorded_load_percentage FLOAT)
 
-partitioned by (ts STRING)
+partitioned by (datestamp STRING, ts STRING)
 row format delimited
 fields terminated by ' '
 lines terminated by '\n'

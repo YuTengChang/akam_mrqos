@@ -25,7 +25,7 @@ def ls(dir_name):
 def mkdir(dir_name):
     # make directory in HDFS, abort when folder exists
     if sp.call('hadoop fs -test -d %s' % dir_name, shell=True):
-        return sp.check_call('hadoop fs -mkdir %s' % dir_name, shell=True)
+        return sp.check_call('hadoop fs -mkdir -p %s' % dir_name, shell=True)
     else:
         return 'HDFS destination folder exists and abort'
 

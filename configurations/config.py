@@ -19,7 +19,7 @@ hdfs_table = '/ghostcache/hadoop/data/MRQOS'
 hdfs_table_score = '/ghostcache/hadoop/data/MRQOS/score'
 hdfs_table_join = '/ghostcache/hadoop/data/MRQOS/mrqos_join'
 
-hdfs_qos_rg_info = '/ghostcache/hadoop/data/MRQOS/mrqos_region/ts=%s'
+hdfs_qos_rg_info = '/ghostcache/hadoop/data/MRQOS/mrqos_region/datestamp=%s/ts=%s'
 
 #==============================================================================
 # # Local File Locations
@@ -57,4 +57,4 @@ obtain_14d = '/home/testgrp/MRQOS/obtain_2wk_ago_summarization.sh'
 #==============================================================================
 # # HIVE Scripts, table managements
 #==============================================================================
-add_rg_partition = 'use MRQOS; alter table mrqos_region add partition(ts=%s);'
+add_rg_partition = 'use MRQOS; alter table mrqos_region add partition(datestamp=%s,ts=%s);'
