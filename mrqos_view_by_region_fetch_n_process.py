@@ -34,7 +34,7 @@ def main():
     scp_from_mapmon = """ scp -Sgwsh testgrp@%s:%s %s""" % (mapmon_machine, mapmon_file, os.path.join(local_dir, 'temp.csv'))
     cleanup_command_1 = """ cat %s | tail -n+3 | sort -t"," -k9gr | awk -F, '{id=$1; count[id]+=1; cum_pert[id]+=$NF; if(count[id]<10){split($1,a,"."); split(a[2],mr,"_"); split(a[3],geo,"_"); split(a[4],net,"_"); print $1, mr[2], geo[2], net[2], $5, $7, $8, $9, cum_pert[id];}}' > %s""" % (os.path.join(local_dir,'temp.csv'),
                                                                                                                                                                                                                                                                                                    os.path.join(local_dir,'temp1.csv') )
-    cleanup_command_2 = """ awk 'NR==FNR{id=$1; count[id]+=$8; if(cum[id]<$9){cum[id]=$9;} next}{id=$1; load_ratio=100*$8/count[id]; print $2,$3,$4,$5,$6,$7,$8,$9, load_ratio, cum[id];}' %s %s > %s""" %( os.path.join(local_dir,'temp1.csv'),
+    cleanup_command_2 = """ awk 'NR==FNR{id=$1; count[id]+=$8; if(cum[id]<$9){cum[id]=$9;} next}{id=$1; load_ratio=100*$8/count[id]; print $2,$3,$4,$5,$6,$7,$8/1024/1024,$9, load_ratio, cum[id];}' %s %s > %s""" %( os.path.join(local_dir,'temp1.csv'),
                                                                                                                                                                                                         os.path.join(local_dir,'temp1.csv'),
                                                                                                                                                                                                         os.path.join(local_dir,'temp2.csv'))
 

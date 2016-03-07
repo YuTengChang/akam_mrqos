@@ -11,12 +11,12 @@ create external table mrqos_region (
     region INT,
     nsd_demand INT,
     eu_demand INT,
-    ra_load INT,
+    ra_load FLOAT,
     case_percent_pre_norm_load FLOAT,
     case_percent_load FLOAT,
     recorded_load_percentage FLOAT)
 
-partitioned by (ts INT)
+partitioned by (ts STRING)
 row format delimited
 fields terminated by ' '
 lines terminated by '\n'
