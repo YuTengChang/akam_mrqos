@@ -14,7 +14,7 @@ SELECT
     b.datestamp,
     a.name,
     a.ecor,
-    a.rgname,
+    a.name rgname,
     a.continent,
     a.country,
     a.city,
