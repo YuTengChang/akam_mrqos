@@ -46,7 +46,7 @@ def main():
     print "starting processing time is " + str(timenow)
     print "###################"
 
-    print "    ****  mapmon leader machine:" + mapmon_machine
+    print "    ****  mapmon leader machine: " + mapmon_machine
 
     print "    ****  obtaining from mapmon."
     cmd_str = """ gwsh -2 %s "%s" """ % ( mapmon_machine, mapmon_command )
