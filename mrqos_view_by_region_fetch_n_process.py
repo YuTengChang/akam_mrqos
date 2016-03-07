@@ -61,6 +61,7 @@ def main():
         scp_from_mapmon = """ scp -Sgwsh testgrp@%s:%s %s""" % (mapmon_machine, mapmon_file, os.path.join(local_dir, 'temp.csv'))
         print "    ****  obtaining from mapmon."
         cmd_str = """ gwsh -2 %s "%s" """ % ( mapmon_machine, mapmon_command )
+        print "    ****  command: " + cmd_str
         sp.check_call(cmd_str, shell=True)
         print "    ****  scp file to local"
         sp.check_call(scp_from_mapmon, shell=True)
