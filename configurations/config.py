@@ -51,3 +51,10 @@ provide_join = '/home/testgrp/MRQOS/query_table_join.sh'
 copy_from_last_join = '/home/testgrp/MRQOS/duplicate_from_last_join.sh'
 create_ts_table = '/home/testgrp/MRQOS/create_mrqos_ts.sh'
 obtain_14d = '/home/testgrp/MRQOS/obtain_2wk_ago_summarization.sh'
+
+
+
+#==============================================================================
+# # HIVE Scripts, table managements
+#==============================================================================
+add_rg_partition = 'use MRQOS; alter table mrqos_region add partition(ts=%s);'

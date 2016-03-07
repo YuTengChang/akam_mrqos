@@ -10,7 +10,6 @@ This script do the insertion of NS-Info files
 """
 import sys,os
 sys.path.append('/home/testgrp/MRQOS/')
-import subprocess as sp
 import glob
 import configurations.hdfsutil as hdfs
 import configurations.config as config
@@ -21,12 +20,12 @@ def main():
     # #### MRQOS region LOCAL PART ####
     # ignore the local timestamp, use what files are tagged
     list_qos_files = glob.glob( os.path.join(config.mrqos_data,
-                                            'qos_region.*.txt') ) # glob get the full path
+                                            'qos_region.*.tmp') ) # glob get the full path
     for qos_file in list_qos_files:
-        infoitem = qos_file.rsplit('_',2)
-        ts = infoitem[1]
+        infoitem = qos_file.rsplit('.',1)
+        ts = infoitem[0]
         print '    file = ' + qos_file
-        print '    timestamp = %s; UUID = %s' % ( ts )
+        print '    timestamp = %s;' % ( ts )
 
         # put the file to HDFS folder and remove from Local
         try:
@@ -36,13 +35,15 @@ def main():
             hdfs.put( qos_file, hdfs_ns_destination )
 
             print '    adding partition'
-            hiveql_str = config.add_ns_partition % ( datestamp, UUID )
-            print '    '+hiveql_str
-            sp.check_call(['hive','-e',hiveql_str])
+            hiveql_str = config.add_rg_partition % ( ts )
+            #print '    '+hiveql_str
+            #sp.check_call(['hive','-e',hiveql_str])
+            beeline.bln_e(hiveql_str)
+
             print '    remove local file: ' + qos_file
             os.remove(qos_file)
         except:
-            print 'resolver(NS) information update failed for timestamp=%s' % ( ts )
+            print 'MRQOS region(RG) information update failed for timestamp=%s' % ( ts )
 
 
 if __name__=='__main__':
