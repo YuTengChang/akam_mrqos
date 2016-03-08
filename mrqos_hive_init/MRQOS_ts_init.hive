@@ -1,0 +1,22 @@
+add jar /a/libexec/ddr-1.0.jar;
+
+CREATE DATABASE IF NOT EXISTS mrqos;
+USE mrqos;
+
+
+drop table mrqos_ts;
+
+create external table mrqos_ts (
+    ts INT,
+    ts_order INT,
+    Cosine2 DOUBLE,
+    Sine2 DOUBLE,
+    Cosine14 DOUBLE,
+    Sine14 DOUBLE )
+
+row format delimited
+fields terminated by ' '
+lines terminated by '\n'
+location '/ghostcache/hadoop/data/MRQOS/mrqos_ts';
+
+

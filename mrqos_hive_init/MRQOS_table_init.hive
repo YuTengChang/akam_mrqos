@@ -1,0 +1,94 @@
+add jar /a/libexec/ddr-1.0.jar;
+
+CREATE DATABASE IF NOT EXISTS mrqos;
+USE mrqos;
+
+drop table score;
+drop table distance;
+drop table in_country;
+drop table in_continent;
+drop table ra_load;
+
+create external table score (
+    casename STRING,
+    maprule INT,
+    geoname STRING,
+    netname STRING,
+    p99 INT,
+    p95 INT,
+    p90 INT,
+    p75 INT,
+    targetvalue INT,
+    peak INT)
+
+partitioned by (ts INT)
+row format delimited
+fields terminated by ','
+lines terminated by '\n'
+location '/ghostcache/hadoop/data/MRQOS/score';
+
+
+create external table distance (
+    casename STRING,
+    maprule INT,
+    geoname STRING,
+    netname STRING,
+    p99 INT,
+    p95 INT,
+    p90 INT,
+    p75 INT,
+    targetvalue INT)
+
+partitioned by (ts INT)
+row format delimited
+fields terminated by ','
+lines terminated by '\n'
+location '/ghostcache/hadoop/data/MRQOS/distance';
+
+
+create external table in_country (
+    casename STRING,
+    maprule INT,
+    geoname STRING,
+    netname STRING,
+    in_country_pct INT,
+    targetvalue INT)
+
+partitioned by (ts INT)
+row format delimited
+fields terminated by ','
+lines terminated by '\n'
+location '/ghostcache/hadoop/data/MRQOS/in_country';
+
+
+create external table in_continent (
+    casename STRING,
+    maprule INT,
+    geoname STRING,
+    netname STRING,
+    in_continent_pct INT,
+    targetvalue INT)
+
+partitioned by (ts INT)
+row format delimited
+fields terminated by ','
+lines terminated by '\n'
+location '/ghostcache/hadoop/data/MRQOS/in_continent';
+
+
+create external table ra_load (
+    casename STRING,
+    maprule INT,
+    geoname STRING,
+    netname STRING,
+    total_bps INT,
+    ping_bps INT,
+    p2t_bps_pct INT)
+
+partitioned by (ts INT)
+row format delimited
+fields terminated by ','
+lines terminated by '\n'
+location '/ghostcache/hadoop/data/MRQOS/ra_load';
+
+

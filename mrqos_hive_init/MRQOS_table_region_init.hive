@@ -1,0 +1,23 @@
+add jar /a/libexec/ddr-1.0.jar;
+
+USE mrqos;
+
+drop table if exists mrqos_region;
+
+create external table mrqos_region (
+    maprule INT,
+    geoname STRING,
+    netname STRING,
+    region INT,
+    nsd_demand INT,
+    eu_demand INT,
+    ra_load BIGINT,
+    case_percent_pre_norm_load FLOAT,
+    case_percent_load FLOAT,
+    recorded_load_percentage FLOAT)
+
+partitioned by (datestamp STRING, ts STRING)
+row format delimited
+fields terminated by ' '
+lines terminated by '\n'
+location '/ghostcache/hadoop/data/MRQOS/mrqos_region';

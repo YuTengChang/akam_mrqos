@@ -1,0 +1,60 @@
+drop table MRQOS_all;
+
+create external table MRQOS_all (
+	startdate STRING,       
+	enddate STRING,
+	geoname STRING,
+	maprule INT,
+	netname STRING,
+	score99_med INT,     
+	score95_med INT,
+	score90_med INT,
+	score75_med INT,
+	score99_std DOUBLE,
+	score95_std DOUBLE,
+	score90_std DOUBLE,
+	score75_std DOUBLE,
+	score99_q95 DOUBLE,
+	score95_q95 DOUBLE,
+	score90_q95 DOUBLE,
+	score75_q95 DOUBLE,
+	score_tar INT,
+	dis99_med INT,  
+	dis95_med INT,  
+	dis90_med INT,  
+	dis75_med INT,  
+	dis99_std DOUBLE,  
+	dis95_std DOUBLE,  
+	dis90_std DOUBLE,  
+	dis75_std DOUBLE,  
+	dis99_q95 DOUBLE,  
+	dis95_q95 DOUBLE,  
+	dis90_q95 DOUBLE,  
+	dis75_q95 DOUBLE,  
+	dis_tar INT,
+	ict_med INT,
+	ict_q01 DOUBLE,
+	ict_q05 DOUBLE,
+	ict_q10 DOUBLE,
+	ict_tar INT,
+	icy_med INT,
+	icy_q01 DOUBLE,
+	icy_q05 DOUBLE,
+	icy_q10 DOUBLE,
+	icy_tar INT,
+	ioratio_med INT,    
+	ioratio_std DOUBLE,
+	ioratio_q95 DOUBLE,
+	ioratio_tar INT,
+	coverage_pct_med INT,        
+	tbps_med INT,
+	tbps_std DOUBLE,
+	p2t_bps_pct_med DOUBLE,   
+	p2t_bps_pct_q05 DOUBLE)
+
+row format delimited
+fields terminated by ','
+location '/ghostcache/hadoop/data/MRQOS1/mrqos_sum';
+
+load data local inpath '/home/testgrp/MRQOS/test/temp/output.csv'
+overwrite into table MRQOS_all;

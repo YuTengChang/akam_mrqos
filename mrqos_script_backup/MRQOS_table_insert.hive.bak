@@ -1,0 +1,42 @@
+if [ -f /home/testgrp/MRQOS/test/distance.tmp ];
+then
+/a/bin/hive -e "load data local inpath '/home/testgrp/MRQOS/test/distance.tmp' \
+into table MRQOS_distance;"
+fi
+
+if [ -f /home/testgrp/MRQOS/test/score.tmp ];
+then
+/a/bin/hive -e "load data local inpath '/home/testgrp/MRQOS/test/score.tmp' \
+into table MRQOS_score;"
+fi
+
+if [ -f /home/testgrp/MRQOS/test/in_country.tmp ];
+then
+/a/bin/hive -e "load data local inpath '/home/testgrp/MRQOS/test/in_country.tmp' \
+into table MRQOS_in_country;"
+fi
+
+if [ -f /home/testgrp/MRQOS/test/in_continent.tmp ];
+then
+/a/bin/hive -e "load data local inpath '/home/testgrp/MRQOS/test/in_continent.tmp' \
+into table MRQOS_in_continent;"
+fi
+
+if [ -f /home/testgrp/MRQOS/test/in_out_ratio.tmp ];
+then
+/a/bin/hive -e "load data local inpath '/home/testgrp/MRQOS/test/in_out_ratio.tmp' \
+into table MRQOS_in_out_ratio;"
+fi
+
+if [ -f /home/testgrp/MRQOS/test/ra_load.tmp ];
+then
+/a/bin/hive -e "load data local inpath '/home/testgrp/MRQOS/test/ra_load.tmp' \
+into table MRQOS_ra_load;"
+fi
+
+if [ -f /home/testgrp/MRQOS/test/cog.tmp ];
+then
+/a/bin/hive -e "load data local inpath '/home/testgrp/MRQOS/test/cog.tmp' \
+into table MRQOS_cog;"
+fi
+
