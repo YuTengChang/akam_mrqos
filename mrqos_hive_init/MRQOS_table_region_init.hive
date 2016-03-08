@@ -9,6 +9,7 @@ create external table mrqos_region (
     geoname STRING,
     netname STRING,
     region INT,
+    score FLOAT,
     nsd_demand INT,
     eu_demand INT,
     ra_load BIGINT,
