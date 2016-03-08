@@ -42,8 +42,8 @@ def main():
     timenow = int(time.time())
 
     print "###################"
-    print "Obtaining the a_maprule_qos_view_by_region content"
-    print "starting processing time is " + str(timenow)
+    print "# Obtaining the a_maprule_qos_view_by_region content"
+    print "# starting processing time is " + str(timenow)
     print "###################"
 
     print "    ****  mapmon leader machine: " + mapmon_machine
