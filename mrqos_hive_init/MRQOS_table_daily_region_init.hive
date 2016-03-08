@@ -1,0 +1,46 @@
+USE mrqos;
+
+drop table daily_mrqos_region;
+
+create external table daily_mrqos_region (
+    maprule INT,
+    geoname STRING,
+    netname STRING,
+    region INT,
+    avg_region_nsd_demand FLOAT,
+    daily_region_nsd_demand FLOAT,
+    avg_region_eu_demand FLOAT,
+    daily_region_eu_demand FLOAT,
+    daily_region_ra_load BIGINT,
+    avg_case_percent_pre_norm_load,
+    avg_case_percent_load,
+    avg_recorded_load_percentage,
+    case_percent_load,
+    case_percent_nsd_demand,
+    case_percent_eu_demand,
+    case_ra_load,
+    case_nsd_demand,
+    case_eu_demand,
+    case_sum_max_region_percent_load,
+    case_uniq_region,
+    datestamp,
+    name,
+    ecor,
+    rgname,
+    continent,
+    country,
+    city,
+    latitude,
+    longitude,
+    asnum,
+    provider,
+    region_capacity,
+    ecor_capacity,
+    prp,
+    numghosts
+
+partitioned by (ts INT)
+row format delimited
+fields terminated by ','
+lines terminated by '\n'
+location '/ghostcache/hadoop/data/MRQOS/score';

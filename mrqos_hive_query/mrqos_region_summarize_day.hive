@@ -1,5 +1,6 @@
 use MRQOS;
 
+SELECT max(case_ra_load) FROM (
 SELECT
     b.maprule,
     b.geoname,
@@ -110,4 +111,4 @@ INNER JOIN
     ON b1.maprule=b2.maprule AND b1.geoname=b2.geoname AND b1.netname=b2.netname
 ) b
 ON a.region=b.region
-limit 1;
+) all_box;

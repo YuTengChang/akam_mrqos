@@ -53,6 +53,7 @@ def main():
     print "    ****  command: " + cmd_str
     sp.check_call(cmd_str, shell=True)
     print "    ****  scp file to local"
+    print "    ****  scp command: " + scp_from_mapmon
     sp.check_call(scp_from_mapmon, shell=True)
 
     # if query failed, re-try:
