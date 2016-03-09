@@ -1,11 +1,15 @@
+set mapreduce.map.memory.mb=4000;
+set mapreduce.reduce.memory.mb=4000;
+
 use MRQOS;
 
-SELECT max(case_ra_load) FROM (
 SELECT
     b.maprule,
     b.geoname,
     b.netname,
     b.region,
+    b.avg_region_score,
+    b.max_region_score,
     b.avg_region_nsd_demand,
     b.daily_region_nsd_demand,
     b.avg_region_eu_demand,
@@ -46,6 +50,8 @@ INNER JOIN
            b1.geoname geoname,
            b1.netname netname,
            b1.region region,
+           b1.avg_region_score avg_region_score,
+           b1.max_region_score max_region_score,
            b1.avg_region_nsd_demand avg_region_nsd_demand,
            b1.daily_region_nsd_demand daily_region_nsd_demand,
            b1.avg_region_eu_demand avg_region_eu_demand,
@@ -69,6 +75,8 @@ INNER JOIN
                geoname,
                netname,
                region,
+               avg(score) avg_region_score,
+               max(score) max_region_score,
                avg(nsd_demand) avg_region_nsd_demand,
                sum(nsd_demand) daily_region_nsd_demand,
                avg(eu_demand) avg_region_eu_demand,
@@ -77,7 +85,8 @@ INNER JOIN
                avg(case_percent_pre_norm_load) case_percent_pre_norm_load,
                avg(case_percent_load) case_percent_load,
                avg(recorded_load_percentage) recorded_load_percentage,
-               datestamp
+               datestamp,
+               hour
         FROM mrqos_region
         WHERE datestamp='20160309'
         GROUP BY maprule, geoname, netname, region, datestamp
@@ -111,4 +120,4 @@ INNER JOIN
     ON b1.maprule=b2.maprule AND b1.geoname=b2.geoname AND b1.netname=b2.netname
 ) b
 ON a.region=b.region
-) all_box;
+LIMIT 1;
