@@ -1,6 +1,6 @@
 USE mrqos;
 
-drop table mrqos_region_day;
+drop table mrqos_region_hour;
 
 create external table mrqos_region_hour (
     maprule INT,
