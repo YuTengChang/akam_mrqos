@@ -29,7 +29,6 @@ SELECT
     b.datestamp,
     a.name,
     a.ecor,
-    a.name,
     a.continent,
     a.country,
     a.city,

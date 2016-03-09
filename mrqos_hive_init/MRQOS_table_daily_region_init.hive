@@ -1,46 +1,47 @@
 USE mrqos;
 
-drop table daily_mrqos_region;
+drop table mrqos_region_day;
 
-create external table daily_mrqos_region (
+create external table mrqos_region_day (
     maprule INT,
     geoname STRING,
     netname STRING,
     region INT,
+    avg_region_score FLOAT,
+    max_region_score FLOAT,
     avg_region_nsd_demand FLOAT,
     daily_region_nsd_demand FLOAT,
     avg_region_eu_demand FLOAT,
     daily_region_eu_demand FLOAT,
-    daily_region_ra_load BIGINT,
-    avg_case_percent_pre_norm_load,
-    avg_case_percent_load,
-    avg_recorded_load_percentage,
-    case_percent_load,
-    case_percent_nsd_demand,
-    case_percent_eu_demand,
-    case_ra_load,
-    case_nsd_demand,
-    case_eu_demand,
-    case_sum_max_region_percent_load,
-    case_uniq_region,
-    datestamp,
-    name,
-    ecor,
-    rgname,
-    continent,
-    country,
-    city,
-    latitude,
-    longitude,
-    asnum,
-    provider,
-    region_capacity,
-    ecor_capacity,
-    prp,
-    numghosts
+    daily_region_ra_load FLOAT,
+    avg_case_percent_pre_norm_load FLOAT,
+    avg_case_percent_load FLOAT,
+    avg_recorded_load_percentage FLOAT,
+    case_percent_load FLOAT,
+    case_percent_nsd_demand FLOAT,
+    case_percent_eu_demand FLOAT,
+    case_ra_load BIGINT,
+    case_nsd_demand INT,
+    case_eu_demand INT,
+    case_sum_max_region_percent_load FLOAT,
+    case_uniq_region INT,
+    datestamp STRING,
+    name STRING,
+    ecor INT,
+    continent STRING,
+    country STRING,
+    city STRING,
+    latitude FLOAT,
+    longitude FLOAT,
+    asnum INT,
+    provider STRING,
+    region_capacity BIGINT,
+    ecor_capacity BIGINT,
+    prp STRING,
+    numghosts INT )
 
 partitioned by (datestamp STRING)
 row format delimited
 fields terminated by '\t'
 lines terminated by '\n'
-location '/ghostcache/hadoop/data/MRQOS/score';
+location '/ghostcache/hadoop/data/MRQOS/mrqos_region_day';
