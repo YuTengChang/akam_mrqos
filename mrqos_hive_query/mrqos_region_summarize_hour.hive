@@ -45,6 +45,8 @@ INNER JOIN
            b1.geoname geoname,
            b1.netname netname,
            b1.region region,
+           b1.avg_region_score,
+           b1.max_region_score,
            b1.avg_region_nsd_demand avg_region_nsd_demand,
            b1.daily_region_nsd_demand daily_region_nsd_demand,
            b1.avg_region_eu_demand avg_region_eu_demand,
@@ -68,6 +70,8 @@ INNER JOIN
                geoname,
                netname,
                region,
+               avg(score) avg_region_score,
+               max(score) max_region_score,
                avg(nsd_demand) avg_region_nsd_demand,
                sum(nsd_demand) daily_region_nsd_demand,
                avg(eu_demand) avg_region_eu_demand,
@@ -76,10 +80,11 @@ INNER JOIN
                avg(case_percent_pre_norm_load) case_percent_pre_norm_load,
                avg(case_percent_load) case_percent_load,
                avg(recorded_load_percentage) recorded_load_percentage,
-               datestamp
+               datestamp,
+               hour
         FROM mrqos_region
         WHERE datestamp='20160309' and hour='03'
-        GROUP BY maprule, geoname, netname, region, datestamp
+        GROUP BY maprule, geoname, netname, region, datestamp, hour
     ) b1
     INNER JOIN
     (
