@@ -115,4 +115,4 @@ INNER JOIN
     ON b1.maprule=b2.maprule AND b1.geoname=b2.geoname AND b1.netname=b2.netname
 ) b
 ON a.region=b.region
-) all_box;
+LIMIT 1;
