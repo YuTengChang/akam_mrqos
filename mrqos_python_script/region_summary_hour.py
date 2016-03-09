@@ -23,6 +23,7 @@ def main():
     hour_list = [str("%02d" % x) for x in range(24)]
 
     # check if the summary has been performed on this particular hour (last hour)
+    print "    ****  checking day = %s, hour = %s." % (datestamp, hourstamp)
     if hdfsutil.test_file(os.path.join(config.hdfs_qos_rg_hour % (datestamp, hourstamp), '000000_0.deflate')):
         f = open(os.path.join(config.mrqos_hive_query, 'mrqos_region_summarize_hour.hive'), 'r')
         strcmd = f.read()
@@ -33,13 +34,13 @@ def main():
             beeline.bln_e(strcmd_s)
         except:
             # delete the folder if summarization failed.
-            print "    ****  summarization failed."
+            print "    ****  summarization failed, removed hdfs folder."
             hdfsutil.rm(config.hdfs_qos_rg_hour % (datestamp, hourstamp), r=True)
 
     # check if the summary has been performed since the beginning of the day, last check on day X is X+1/0:30:00
     for hour in hour_list:
         if hour < hourstamp:
-            print "    ****  checking day = %s, hour = %s." % (datestamp, hour)
+            print "    ****  checking day = %s, hour = %s." % (datestamp, hour),
             if hdfsutil.test_file(os.path.join(config.hdfs_qos_rg_hour % (datestamp, hour), '000000_0.deflate')):
                 f = open(os.path.join(config.mrqos_hive_query, 'mrqos_region_summarize_hour.hive'), 'r')
                 strcmd = f.read()
@@ -50,8 +51,10 @@ def main():
                     beeline.bln_e(strcmd_s)
                 except:
                     # delete the folder if summarization failed.
-                    print "    ****  summarization failed."
+                    print "    ****  summarization failed, removed hdfs folder."
                     hdfsutil.rm(config.hdfs_qos_rg_hour % (datestamp, hour), r=True)
+            else:
+                print "file exists."
 
 
 
