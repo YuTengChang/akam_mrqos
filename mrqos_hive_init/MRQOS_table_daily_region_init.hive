@@ -25,7 +25,6 @@ create external table mrqos_region_day (
     case_eu_demand INT,
     case_sum_max_region_percent_load FLOAT,
     case_uniq_region INT,
-    datestamp STRING,
     name STRING,
     ecor INT,
     continent STRING,
