@@ -85,8 +85,7 @@ INNER JOIN
                avg(case_percent_pre_norm_load) case_percent_pre_norm_load,
                avg(case_percent_load) case_percent_load,
                avg(recorded_load_percentage) recorded_load_percentage,
-               datestamp,
-               hour
+               datestamp
         FROM mrqos_region
         WHERE datestamp='20160309'
         GROUP BY maprule, geoname, netname, region, datestamp
