@@ -20,6 +20,8 @@ hdfs_table_score = '/ghostcache/hadoop/data/MRQOS/score'
 hdfs_table_join = '/ghostcache/hadoop/data/MRQOS/mrqos_join'
 
 hdfs_qos_rg_info = '/ghostcache/hadoop/data/MRQOS/mrqos_region/datestamp=%s/hour=%s/ts=%s'
+hdfs_qos_rg_hour = '/ghostcache/hadoop/data/MRQOS/mrqos_region_hour/datestamp=%s/hour=%s'
+hdfs_qos_rg_day = '/ghostcache/hadoop/data/MRQOS/mrqos_region_day/datestamp=%s'
 
 #==============================================================================
 # # Local File Locations
@@ -29,6 +31,7 @@ hdfs_qos_rg_info = '/ghostcache/hadoop/data/MRQOS/mrqos_region/datestamp=%s/hour
 mrqos_data = '/home/testgrp/MRQOS/mrqos_data'
 mrqos_query = '/home/testgrp/MRQOS/mrqos_query'
 mrqos_data_backup = '/home/testgrp/MRQOS/mrqos_data/backup'
+mrqos_hive_query = '/home/testgrp/MRQOS/mrqos_hive_query'
 #mrqos_data_join_backup = '/home/testgrp/MRQOS/mrqos_data/backup/000000_0.deflate'
 
 
@@ -40,6 +43,8 @@ query_timeout = 20 # 20 sec
 
 mrqos_table_delete = 60 * 30 # 1800 sec = 30 minutes
 mrqos_join_delete = 60 * 60 * 24 * 15 # 15 days
+
+mrqos_region_delete = 60 * 60 * 24 * 5 # 5 days
 
 
 #==============================================================================

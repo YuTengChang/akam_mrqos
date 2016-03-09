@@ -29,6 +29,9 @@ def mkdir(dir_name):
     else:
         return 'HDFS destination folder exists and abort'
 
+def test_dic(dir_name):
+    # return 0 if a dictionary in HDFS
+    return sp.call('hadoop fs -test -d %s' % dir_name, shell=True)
 
 def put(here, there):
     # upload file to HDFS
