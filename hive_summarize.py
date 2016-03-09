@@ -21,8 +21,8 @@ def main():
     datenow = str(datetime.date.today()-datetime.timedelta(1))
     datenow = datenow[0:4]+datenow[5:7]+datenow[8:10]
     print "###################"
-    print "Start processing the data back in " + datenow + " for two-week window"
-    print "starting processing time is " + str(timenow)
+    print "# Start processing the data back in " + datenow + " for two-week window"
+    print "# starting processing time is " + str(timenow)
     print "###################"
 
 
