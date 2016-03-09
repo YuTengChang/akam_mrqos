@@ -29,7 +29,7 @@ SELECT
     b.datestamp,
     a.name,
     a.ecor,
-    a.name rgname,
+    a.name,
     a.continent,
     a.country,
     a.city,
