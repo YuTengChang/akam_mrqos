@@ -120,5 +120,4 @@ INNER JOIN
     ) b2
     ON b1.maprule=b2.maprule AND b1.geoname=b2.geoname AND b1.netname=b2.netname
 ) b
-ON a.region=b.region
-LIMIT 1;
+ON a.region=b.region;
