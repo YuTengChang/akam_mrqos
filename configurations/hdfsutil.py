@@ -33,6 +33,11 @@ def test_dic(dir_name):
     # return 0 if a dictionary in HDFS
     return sp.call('hadoop fs -test -d %s' % dir_name, shell=True)
 
+def test_file(file_path):
+    # return 0 if a filepath exists in HDFS as a file
+    return sp.call('hadoop fs -test -f %s' % file_path, shell=True)
+
+
 def put(here, there):
     # upload file to HDFS
     return sp.check_call('hadoop fs -put %s %s' % (here, there), shell=True)
