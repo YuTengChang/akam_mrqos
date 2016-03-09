@@ -27,7 +27,7 @@ def main():
         ts = infoitem[-2]
         datestamp = time.strftime('%Y%m%d', time.localtime(float(ts)))
         # do we need hourly partition or not?
-        # hourstamp = time.strftime('%H', time.localtime(float(ts)))
+        hourstamp = time.strftime('%H', time.localtime(float(ts)))
 
         print '    file = ' + qos_file
         print '    timestamp = %s;' % ( ts )
@@ -35,12 +35,12 @@ def main():
         # put the file to HDFS folder and remove from Local
         try:
             print '    upload to HDFS'
-            hdfs_rg_destination = config.hdfs_qos_rg_info % ( datestamp, ts )
+            hdfs_rg_destination = config.hdfs_qos_rg_info % ( datestamp, hourstamp, ts )
             hdfs.mkdir( hdfs_rg_destination )
             hdfs.put( qos_file, hdfs_rg_destination )
 
             print '    adding partition'
-            hiveql_str = config.add_rg_partition % ( datestamp, ts )
+            hiveql_str = config.add_rg_partition % ( datestamp, hourstamp, ts )
             #print '    '+hiveql_str
             #sp.check_call(['hive','-e',hiveql_str])
             beeline.bln_e(hiveql_str)
