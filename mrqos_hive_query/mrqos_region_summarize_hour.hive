@@ -3,6 +3,8 @@ set mapreduce.reduce.memory.mb=4000;
 
 use MRQOS;
 
+INSERT OVERWRITE TABLE mrqos_region_hour PARTITION (datestamp=%s, hour=%s)
+
 SELECT
     b.maprule,
     b.geoname,
@@ -87,7 +89,7 @@ INNER JOIN
                datestamp,
                hour
         FROM mrqos_region
-        WHERE datestamp='20160309' and hour='16'
+        WHERE datestamp=%s and hour=%s
         GROUP BY maprule, geoname, netname, region, datestamp, hour
     ) b1
     INNER JOIN
@@ -111,7 +113,7 @@ INNER JOIN
                    sum(eu_demand) eu_demand,
                    max(CASE WHEN case_percent_load>0 THEN case_percent_load ELSE 0 END) max_case_percent_load
             FROM mrqos_region
-            WHERE datestamp='20160309' and hour='16'
+            WHERE datestamp=%s and hour=%s
             GROUP BY maprule, geoname, netname, region
         ) b3
         GROUP BY maprule, geoname, netname
