@@ -46,7 +46,7 @@ def main():
                 strcmd = f.read()
                 strcmd_s = strcmd % (datestamp, hour, datestamp, hour, datestamp, hour)
                 f.close()
-                print "    ****  perform beeline for hourly summary for day = %s, hour = %s." %(datestamp, hourstamp)
+                print "    ****  perform beeline for hourly summary for day = %s, hour = %s." %(datestamp, hour)
                 try:
                     beeline.bln_e(strcmd_s)
                 except:
