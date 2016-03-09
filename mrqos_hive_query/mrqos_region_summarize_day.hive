@@ -79,7 +79,7 @@ INNER JOIN
                avg(recorded_load_percentage) recorded_load_percentage,
                datestamp
         FROM mrqos_region
-        WHERE datestamp='20160308'
+        WHERE datestamp='20160309'
         GROUP BY maprule, geoname, netname, region, datestamp
     ) b1
     INNER JOIN
@@ -103,7 +103,7 @@ INNER JOIN
                    sum(eu_demand) eu_demand,
                    max(CASE WHEN case_percent_load>0 THEN case_percent_load ELSE 0 END) max_case_percent_load
             FROM mrqos_region
-            WHERE datestamp='20160308'
+            WHERE datestamp='20160309'
             GROUP BY maprule, geoname, netname, region
         ) b3
         GROUP BY maprule, geoname, netname

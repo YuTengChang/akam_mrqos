@@ -39,8 +39,8 @@ create external table daily_mrqos_region (
     prp,
     numghosts
 
-partitioned by (ts INT)
+partitioned by (datestamp STRING)
 row format delimited
-fields terminated by ','
+fields terminated by '\t'
 lines terminated by '\n'
 location '/ghostcache/hadoop/data/MRQOS/score';
