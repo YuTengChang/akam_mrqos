@@ -51,19 +51,19 @@ INNER JOIN
            b1.geoname geoname,
            b1.netname netname,
            b1.region region,
-           b1.avg_region_score avg_region_score,
-           b1.max_region_score max_region_score,
-           b1.avg_region_nsd_demand avg_region_nsd_demand,
-           b1.daily_region_nsd_demand daily_region_nsd_demand,
-           b1.avg_region_eu_demand avg_region_eu_demand,
-           b1.daily_region_eu_demand daily_region_eu_demand,
+           round(b1.avg_region_score,2) avg_region_score,
+           round(b1.max_region_score,2) max_region_score,
+           round(b1.avg_region_nsd_demand,4) avg_region_nsd_demand,
+           round(b1.daily_region_nsd_demand,4) daily_region_nsd_demand,
+           round(b1.avg_region_eu_demand,4) avg_region_eu_demand,
+           round(b1.daily_region_eu_demand,4) daily_region_eu_demand,
            b1.daily_region_ra_load daily_region_ra_load,
-           b1.case_percent_pre_norm_load avg_case_percent_pre_norm_load,
-           b1.case_percent_load avg_case_percent_load,
-           b1.recorded_load_percentage avg_recorded_load_percentage,
-           CASE WHEN b2.case_ra_load>0 THEN b1.daily_region_ra_load/b2.case_ra_load ELSE 0 END case_percent_load,
-           CASE WHEN b2.case_nsd_demand>0 THEN b1.daily_region_nsd_demand/b2.case_nsd_demand ELSE 0 END case_percent_nsd_demand,
-           CASE WHEN b2.case_eu_demand>0 THEN b1.daily_region_eu_demand/b2.case_eu_demand ELSE 0 END case_percent_eu_demand,
+           round(b1.case_percent_pre_norm_load,4) avg_case_percent_pre_norm_load,
+           round(b1.case_percent_load,4) avg_case_percent_load,
+           round(b1.recorded_load_percentage,4) avg_recorded_load_percentage,
+           CASE WHEN b2.case_ra_load>0 THEN round(100*b1.daily_region_ra_load/b2.case_ra_load,4) ELSE 0.0 END case_percent_load,
+           CASE WHEN b2.case_nsd_demand>0 THEN round(100*b1.daily_region_nsd_demand/b2.case_nsd_demand,4) ELSE 0.0 END case_percent_nsd_demand,
+           CASE WHEN b2.case_eu_demand>0 THEN round(100*b1.daily_region_eu_demand/b2.case_eu_demand,4) ELSE 0.0 END case_percent_eu_demand,
            b2.case_ra_load case_ra_load,
            b2.case_nsd_demand case_nsd_demand,
            b2.case_eu_demand case_eu_demand,
@@ -88,7 +88,7 @@ INNER JOIN
                avg(recorded_load_percentage) recorded_load_percentage,
                datestamp
         FROM mrqos_region
-        WHERE datestamp=%s
+        WHERE datestamp=20160310
         GROUP BY maprule, geoname, netname, region, datestamp
     ) b1
     INNER JOIN
@@ -99,7 +99,7 @@ INNER JOIN
                sum(ra_load) case_ra_load,
                sum(nsd_demand) case_nsd_demand,
                sum(eu_demand) case_eu_demand,
-               sum(max_case_percent_load) case_sum_max_region_percent_load,
+               round(sum(max_case_percent_load),4) case_sum_max_region_percent_load,
                count(distinct(region)) uniq_region
         FROM
         (
@@ -112,11 +112,12 @@ INNER JOIN
                    sum(eu_demand) eu_demand,
                    max(CASE WHEN case_percent_load>0 THEN case_percent_load ELSE 0 END) max_case_percent_load
             FROM mrqos_region
-            WHERE datestamp=%s
+            WHERE datestamp=20160310
             GROUP BY maprule, geoname, netname, region
         ) b3
         GROUP BY maprule, geoname, netname
     ) b2
     ON b1.maprule=b2.maprule AND b1.geoname=b2.geoname AND b1.netname=b2.netname
 ) b
-ON a.region=b.region;
+ON a.region=b.region
+LIMIT 1;
