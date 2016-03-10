@@ -9,13 +9,13 @@ create external table mrqos_region (
     geoname STRING,
     netname STRING,
     region INT,
-    score FLOAT,
+    score DOUBLE,
     nsd_demand INT,
     eu_demand INT,
     ra_load BIGINT,
-    case_percent_pre_norm_load FLOAT,
-    case_percent_load FLOAT,
-    recorded_load_percentage FLOAT)
+    case_percent_pre_norm_load DOUBLE,
+    case_percent_load DOUBLE,
+    recorded_load_percentage DOUBLE)
 
 partitioned by (datestamp STRING, hour STRING, ts STRING)
 row format delimited
