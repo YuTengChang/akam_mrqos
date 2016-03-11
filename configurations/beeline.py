@@ -49,9 +49,27 @@ def bln_e(cmd, outformat='tsv2', database=''):
     """
 
     if database:
-        cmd = 'use %s; ' + cmd
+        cmd = 'use %s; ' % (database) + cmd
     list_used = shlex.split(bln_prepare_hiveql(outformat) + '-e "%s"' % cmd)
     sp.check_call(list_used)
+
+
+def bln_e_output(cmd, output_file, outformat='tsv2', database=''):
+    """
+    create corresponding hive -e + command > output_file
+
+    :param cmd: hive command
+    :param output_file: output file that stored hive query results
+    :param outformat: output format of hive
+    :param database: hive database
+    :return:
+    """
+    if database:
+        cmd = 'use %s;' % (database) + cmd
+    list_used = shlex.split(bln_prepare_hiveql(outformat) + '-e "%s"' % cmd)
+    f_handle = open(output_file, 'w')
+    sp.check_call(list_used, stdout=f_handle)
+    f_handle.close()
 
 
 def bln_f(hive_script, outformat='tsv2'):
