@@ -1,5 +1,7 @@
-set mapreduce.map.memory.mb=4000;
-set mapreduce.reduce.memory.mb=4000;
+set mapreduce.map.memory.mb=6000;
+set mapreduce.reduce.memory.mb=6000;
+SET mapred.child.java.opts=-Xmx4G -XX:+UseConcMarkSweepGC;
+SET mapred.reduce.tasks=200;
 
 use MRQOS;
 
@@ -10,19 +12,19 @@ SELECT
     b.geoname,
     b.netname,
     b.region,
-    round(b.avg_region_score,2) avg_region_score,
-    round(b.max_region_score,2) max_region_score,
-    round(b.avg_region_nsd_demand,4) avg_region_nsd_demand,
-    round(b.daily_region_nsd_demand,4) daily_region_nsd_demand,
-    round(b.avg_region_eu_demand,4) avg_region_eu_demand,
-    round(b.daily_region_eu_demand,4) daily_region_eu_demand,
+    b.avg_region_score,
+    b.max_region_score,
+    b.avg_region_nsd_demand,
+    b.daily_region_nsd_demand,
+    b.avg_region_eu_demand,
+    b.daily_region_eu_demand,
     b.daily_region_ra_load,
-    round(b.avg_case_percent_pre_norm_load,4) avg_case_percent_pre_norm_load,
-    round(b.avg_case_percent_load,4) avg_case_percent_load,
-    round(b.avg_recorded_load_percentage,4) avg_recorded_load_percentage,
-    round(b.case_percent_load,4) case_percent_load,
-    round(b.case_percent_nsd_demand,4) case_percent_nsd_demand,
-    round(b.case_percent_eu_demand,4) case_percent_eu_demand,
+    b.avg_case_percent_pre_norm_load,
+    b.avg_case_percent_load,
+    b.avg_recorded_load_percentage,
+    b.case_percent_load,
+    b.case_percent_nsd_demand,
+    b.case_percent_eu_demand,
     b.case_ra_load,
     b.case_nsd_demand,
     b.case_eu_demand,
