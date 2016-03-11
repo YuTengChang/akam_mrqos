@@ -5,7 +5,7 @@ SET mapreduce.job.reduces=100;
 
 USE mrqos;
 
-INSERT OVERWRITE TABLE region_view_hour PARTITION (datestamp=20160311, hour=11)
+INSERT OVERWRITE TABLE region_view_hour PARTITION (datestamp=%s, hour=%s)
 
 SELECT
     region_info.*,
@@ -25,7 +25,7 @@ FROM
                    concat('MR_',maprule,':GEO_',geoname,':',netname) casename,
                    region
             FROM mrqos_region
-            WHERE datestamp=20160311 AND hour=11
+            WHERE datestamp=%s AND hour=%s
             GROUP BY maprule, geoname, netname, region
         ) a
         INNER JOIN
@@ -34,7 +34,7 @@ FROM
             (
                 SELECT *, concat('MR_',maprule,':GEO_',geoname,':',netname) casename
                 FROM mrqos_region
-                WHERE datestamp=20160311 AND hour=11
+                WHERE datestamp=%s AND hour=%s
             ) a1
             GROUP BY a1.casename
         ) b
