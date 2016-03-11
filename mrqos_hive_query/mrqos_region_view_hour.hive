@@ -18,7 +18,7 @@ FROM
         SELECT
             a.region,
             round(100*a.case_region_load/b.caseload,2) case_load_perc,
-            concat(a.casename,"(",round(100*a.case_region_load/b.caseload,2),"%%:", a.case_region_load,":",b.caseload,")") info
+            concat(a.casename,"(",round(100*a.case_region_load/b.caseload,2),":", a.case_region_load,":",b.caseload,")") info
         FROM
         (
             SELECT sum(ra_load) case_region_load,
