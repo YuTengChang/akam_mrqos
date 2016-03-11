@@ -11,7 +11,7 @@ FROM
         SELECT
             a.region,
             round(100*a.case_region_load/b.caseload,2) case_load_perc,
-            concat(a.casename," (",round(100*a.case_region_load/b.caseload,2),"%:", a.case_region_load,":",b.caseload,")") info
+            concat(a.casename,"(",round(100*a.case_region_load/b.caseload,2),"%:", a.case_region_load,":",b.caseload,")") info
         FROM
         (
             SELECT sum(ra_load) case_region_load,
@@ -55,8 +55,7 @@ INNER JOIN
     FROM mapper.barebones a1, (select max(day) maxday from mapper.barebones) a2 where a1.day=a2.maxday
 ) region_info
 ON mr_region_table.region=region_info.region
-where region_info.region=15278
-;
+where region_info.region=15278;
 
 
 select a1.casename, sum(a1.ra_load) caseload from
