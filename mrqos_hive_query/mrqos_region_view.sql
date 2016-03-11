@@ -1,35 +1,38 @@
 use mrqos;
 
-select * from (
-select region, collect_set(info) distribution
-from
+SELECT
+    *
+FROM
 (
-    SELECT
-        a.region,
-        round(100*a.case_region_load/b.caseload,2) case_load_perc,
-        concat(a.casename," (",round(100*a.case_region_load/b.caseload,2),"%:", a.case_region_load,":",b.caseload,")") info
+    SELECT region, collect_set(info) distribution
     FROM
     (
-        SELECT sum(ra_load) case_region_load,
-               concat("MR_",maprule,":GEO_",geoname,":",netname) casename,
-               region
-        FROM mrqos_region
-        WHERE datestamp=20160311 AND hour=05
-        GROUP BY maprule, geoname, netname, region
-    ) a
-    INNER JOIN
-    (
-        SELECT a1.casename, sum(a1.ra_load) caseload FROM
+        SELECT
+            a.region,
+            round(100*a.case_region_load/b.caseload,2) case_load_perc,
+            concat(a.casename," (",round(100*a.case_region_load/b.caseload,2),"%:", a.case_region_load,":",b.caseload,")") info
+        FROM
         (
-            SELECT *, concat("MR_",maprule,":GEO_",geoname,":",netname) casename
+            SELECT sum(ra_load) case_region_load,
+                   concat("MR_",maprule,":GEO_",geoname,":",netname) casename,
+                   region
             FROM mrqos_region
             WHERE datestamp=20160311 AND hour=05
-        ) a1
-        GROUP BY a1.casename
-    ) b
-    ON a.casename=b.casename
-) c
-GROUP BY region
+            GROUP BY maprule, geoname, netname, region
+        ) a
+        INNER JOIN
+        (
+            SELECT a1.casename, sum(a1.ra_load) caseload FROM
+            (
+                SELECT *, concat("MR_",maprule,":GEO_",geoname,":",netname) casename
+                FROM mrqos_region
+                WHERE datestamp=20160311 AND hour=05
+            ) a1
+            GROUP BY a1.casename
+        ) b
+        ON a.casename=b.casename
+    ) c
+    GROUP BY region
 ) mr_region_table
 INNER JOIN
 (
