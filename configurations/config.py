@@ -33,6 +33,7 @@ mrqos_data = '/home/testgrp/MRQOS/mrqos_data'
 mrqos_query = '/home/testgrp/MRQOS/mrqos_query'
 mrqos_data_backup = '/home/testgrp/MRQOS/mrqos_data/backup'
 mrqos_hive_query = '/home/testgrp/MRQOS/mrqos_hive_query'
+mrqos_query_result = '/home/testgrp/query_results'
 #mrqos_data_join_backup = '/home/testgrp/MRQOS/mrqos_data/backup/000000_0.deflate'
 
 

@@ -34,7 +34,9 @@ def main():
         strcmd = f.read()
         strcmd_s = strcmd % (datestamp, hourstamp, datestamp, hourstamp, datestamp, hourstamp)
         f.close()
-        print "    ****  perform beeline for hourly summary for day = %s, hour = %s." %(datestamp, hourstamp)
+        strcmd_g = "select * from mrqos.region_view_hour where date=%s and hour=%s;" % (datestamp, hourstamp)
+        query_result_file = os.path.join(config.mrqos_query_result,'region_view_hour.%s.%s.csv' % (datestamp, hourstamp))
+        print "    ****  perform beeline for hourly summary for day = %s, hour = %s." % (datestamp, hourstamp)
         count_retrial = 0
         while count_retrial < region_summary_retrial_max:
             try:
