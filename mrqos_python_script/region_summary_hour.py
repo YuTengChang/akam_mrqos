@@ -17,6 +17,10 @@ import configurations.beeline as beeline
 def main():
     """ get the date and hour for the previous hour. Will check from the beginning of the day, insert when missing. """
     ts = calendar.timegm(time.gmtime())
+    print "###################"
+    print "# Performing the hourly mrqos_region summary"
+    print "# starting processing time is " + str(ts)
+    print "###################"
     ts_last_hour = ts-3600
     datestamp = time.strftime('%Y%m%d', time.gmtime(float(ts_last_hour)))
     hourstamp = time.strftime('%H', time.gmtime(float(ts_last_hour)))
