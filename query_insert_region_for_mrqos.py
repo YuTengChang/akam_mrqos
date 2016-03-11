@@ -20,6 +20,12 @@ import time
 def main():
     # #### MRQOS region LOCAL PART ####
     # ignore the local timestamp, use what files are tagged
+    timenow = time.time()
+    print "###################"
+    print "# Performing the hourly mrqos_region insert"
+    print "# starting processing time is " + str(timenow)
+    print "###################"
+
     list_qos_files = glob.glob( os.path.join(config.mrqos_data,
                                             'qos_region.*.tmp') ) # glob get the full path
     for qos_file in list_qos_files:
