@@ -35,6 +35,7 @@ def main():
         while count_retrial < region_summary_retrial_max:
             try:
                 beeline.bln_e(strcmd_s)
+                break
             except:
                 # delete the folder if summarization failed.
                 print "    ****  summarization failed upto #retrials="+str(count_retrial)
