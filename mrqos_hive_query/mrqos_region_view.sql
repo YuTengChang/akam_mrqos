@@ -1,7 +1,8 @@
 use mrqos;
 
 SELECT
-    *
+    region_info.*,
+    mr_region_table.distribution
 FROM
 (
     SELECT region, collect_set(info) distribution
@@ -32,11 +33,12 @@ FROM
         ) b
         ON a.casename=b.casename
     ) c
-    GROUP BY region
+    GROUP BY c.region
 ) mr_region_table
 INNER JOIN
 (
     SELECT
+        a1.region,
         a1.name,
         a1.ecor,
         a1.continent,
@@ -53,8 +55,7 @@ INNER JOIN
     FROM mapper.barebones a1, (select max(day) maxday from mapper.barebones) a2 where a1.day=a2.maxday
 ) region_info
 ON mr_region_table.region=region_info.region
-
-where region=15278
+where region_info.region=15278
 ;
 
 
