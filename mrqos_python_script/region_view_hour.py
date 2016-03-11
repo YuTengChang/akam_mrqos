@@ -41,6 +41,10 @@ def main():
         while count_retrial < region_summary_retrial_max:
             try:
                 beeline.bln_e(strcmd_s)
+                try:
+                    beeline.bln_e_output(strcmd_g, query_result_file)
+                except:
+                    print "    ****  copy to local failed!"
                 break
             except:
                 # delete the folder if summarization failed.
