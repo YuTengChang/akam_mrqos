@@ -21,6 +21,7 @@ def main():
     datestamp = time.strftime('%Y%m%d', time.gmtime(float(ts_last_hour)))
     hourstamp = time.strftime('%H', time.gmtime(float(ts_last_hour)))
     hour_list = [str("%02d" % x) for x in range(24)]
+    region_summary_retrial_max = 10
 
     # check if the summary has been performed on this particular hour (last hour)
     print "    ****  checking day = %s, hour = %s." % (datestamp, hourstamp),
@@ -30,12 +31,16 @@ def main():
         strcmd_s = strcmd % (datestamp, hourstamp, datestamp, hourstamp, datestamp, hourstamp)
         f.close()
         print "    ****  perform beeline for hourly summary for day = %s, hour = %s." %(datestamp, hourstamp)
-        try:
-            beeline.bln_e(strcmd_s)
-        except:
-            # delete the folder if summarization failed.
-            print "    ****  summarization failed, removed hdfs folder."
-            hdfsutil.rm(config.hdfs_qos_rg_hour % (datestamp, hourstamp), r=True)
+        count_retrial = 0
+        while count_retrial < region_summary_retrial_max:
+            try:
+                beeline.bln_e(strcmd_s)
+            except:
+                # delete the folder if summarization failed.
+                print "    ****  summarization failed upto #retrials="+str(count_retrial)
+                hdfsutil.rm(config.hdfs_qos_rg_hour % (datestamp, hourstamp), r=True)
+                count_retrial += 1
+
     else:
         print " file exists."
 
