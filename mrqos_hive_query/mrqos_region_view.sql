@@ -62,3 +62,38 @@ select a1.casename, sum(a1.ra_load) caseload from
 (select *, concat("MR_",maprule,":GEO_",geoname,":",netname) casename from mrqos_region) a1
 group by a1.casename
 limit 3;
+
+
+(
+    SELECT
+        a.region, a.ecor, a.continent, a.country, a.city, a.latitude, a.longitude, a.asnum, a.provider, a.ecor_capacity,
+        a.prp, a.numghosts, b.case_region_load, b.casename
+    FROM
+    (
+        SELECT
+            a1.region,
+            a1.ecor,
+            a1.continent,
+            a1.country,
+            a1.city,
+            round(a1.latitude,3) latitude,
+            round(a1.longitude,3) longitude,
+            a1.asnum,
+            a1.provider,
+            a1.ecor_capacity,
+            a1.prp,
+            a1.numghosts
+        FROM mapper.barebones a1, (select max(day) maxday from mapper.barebones) a2 where a1.day=a2.maxday
+    ) a
+    INNER JOIN
+    (
+        SELECT sum(ra_load) case_region_load,
+               concat("MR_",maprule,":GEO_",geoname,":",netname) casename,
+               region
+        FROM mrqos_region
+        WHERE datestamp=20160311 AND hour=05
+        GROUP BY maprule, geoname, netname, region
+    ) b
+    ON a.region=b.region
+) c
+GROUP BY ecor,
