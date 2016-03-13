@@ -75,7 +75,9 @@ GROUP BY ecor
 ) ecor_info
 
 
-
+    SELECT
+        sum(case_region_load) case_ecor_load, casename,
+    FROM
         SELECT
             a.region, c.ecor, a.case_region_load, a.casename, b.caseload
         FROM
@@ -101,4 +103,4 @@ GROUP BY ecor
         INNER JOIN
         (SELECT region, ecor from mapper.barebones a1, (select max(day) maxday from mapper.barebones) a2 where a1.day=a2.maxday) c
         ON a.region=c.region
-        LIMIT 2;
+    GROUP BY ecor, casename, caseload;
