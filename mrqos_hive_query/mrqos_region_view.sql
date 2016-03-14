@@ -64,7 +64,7 @@ group by a1.casename
 limit 3;
 
 
-
+SELECT ecor_info.*, ecor_load.distribution FROM
 (
 SELECT ecor, collect_set(continent)[0] continent, collect_set(country)[0] country, collect_set(city)[0] city,
     collect_set(round(latitude,3))[0] latitude, collect_set(round(longitude,3))[0] longitude, collect_set(asnum)[0] asnum,
@@ -73,11 +73,15 @@ FROM
 ( SELECT * from mapper.barebones a1, (select max(day) maxday from mapper.barebones) a2 where a1.day=a2.maxday) a3
 GROUP BY ecor
 ) ecor_info
-
-
+INNER JOIN
+(
+SELECT ecor, collect_set(info) distribution from
+(
     SELECT
-        sum(case_region_load) case_ecor_load, casename,
+        ecor, sum(case_region_load) case_ecor_load, casename, collect_set(caseload)[0] caseload,
+        concat(casename,"(",round(100*sum(case_region_load)/collect_set(caseload)[0],2),"%:",sum(case_region_load),":",collect_set(caseload)[0],")") info
     FROM
+    (
         SELECT
             a.region, c.ecor, a.case_region_load, a.casename, b.caseload
         FROM
@@ -103,4 +107,11 @@ GROUP BY ecor
         INNER JOIN
         (SELECT region, ecor from mapper.barebones a1, (select max(day) maxday from mapper.barebones) a2 where a1.day=a2.maxday) c
         ON a.region=c.region
-    GROUP BY ecor, casename, caseload;
+    ) c
+    GROUP BY ecor, casename, caseload
+) d
+WHERE case_ecor_load>0
+GROUP BY ecor
+) ecor_load
+on ecor_load.ecor=ecor_info.ecor
+LIMIT 2;
