@@ -13,7 +13,7 @@ import subprocess as sp
 def main():
     ts = calendar.timegm(time.gmtime())
     print "###################"
-    print "# Performing the hourly mrqos_region summary"
+    print "# Performing the hourly region_view_hour data fetch and insert"
     print "# starting processing time is " + str(ts)
     print "###################"
 
