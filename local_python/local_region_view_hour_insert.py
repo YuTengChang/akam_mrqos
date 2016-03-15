@@ -55,7 +55,7 @@ def main():
     # expire the data from SQLite database
     expire_region_view_hour = 60*60*24*5 # 5 days expiration
     expire_date = time.strftime('%Y%m%d', time.gmtime(float(ts - expire_region_view_hour)))
-    sql_str = 'delete from region_view_hour where datestamp=%s' % str(expire_date)
+    sql_str = 'delete from region_view_hour where date=%s' % str(expire_date)
     cmd_str = '/opt/anaconda/bin/sqlite3 /opt/web-data/SQLite3/ra_mrqos.db "%s"' % sql_str
     sp.check_call(cmd_str, shell=True)
 
