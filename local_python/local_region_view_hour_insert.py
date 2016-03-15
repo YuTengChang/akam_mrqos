@@ -29,6 +29,7 @@ def main():
         sp.check_call(cmd_str, shell=True)
         # cluster file remove
         cmd_str = 'gwsh 81.52.137.195 "rm /home/testgrp/query_results/%s"' % filename
+        sp.check_call(cmd_str, shell=True)
     except:
         print '    ****  data copy from cluster failure.'
         return
