@@ -16,7 +16,7 @@ def main():
     print "# Performing the hourly region_view_hour data fetch and insert"
     print "# starting processing time is " + str(ts)
     print "###################"
-    ts_last_hour = ts-3600
+    ts_last_hour = ts-3600-1800
     datestamp = time.strftime('%Y%m%d', time.gmtime(float(ts_last_hour)))
     hourstamp = time.strftime('%H', time.gmtime(float(ts_last_hour)))
     filename = 'region_view_hour.%s.%s.csv' % (datestamp, hourstamp)
