@@ -30,7 +30,7 @@ def main():
         sp.check_call(cmd_str, shell=True)
         # cluster file remove
         cmd_str = 'gwsh 81.52.137.195 "rm /home/testgrp/query_results/%s"' % filename
-        sp.check_call(cmd_str, shell=True)
+        #sp.check_call(cmd_str, shell=True)
     except:
         print '    ****  data copy from cluster failure.'
         return
@@ -49,7 +49,7 @@ def main():
     sp.check_call(cmd_str, shell=True)
 
     # remove local file
-    os.remove(local_temp)
+    # os.remove(local_temp) < this could be a backup.
     os.remove(local_file)
 
     # expire the data from SQLite database
