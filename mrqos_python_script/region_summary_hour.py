@@ -57,7 +57,7 @@ def main():
     # check if the summary has been performed since the beginning of the day, last check on day X is X+1/0:30:00
     for hour in hour_list:
         if hour < hourstamp:
-            print "    ****  checking day = %s, hour = %s." % (datestamp, hour),
+            print "    ****  checking day = %s, hour = %s." % (datestamp, hour)
             if hdfsutil.test_file(os.path.join(config.hdfs_qos_rg_hour % (datestamp, hour), '000000_0.deflate')):
                 f = open(os.path.join(config.mrqos_hive_query, 'mrqos_region_summarize_hour.hive'), 'r')
                 strcmd = f.read()
