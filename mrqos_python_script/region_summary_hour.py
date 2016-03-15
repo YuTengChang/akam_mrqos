@@ -34,15 +34,17 @@ def main():
         strcmd = f.read()
         strcmd_s = strcmd % (datestamp, hourstamp, datestamp, hourstamp, datestamp, hourstamp)
         f.close()
-        print "    ****  perform beeline for hourly summary for day = %s, hour = %s." %(datestamp, hourstamp)
+        print "    ****  BLN for hourly summary: day = %s, hour = %s, " %(datestamp, hourstamp),
         count_retrial = 0
         while count_retrial < region_summary_retrial_max:
+            tic = time.time()
             try:
                 beeline.bln_e(strcmd_s)
+                print "time cost = %s." % str(time.time()-tic)
                 break
             except:
                 # delete the folder if summarization failed.
-                print "    ****  summarization failed upto #retrials="+str(count_retrial)
+                print "    ****  summarization failed with time cost %s upto #retrials=" % str(time.time()-tic) + str(count_retrial)
                 hdfsutil.rm(config.hdfs_qos_rg_hour % (datestamp, hourstamp), r=True)
                 count_retrial += 1
 
