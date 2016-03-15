@@ -36,14 +36,15 @@ def main():
         return
 
     # insert into the SQLite3 database
+    # make file comma separated file (CSV)
     cmd_str = "cat %s | tail -n+2 | sed 's/\t/,/g' > %s" % (local_temp, local_file)
     sp.check_call(cmd_str, shell=True)
-
+    # prepare the import sql
     cmd_str = "echo '.separator ,' > %s" % os.path.join(local_data_repot, 'input_query.sql')
     sp.check_call(cmd_str, shell=True)
     cmd_str = "echo '.import %s region_view_hour' >> %s" % (local_file, os.path.join(local_data_repot, 'input_query.sql'))
     sp.check_call(cmd_str, shell=True)
-
+    # data import
     cmd_str = '/opt/anaconda/bin/sqlite3 /opt/web-data/SQLite3/ra_mrqos.db < %s' % os.path.join(local_data_repot, 'input_query.sql')
     sp.check_call(cmd_str, shell=True)
 
