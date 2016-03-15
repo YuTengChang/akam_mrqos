@@ -9,6 +9,10 @@ use MRQOS;
 
 INSERT OVERWRITE TABLE mrqos_region_hour PARTITION (datestamp=%s, hour=%s)
 
+SELECT c2.*, c1.score_target FROM
+(SELECT maprule, geoname, netname, max(targetvalue) score_target FROM score GROUP BY maprule, geoname, netname) c1
+ INNER JOIN
+(
 SELECT
     b.maprule,
     b.geoname,
@@ -125,4 +129,6 @@ INNER JOIN
     ON b1.maprule=b2.maprule AND b1.geoname=b2.geoname AND b1.netname=b2.netname
 ) b
 ON a.region=b.region
-WHERE b.case_percent_load >= 0.00005;
+WHERE b.case_percent_load >= 0.00005
+) c2
+on c1.maprule=c2.maprule and c1.geoname=c2.geoname and c1.netname=c2.netname;
