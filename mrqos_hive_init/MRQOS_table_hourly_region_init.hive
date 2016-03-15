@@ -37,7 +37,8 @@ create external table mrqos_region_hour (
     region_capacity BIGINT,
     ecor_capacity BIGINT,
     prp STRING,
-    numghosts INT )
+    numghosts INT,
+    score_target INT)
 
 partitioned by (datestamp STRING, hour STRING)
 row format delimited
