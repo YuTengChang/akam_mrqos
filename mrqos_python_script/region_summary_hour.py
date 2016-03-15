@@ -30,7 +30,7 @@ def main():
     # ############################### #
     # The SUMMARY HOUR hive procedure #
     # ############################### #
-
+    print "    ****  summary hour tour:"
     # check if the summary has been performed on this particular hour (last hour)
     print "    ****  checking day = %s, hour = %s." % (datestamp, hourstamp),
     if hdfsutil.test_file(os.path.join(config.hdfs_qos_rg_hour % (datestamp, hourstamp), '000000_0.deflate')):
@@ -77,6 +77,7 @@ def main():
     # ############################## #
     # The REGION VIEW hive procedure #
     # ############################## #
+    print "    ****  region view tour:"
     # check if the summary has been performed on this particular hour (last hour)
     print "    ****  checking day = %s, hour = %s." % (datestamp, hourstamp),
     if hdfsutil.test_file(os.path.join(config.hdfs_qos_rg_view_hour % (datestamp, hourstamp), '000000_0.deflate')):
@@ -96,7 +97,8 @@ def main():
                 try:
                     beeline.bln_e_output(strcmd_g, query_result_file)
                 except:
-                    print "    ****  copy to local failed!"
+                    print "    ****  copy to local failed, retry!"
+                    beeline.bln_e_output(strcmd_g, query_result_file)
                 break
             except:
                 # delete the folder if summarization failed.
