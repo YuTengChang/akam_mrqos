@@ -17,12 +17,12 @@ def main():
     datestamp = '20160316'
     hourstamp = '04'
 
-    f = open(os.path.join(config.mrqos_hive_query, 'test0_mrqos_region_summarize_hour.hive'), 'r')
+    f = open(os.path.join(config.mrqos_hive_query, 'test0_mrqos_region_view_hour.hive'), 'r')
     strcmd = f.read()
     strcmd_s1 = strcmd % (datestamp, hourstamp, datestamp, hourstamp)
     f.close()
 
-    f = open(os.path.join(config.mrqos_hive_query, 'test_mrqos_region_summarize_hour.hive'), 'r')
+    f = open(os.path.join(config.mrqos_hive_query, 'test_mrqos_region_view_hour.hive'), 'r')
     strcmd = f.read()
     strcmd_s2 = strcmd % (datestamp, hourstamp, datestamp, hourstamp)
     f.close()
