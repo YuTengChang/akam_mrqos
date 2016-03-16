@@ -118,8 +118,9 @@ LIMIT 2;
 
 
 
+========================================================================================================================
 
-
+USE mrqos; SELECT maprule, geoname, netname, region, avg_region_score, score_target, hourly_region_nsd_demand, hourly_region_eu_demand, hourly_region_ra_load, case_ra_load, case_nsd_demand, case_eu_demand, case_uniq_region, name, ecor, continent, country, city, latitude, longitude, provider, region_capacity, ecor_capacity, prp, numghosts, datestamp, hour FROM mrqos_region_hour limit 2;
 
 ========================================================================================================================
 
