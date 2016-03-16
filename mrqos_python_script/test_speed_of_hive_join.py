@@ -19,11 +19,13 @@ def main():
     datestamp = '20160316'
     hourstamp = '04'
 
+    # test0 the original order of join
     f = open(os.path.join(config.mrqos_hive_query, 'test0_mrqos_region_view_hour.hive'), 'r')
     strcmd = f.read()
     strcmd_s1 = strcmd % (datestamp, hourstamp, datestamp, hourstamp)
     f.close()
 
+    # test the reverse order of join
     f = open(os.path.join(config.mrqos_hive_query, 'test_mrqos_region_view_hour.hive'), 'r')
     strcmd = f.read()
     strcmd_s2 = strcmd % (datestamp, hourstamp, datestamp, hourstamp)
