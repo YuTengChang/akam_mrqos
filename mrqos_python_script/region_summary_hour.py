@@ -56,26 +56,26 @@ def main():
         print " file exists."
 
     # check if the summary has been performed since the beginning of the day, last check on day X is X+1/0:30:00
-    for hour in hour_list:
-        if hour < hourstamp:
-            print "    ****  checking day = %s, hour = %s." % (datestamp, hour),
-            if hdfsutil.test_file(os.path.join(config.hdfs_qos_rg_hour % (datestamp, hour), '000000_0.deflate')):
-                print " file not exits,",
-                f = open(os.path.join(config.mrqos_hive_query, 'mrqos_region_summarize_hour.hive'), 'r')
-                strcmd = f.read()
-                strcmd_s = strcmd % (datestamp, hour, datestamp, hour, datestamp, hour)
-                f.close()
-                print " BLN for hourly summary for day = %s, hour = %s." %(datestamp, hour)
-                tic = time.time()
-                try:
-                    beeline.bln_e(strcmd_s)
-                    print "    ******  success with time cost = %s." % str(time.time()-tic)
-                except:
-                    # delete the folder if summarization failed.
-                    print "    ******  summarization failed with time cost %s." % str(time.time()-tic)
-                    # hdfsutil.rm(config.hdfs_qos_rg_hour % (datestamp, hour), r=True)
-            else:
-                print " file exists."
+    #for hour in hour_list:
+    #    if hour < hourstamp:
+    #        print "    ****  checking day = %s, hour = %s." % (datestamp, hour),
+    #        if hdfsutil.test_file(os.path.join(config.hdfs_qos_rg_hour % (datestamp, hour), '000000_0.deflate')):
+    #            print " file not exits,",
+    #            f = open(os.path.join(config.mrqos_hive_query, 'mrqos_region_summarize_hour.hive'), 'r')
+    #            strcmd = f.read()
+    #            strcmd_s = strcmd % (datestamp, hour, datestamp, hour, datestamp, hour)
+    #            f.close()
+    #            print " BLN for hourly summary for day = %s, hour = %s." %(datestamp, hour)
+    #            tic = time.time()
+    #            try:
+    #                beeline.bln_e(strcmd_s)
+    #                print "    ******  success with time cost = %s." % str(time.time()-tic)
+    #            except:
+    #                # delete the folder if summarization failed.
+    #                print "    ******  summarization failed with time cost %s." % str(time.time()-tic)
+    #                # hdfsutil.rm(config.hdfs_qos_rg_hour % (datestamp, hour), r=True)
+    #        else:
+    #            print " file exists."
 
 
     # ############################## #
@@ -115,26 +115,26 @@ def main():
         print " file exists."
 
     # check if the summary has been performed since the beginning of the day, last check on day X is X+1/0:30:00
-    for hour in hour_list:
-        if hour < hourstamp:
-            print "    ****  checking day = %s, hour = %s." % (datestamp, hour),
-            if hdfsutil.test_file(os.path.join(config.hdfs_qos_rg_view_hour % (datestamp, hour), '000000_0.deflate')):
-                print " file not exits,",
-                f = open(os.path.join(config.mrqos_hive_query, 'mrqos_region_view_hour.hive'), 'r')
-                strcmd = f.read()
-                strcmd_s = strcmd % (datestamp, hour, datestamp, hour, datestamp, hour)
-                f.close()
-                print " BLN for hourly summary for day = %s, hour = %s." %(datestamp, hour)
-                try:
-                    tic = time.time()
-                    beeline.bln_e(strcmd_s)
-                    print "    ******  success with time cost = %s." % str(time.time()-tic)
-                except:
-                    # delete the folder if summarization failed.
-                    print "    ******  failed with time cost = %s, removed hdfs folder." % (str(time.time()-tic))
-                    # hdfsutil.rm(config.hdfs_qos_rg_view_hour % (datestamp, hour), r=True)
-            else:
-                print " file exists."
+    #for hour in hour_list:
+    #    if hour < hourstamp:
+    #        print "    ****  checking day = %s, hour = %s." % (datestamp, hour),
+    #        if hdfsutil.test_file(os.path.join(config.hdfs_qos_rg_view_hour % (datestamp, hour), '000000_0.deflate')):
+    #            print " file not exits,",
+    #            f = open(os.path.join(config.mrqos_hive_query, 'mrqos_region_view_hour.hive'), 'r')
+    #            strcmd = f.read()
+    #            strcmd_s = strcmd % (datestamp, hour, datestamp, hour, datestamp, hour)
+    #            f.close()
+    #            print " BLN for hourly summary for day = %s, hour = %s." %(datestamp, hour)
+    #            try:
+    #                tic = time.time()
+    #                beeline.bln_e(strcmd_s)
+    #                print "    ******  success with time cost = %s." % str(time.time()-tic)
+    #            except:
+    #                # delete the folder if summarization failed.
+    #                print "    ******  failed with time cost = %s, removed hdfs folder." % (str(time.time()-tic))
+    #                # hdfsutil.rm(config.hdfs_qos_rg_view_hour % (datestamp, hour), r=True)
+    #        else:
+    #            print " file exists."
 
 
 
