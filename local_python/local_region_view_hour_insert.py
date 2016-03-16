@@ -9,16 +9,29 @@ import shutil
 import time
 import calendar
 import subprocess as sp
+ys.path.append('/home/ychang/Documents/Projects/18-DDC/MRQOS/')
+import configurations.config as config
 
 def main():
     ts = calendar.timegm(time.gmtime())
     print "###################"
     print "# Performing the hourly region_view_hour data fetch and insert"
-    print "# starting processing time is " + str(ts)
+    print "# starting processing time is " + str(ts) + " = " + time.strftime('GMT %Y-%m-%d %H:%M:%S', time.localtime(ts))
     print "###################"
-    ts_last_hour = ts-3600-1800
-    datestamp = time.strftime('%Y%m%d', time.gmtime(float(ts_last_hour)))
-    hourstamp = time.strftime('%H', time.gmtime(float(ts_last_hour)))
+
+    cmd_str = 'gwsh %s "ls %s"' % (config.region_view_hour_data_source, config.mrqos_query_result)
+    remote_file_list = sp.check_output(cmd_str, shell=True).strip().split('\n')
+
+    for target_file in remote_file_list:
+        # copy from cluster to local
+        cmd_str = 'scp -Sgwsh testgrp@%s:%s/%s %s%s' % (config.region_view_hour_data_source,
+                                                         config.mrqos_query_result,
+                                                         target_file,
+                                                         config.region_view_hour_data_local,
+                                                         target_file)
+        sp.check_call(cmd_str, shell=True)
+        cmd_str = 'gwsh %s'
+
     filename = 'region_view_hour.%s.%s.csv' % (datestamp, hourstamp)
     local_data_repot = '/home/ychang/Documents/Projects/18-DDC/MRQOS_local_data/region_view_hour/'
     local_file = os.path.join(local_data_repot, filename)
