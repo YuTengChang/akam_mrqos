@@ -1,4 +1,9 @@
 # old cluster:
+shopt -s expand_aliases
+
+# coloring
+test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)"
+
 #export PATH=$PATH:/a/shark/spark/:/a/third-party/hive/bin/:/a/bin/:/home/testgrp/bin/:/a/third-party/hadoop/bin-mapreduce1/:/home/testgrp/pig/pig-0.11.0-cdh4.6.0/bin
 export PATH=$PATH:/a/third-party/hadoop/bin/:/a/third-party/hive/bin/:/a/bin/:/a/shark/shark/shark-0.8.0/bin/:/a/shark/spark/:/usr/local/akamai/java64/jdk1.7.0/bin/
 #alias python2.7='/a/bin/python2.7'
