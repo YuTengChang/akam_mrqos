@@ -17,6 +17,8 @@ def main():
 
     print "initialize the table for region_view_hour data."
 
+    os.remove(config.region_view_hour_db)
+
     cmd_str = '/opt/anaconda/bin/sqlite3 %s < %s' % (config.region_view_hour_db,
                                                      config.region_view_hour_init)
 
