@@ -53,7 +53,7 @@ def main():
         try:
             beeline.bln_e(strcmd_s2)
             span2 = time.time()-tic
-            time_count[1] += span1
+            time_count[1] += span2
         except:
             span2 = time.time()-tic
             fail_count[1] += 1
@@ -65,8 +65,8 @@ def main():
                                                                "failed" if fail1 else "ok")
 
     print "<<< overall result >>>"
-    print "test0 takes %s and test1 takes %s" % (str(time_count[0]/(15-fail_count[0])),
-                                                 str(time_count[1]/(15-fail_count[1])))
+    print "test0 takes %s and test1 takes %s" % (str(time_count[0]/(iter-fail_count[0])),
+                                                 str(time_count[1]/(iter-fail_count[1])))
 
 if __name__ == '__main__':
     sys.exit(main())
