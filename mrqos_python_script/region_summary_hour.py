@@ -19,7 +19,7 @@ def main():
     ts = calendar.timegm(time.gmtime())
     print "###################"
     print "# Performing the hourly mrqos_region summary"
-    print "# starting processing time is " + str(ts) + " , = " + time.strftime('GMT %Y-%m-%d %H:%M:%S', time.gmtime(ts))
+    print "# starting processing time is " + str(ts) + " = " + time.strftime('GMT %Y-%m-%d %H:%M:%S', time.gmtime(ts))
     print "###################"
     ts_last_hour = ts-3600
     datestamp = time.strftime('%Y%m%d', time.gmtime(float(ts_last_hour)))
