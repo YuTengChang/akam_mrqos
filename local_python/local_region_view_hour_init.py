@@ -20,6 +20,7 @@ def main():
     cmd_str = '/opt/anaconda/bin/sqlite3 %s < %s' % (config.region_view_hour_db,
                                                      config.region_view_hour_init)
 
+    print "the new db lives in: %s" % config.region_view_hour_db
     sp.check_call(cmd_str, shell=True)
 
 
