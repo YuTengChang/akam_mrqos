@@ -10,6 +10,8 @@ import sys, os
 sys.path.append('/home/testgrp/MRQOS/')
 import time
 import configurations.config as config
+import configurations.beeline as beeline
+
 
 
 def main():
@@ -41,15 +43,17 @@ def main():
             span1 = time.time()-tic
             time_count[0] += span1
         except:
+            span1 = time.time()-tic
             fail_count[0] += 1
             fail0 = True
 
         tic = time.time()
         try:
             beeline.bln_e(strcmd_s2)
-            span1 = time.time()-tic
+            span2 = time.time()-tic
             time_count[1] += span1
         except:
+            span2 = time.time()-tic
             fail_count[1] += 1
             fail1 = True
 
