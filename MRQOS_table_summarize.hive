@@ -3,7 +3,7 @@ set mapreduce.reduce.memory.mb=6000;
 SET mapred.child.java.opts=-Xmx4G;
 SET mapred.map.child.java.opts=-Xmx4g;
 SET mapred.reduce.child.java.opts=-Xmx4g;
-SET mapreduce.job.reduce.slowstart.completedmaps=0.75;
+SET mapreduce.job.reduce.slowstart.completedmaps=0.85;
 set hive.exec.max.dynamic.partitions=100000;
 set hive.exec.max.dynamic.partitions.pernode=1000;
 
