@@ -9,7 +9,7 @@ import shutil
 import time
 import calendar
 import subprocess as sp
-ys.path.append('/home/ychang/Documents/Projects/18-DDC/MRQOS/')
+sys.path.append('/home/ychang/Documents/Projects/18-DDC/MRQOS/')
 import configurations.config as config
 
 def main():
