@@ -33,10 +33,10 @@ def main():
         sp.check_call(cmd_str, shell=True)
 
         # remove the file from the cluster
-        cmd_str = 'gwsh %s "rm %s/%s"' % (config.region_view_hour_data_source,
-                                          config.mrqos_query_result,
-                                          target_file)
-        sp.check_call(cmd_str, shell=True)
+        #cmd_str = 'gwsh %s "rm %s/%s"' % (config.region_view_hour_data_source,
+        #                                  config.mrqos_query_result,
+        #                                  target_file)
+        #sp.check_call(cmd_str, shell=True)
 
         # reformatting the file
         cmd_str = "cat %s | tail -n+2 | sed 's/\t/,/g' > %s" % (os.path.join(config.region_view_hour_data_local, target_file+'.tmp'),
