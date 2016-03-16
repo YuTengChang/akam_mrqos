@@ -5,11 +5,12 @@ Created on Thu March 09 12:47:15 2016
 @author: ychang
 """
 import sys, os
-import configurations.config as config
 #import shutil
 
 sys.path.append('/home/testgrp/MRQOS/')
 import time
+import configurations.config as config
+
 
 def main():
 
