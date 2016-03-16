@@ -18,12 +18,12 @@ def main():
 
     f = open(os.path.join(config.mrqos_hive_query, 'test0_mrqos_region_summarize_hour.hive'), 'r')
     strcmd = f.read()
-    strcmd_s1 = strcmd % (datestamp, hourstamp, datestamp, hourstamp, datestamp, hourstamp)
+    strcmd_s1 = strcmd % (datestamp, hourstamp, datestamp, hourstamp)
     f.close()
 
     f = open(os.path.join(config.mrqos_hive_query, 'test_mrqos_region_summarize_hour.hive'), 'r')
     strcmd = f.read()
-    strcmd_s2 = strcmd % (datestamp, hourstamp, datestamp, hourstamp, datestamp, hourstamp)
+    strcmd_s2 = strcmd % (datestamp, hourstamp, datestamp, hourstamp)
     f.close()
 
     fail_count = [0] * 2
