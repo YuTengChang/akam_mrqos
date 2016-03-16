@@ -23,53 +23,47 @@ def main():
     remote_file_list = sp.check_output(cmd_str, shell=True).strip().split('\n')
 
     for target_file in remote_file_list:
+        print "processing the file: %s" % target_file
         # copy from cluster to local
         cmd_str = 'scp -Sgwsh testgrp@%s:%s/%s %s%s' % (config.region_view_hour_data_source,
-                                                         config.mrqos_query_result,
-                                                         target_file,
-                                                         config.region_view_hour_data_local,
-                                                         target_file)
+                                                        config.mrqos_query_result,
+                                                        target_file,
+                                                        config.region_view_hour_data_local,
+                                                        target_file+'.tmp')
         sp.check_call(cmd_str, shell=True)
-        cmd_str = 'gwsh %s'
 
-    filename = 'region_view_hour.%s.%s.csv' % (datestamp, hourstamp)
-    local_data_repot = '/home/ychang/Documents/Projects/18-DDC/MRQOS_local_data/region_view_hour/'
-    local_file = os.path.join(local_data_repot, filename)
-    local_temp = os.path.join(local_data_repot, 'temp.csv')
-
-    # fetch the data file from the cluster
-    try:
-        cmd_str = 'scp -Sgwsh testgrp@81.52.137.195:/home/testgrp/query_results/%s %s' % (filename, local_temp)
+        # remove the file from the cluster
+        cmd_str = 'gwsh %s "rm %s/%s"' % (config.region_view_hour_data_source,
+                                          config.mrqos_query_result,
+                                          target_file)
         sp.check_call(cmd_str, shell=True)
-        # cluster file remove
-        cmd_str = 'gwsh 81.52.137.195 "rm /home/testgrp/query_results/%s"' % filename
-        #sp.check_call(cmd_str, shell=True)
-    except:
-        print '    ****  data copy from cluster failure.'
-        return
 
-    # insert into the SQLite3 database
-    # make file comma separated file (CSV)
-    cmd_str = "cat %s | tail -n+2 | sed 's/\t/,/g' > %s" % (local_temp, local_file)
-    sp.check_call(cmd_str, shell=True)
-    # prepare the import sql
-    cmd_str = "echo '.separator ,' > %s" % os.path.join(local_data_repot, 'input_query.sql')
-    sp.check_call(cmd_str, shell=True)
-    cmd_str = "echo '.import %s region_view_hour' >> %s" % (local_file, os.path.join(local_data_repot, 'input_query.sql'))
-    sp.check_call(cmd_str, shell=True)
-    # data import
-    cmd_str = '/opt/anaconda/bin/sqlite3 /opt/web-data/SQLite3/ra_mrqos.db < %s' % os.path.join(local_data_repot, 'input_query.sql')
-    sp.check_call(cmd_str, shell=True)
+        # reformatting the file
+        cmd_str = "cat %s | tail -n+2 | sed 's/\t/,/g' > %s" % (os.path.join(config.region_view_hour_data_local, target_file+'.tmp'),
+                                                                os.path.join(config.region_view_hour_data_local, target_file))
+        sp.check_call(cmd_str, shell=True)
 
-    # remove local file
-    # os.remove(local_temp) < this could be a backup.
-    os.remove(local_file)
+        # prepare the import sql
+        cmd_str = "echo '.separator ,' > %s" % os.path.join(config.region_view_hour_data_local, 'input_query.sql')
+        sp.check_call(cmd_str, shell=True)
+        cmd_str = "echo '.import %s region_view_hour' >> %s" % (os.path.join(config.region_view_hour_data_local, target_file),
+                                                                os.path.join(config.region_view_hour_data_local, 'input_query.sql'))
+        sp.check_call(cmd_str, shell=True)
+        # data import
+        cmd_str = '/opt/anaconda/bin/sqlite3 %s < %s' % (config.region_view_hour_db,
+                                                         os.path.join(config.region_view_hour_data_local, 'input_query.sql'))
+        sp.check_call(cmd_str, shell=True)
+
+        # remove local file
+        # os.remove(local_temp) < this could be a backup.
+        # os.remove(local_file)
 
     # expire the data from SQLite database
-    expire_region_view_hour = 60*60*24*5 # 5 days expiration
+    expire_region_view_hour = config.region_view_hour_delete # 5 days expiration
     expire_date = time.strftime('%Y%m%d', time.gmtime(float(ts - expire_region_view_hour)))
     sql_str = 'delete from region_view_hour where date=%s' % str(expire_date)
-    cmd_str = '/opt/anaconda/bin/sqlite3 /opt/web-data/SQLite3/ra_mrqos.db "%s"' % sql_str
+    cmd_str = '/opt/anaconda/bin/sqlite3 %s "%s"' % (config.region_view_hour_db,
+                                                     sql_str)
     sp.check_call(cmd_str, shell=True)
 
 
