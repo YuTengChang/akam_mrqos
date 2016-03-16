@@ -92,7 +92,7 @@ def main():
         f.close()
         strcmd_g = "select * from mrqos.region_view_hour where datestamp=%s and hour=%s;" % (datestamp, hourstamp)
         query_result_file = os.path.join(config.mrqos_query_result,'region_view_hour.%s.%s.csv' % (datestamp, hourstamp))
-        print "    ****  BLN for hourly summary for day = %s, hour = %s." % (datestamp, hourstamp)
+        print " BLN for hourly summary for day = %s, hour = %s." % (datestamp, hourstamp)
         count_retrial = 0
         while count_retrial < region_summary_retrial_max:
             try:
@@ -124,7 +124,7 @@ def main():
                 strcmd = f.read()
                 strcmd_s = strcmd % (datestamp, hour, datestamp, hour, datestamp, hour)
                 f.close()
-                print "    ****  BLN for hourly summary for day = %s, hour = %s." %(datestamp, hour)
+                print " BLN for hourly summary for day = %s, hour = %s." %(datestamp, hour)
                 try:
                     tic = time.time()
                     beeline.bln_e(strcmd_s)
