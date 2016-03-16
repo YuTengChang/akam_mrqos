@@ -49,7 +49,7 @@ def main():
                 break
             except:
                 # delete the folder if summarization failed.
-                print "    ******  summarization failed with time cost %s upto #retrials=%s" % (str(time.time()-tic), str(count_retrial))
+                print "    ******  summarization failed with time cost %s upto # retrials=%s" % (str(time.time()-tic), str(count_retrial))
                 hdfsutil.rm(config.hdfs_qos_rg_hour % (datestamp, hourstamp), r=True)
                 count_retrial += 1
     else:
