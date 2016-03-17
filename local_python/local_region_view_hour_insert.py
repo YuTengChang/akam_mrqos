@@ -18,6 +18,7 @@ def main():
     print "# Performing the hourly region_view_hour data fetch and insert"
     print "# starting processing time is " + str(ts) + " = " + time.strftime('GMT %Y-%m-%d %H:%M:%S', time.localtime(ts))
     print "###################"
+    print "  >> region_view_hour <<"
 
     cmd_str = 'gwsh %s "ls %s/region_view_hour.*.csv"' % (config.region_view_hour_data_source, config.mrqos_query_result)
     try:
@@ -80,6 +81,7 @@ def main():
     # ################# #
     # CASE VIEW PROCESS #
     # ################# #
+    print "  >> case_view_hour <<"
 
     cmd_str = 'gwsh %s "ls %s/case_view_hour.*.csv"' % (config.region_view_hour_data_source, config.mrqos_query_result)
     try:
@@ -130,9 +132,9 @@ def main():
 
     # expire the data from SQLite database
     print "now do the cleaning."
-    expire_region_view_hour = config.case_view_hour_delete # 3 days expiration
-    expire_date = time.strftime('%Y%m%d', time.gmtime(float(ts - expire_region_view_hour)))
-    sql_str = 'delete from region_view_hour where date=%s' % str(expire_date)
+    expire_case_view_hour = config.case_view_hour_delete # 3 days expiration
+    expire_date = time.strftime('%Y%m%d', time.gmtime(float(ts - expire_case_view_hour)))
+    sql_str = 'delete from case_view_hour where date=%s' % str(expire_date)
     cmd_str = '/opt/anaconda/bin/sqlite3 %s "%s"' % (config.case_view_hour_db,
                                                      sql_str)
     sp.check_call(cmd_str, shell=True)
