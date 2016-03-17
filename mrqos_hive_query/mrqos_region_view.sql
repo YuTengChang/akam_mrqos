@@ -247,3 +247,28 @@ ON a.region=b.region
 WHERE b.case_percent_load >= 0.00005
 ) c2
 on c1.maprule=c2.maprule and c1.geoname=c2.geoname and c1.netname=c2.netname;
+
+
+========================================================================================================================
+
+SELECT maprule, geoname, netname, datestamp, hour,
+       case_score_target, case_ra_load, case_nsd_demand, case_eu_demand, case_uniq_region,
+       collect_set(case_info) distribution
+FROM
+(
+SELECT maprule, geoname, netname, datestamp, hour,
+       score_target case_score_target, case_ra_load, case_nsd_demand, case_eu_demand, case_uniq_region,
+       concat(region,"(",avg_region_score,
+            ":NSD_",hourly_region_nsd_demand,"<",
+                CASE WHEN case_nsd_demand>0 THEN round(100*hourly_region_nsd_demand/case_nsd_demand,2) ELSE 0 END,">",
+            ":EU_",hourly_region_eu_demand,"<",
+                CASE WHEN case_eu_demand>0 THEN round(100*hourly_region_eu_demand/case_eu_demand,2) ELSE 0 END,">",
+            ":LOAD_",hourly_region_ra_load,"<",
+                CASE WHEN case_ra_load>0 THEN round(100*hourly_region_ra_load/case_ra_load,2) ELSE 0 END,">",
+       ":",name,":",ecor,":",continent,":",country,":",city,":",latitude,":",longitude,":",provider,
+       ":",region_capacity,":",ecor_capacity,":",prp,":",numghosts,")") case_info
+FROM mrqos_region_hour
+WHERE datestamp=20160315 and hour=10
+) a
+GROUP BY maprule, geoname, netname, datestamp, hour, case_score_target, case_ra_load, case_nsd_demand, case_eu_demand, case_uniq_region
+limit 1;
