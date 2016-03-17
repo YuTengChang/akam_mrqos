@@ -81,5 +81,62 @@ def main():
     # CASE VIEW PROCESS #
     # ################# #
 
+    cmd_str = 'gwsh %s "ls %s/case_view_hour.*.csv"' % (config.region_view_hour_data_source, config.mrqos_query_result)
+    try:
+        remote_file_list = sp.check_output(cmd_str, shell=True).strip().split('\n')
+    except sp.CalledProcessError as e:
+        print "no remote file(s) or cannot connect to remote cluster, stopping."
+        return
+
+    for target_file in remote_file_list:
+        print "processing the file: %s" % target_file
+        target_file = target_file.split('/')[-1]
+        # copy from cluster to local
+        cmd_str = 'scp -Sgwsh testgrp@%s:%s/%s %s%s' % (config.region_view_hour_data_source,
+                                                        config.mrqos_query_result,
+                                                        target_file,
+                                                        config.case_view_hour_data_local,
+                                                        target_file+'.tmp')
+        sp.check_call(cmd_str, shell=True)
+
+        local_file = os.path.join(config.case_view_hour_data_local, target_file)
+        local_temp = os.path.join(config.case_view_hour_data_local, target_file+'.tmp')
+
+        # remove the file from the cluster
+        cmd_str = 'gwsh %s "rm %s/%s"' % (config.region_view_hour_data_source,
+                                          config.mrqos_query_result,
+                                          target_file)
+        sp.check_call(cmd_str, shell=True)
+
+        # reformatting the file
+        cmd_str = "cat %s | tail -n+2 | sed 's/\t/,/g' > %s" % (local_temp,
+                                                                local_file)
+        sp.check_call(cmd_str, shell=True)
+
+        # prepare the import sql
+        cmd_str = "echo '.separator ,' > %s" % os.path.join(config.case_view_hour_data_local, 'input_query.sql')
+        sp.check_call(cmd_str, shell=True)
+        cmd_str = "echo '.import %s case_view_hour' >> %s" % (local_file,
+                                                                os.path.join(config.case_view_hour_data_local, 'input_query.sql'))
+        sp.check_call(cmd_str, shell=True)
+        # data import
+        cmd_str = '/opt/anaconda/bin/sqlite3 %s < %s' % (config.case_view_hour_db,
+                                                         os.path.join(config.case_view_hour_data_local, 'input_query.sql'))
+        sp.check_call(cmd_str, shell=True)
+
+        # remove local file
+        # os.remove(local_temp) #< this could be a backup.
+        os.remove(local_file)
+
+    # expire the data from SQLite database
+    print "now do the cleaning."
+    expire_region_view_hour = config.case_view_hour_delete # 3 days expiration
+    expire_date = time.strftime('%Y%m%d', time.gmtime(float(ts - expire_region_view_hour)))
+    sql_str = 'delete from region_view_hour where date=%s' % str(expire_date)
+    cmd_str = '/opt/anaconda/bin/sqlite3 %s "%s"' % (config.case_view_hour_db,
+                                                     sql_str)
+    sp.check_call(cmd_str, shell=True)
+
+
 if __name__ == '__main__':
     sys.exit(main())
