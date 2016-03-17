@@ -29,6 +29,7 @@ def main():
 
     for target_file in remote_file_list:
         print "processing the file: %s" % target_file
+        target_file = target_file.split('/')[-1]
         # copy from cluster to local
         cmd_str = 'scp -Sgwsh testgrp@%s:%s/%s %s%s' % (config.region_view_hour_data_source,
                                                         config.mrqos_query_result,
