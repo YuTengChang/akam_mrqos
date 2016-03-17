@@ -3,20 +3,14 @@ USE mrqos;
 drop table if exists case_view_hour;
 
 create external table case_view_hour (
-    region INT,
-    name STRING,
-    ecor INT,
-    continent STRING,
-    country STRING,
-    city STRING,
-    latitude DOUBLE,
-    longitude DOUBLE,
-    asnum INT,
-    provider STRING,
-    region_capacity BIGINT,
-    ecor_capacity BIGINT,
-    prp STRING,
-    numghosts INT,
+    maprule INT,
+    geoname STRING,
+    netname STRING,
+    case_score_target INT,
+    case_ra_load INT,
+    case_nsd_demand DOUBLE,
+    case_eu_demand DOUBLE,
+    case_uniq_region INT,
     distribution STRING)
 
 partitioned by (datestamp STRING, hour STRING)

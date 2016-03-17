@@ -251,12 +251,12 @@ on c1.maprule=c2.maprule and c1.geoname=c2.geoname and c1.netname=c2.netname;
 
 ========================================================================================================================
 
-SELECT maprule, geoname, netname, datestamp, hour,
+SELECT maprule, geoname, netname,
        case_score_target, case_ra_load, case_nsd_demand, case_eu_demand, case_uniq_region,
        collect_set(case_info) distribution
 FROM
 (
-SELECT maprule, geoname, netname, datestamp, hour,
+SELECT maprule, geoname, netname,
        score_target case_score_target, case_ra_load, case_nsd_demand, case_eu_demand, case_uniq_region,
        concat(region,"(",avg_region_score,
             ":NSD_",hourly_region_nsd_demand,"<",
@@ -270,5 +270,5 @@ SELECT maprule, geoname, netname, datestamp, hour,
 FROM mrqos_region_hour
 WHERE datestamp=20160315 and hour=10
 ) a
-GROUP BY maprule, geoname, netname, datestamp, hour, case_score_target, case_ra_load, case_nsd_demand, case_eu_demand, case_uniq_region
+GROUP BY maprule, geoname, netname, case_score_target, case_ra_load, case_nsd_demand, case_eu_demand, case_uniq_region
 limit 1;
