@@ -39,6 +39,9 @@ def main():
         strcmd = f.read()
         strcmd_s = strcmd % (datestamp, hourstamp, datestamp, hourstamp, datestamp, hourstamp)
         f.close()
+        strcmd_g = "SELECT maprule, geoname, netname, region, avg_region_score, score_target, hourly_region_nsd_demand, hourly_region_eu_demand, hourly_region_ra_load, case_ra_load, case_nsd_demand, case_eu_demand, case_uniq_region, name, ecor, continent, country, city, latitude, longitude, provider, region_capacity, ecor_capacity, prp, numghosts, datestamp, hour FROM mrqos.mrqos_region_hour WHERE datestamp=%s and hour=%s;" % (datestamp, hourstamp)
+        query_result_file = os.path.join(config.mrqos_query_result,'region_summary_hour.%s.%s.csv' % (datestamp, hourstamp))
+
         print " BLN for hourly summary: day = %s, hour = %s. " %(datestamp, hourstamp)
         count_retrial = 0
         while count_retrial < region_summary_retrial_max:
@@ -46,6 +49,11 @@ def main():
             try:
                 beeline.bln_e(strcmd_s)
                 print "    ******  success with time cost = %s." % str(time.time()-tic)
+                try:
+                    beeline.bln_e_output(strcmd_g, query_result_file)
+                except:
+                    print "    ****  copy to local failed, retry!"
+                    beeline.bln_e_output(strcmd_g, query_result_file)
                 break
             except:
                 # delete the folder if summarization failed.
