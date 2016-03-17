@@ -20,7 +20,7 @@ SELECT maprule, geoname, netname,
                 CASE WHEN case_eu_demand>0 THEN round(100*hourly_region_eu_demand/case_eu_demand,2) ELSE 0 END,'>',
             ':LOAD_',hourly_region_ra_load,'<',
                 CASE WHEN case_ra_load>0 THEN round(100*hourly_region_ra_load/case_ra_load,2) ELSE 0 END,'>',
-       ':',name,':',ecor,':',continent,':',country,':',city,':',latitude,':',longitude,':',provider,
+       ':',name,':',ecor,':',continent,':',country,':',city,':',latitude,':',longitude,':',asnum,':',provider,
        ':',region_capacity,':',ecor_capacity,':',prp,':',numghosts,')') case_info
 FROM mrqos_region_hour
 WHERE datestamp=%s and hour=%s
