@@ -24,5 +24,4 @@ SELECT maprule, geoname, netname,
        ':',region_capacity,':',ecor_capacity,':',prp,':',numghosts,')') case_info
 FROM mrqos_region_hour
 WHERE datestamp=%s and hour=%s
-) a
-GROUP BY maprule, geoname, netname, case_score_target, case_ra_load, case_nsd_demand, case_eu_demand, case_uniq_region;
+) a GROUP BY maprule, geoname, netname, case_score_target, case_ra_load, case_nsd_demand, case_eu_demand, case_uniq_region;
