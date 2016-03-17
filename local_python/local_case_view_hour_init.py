@@ -16,8 +16,8 @@ import configurations.config as config
 def main():
 
     print "initialize the table for case_view_hour data."
-
-    os.remove(config.case_view_hour_db)
+    if os.path.isfile(config.case_view_hour_db):
+        os.remove(config.case_view_hour_db)
 
     cmd_str = '/opt/anaconda/bin/sqlite3 %s < %s' % (config.case_view_hour_db,
                                                      config.case_view_hour_init)
