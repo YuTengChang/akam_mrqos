@@ -49,11 +49,11 @@ def main():
             try:
                 beeline.bln_e(strcmd_s)
                 print "    ******  success with time cost = %s." % str(time.time()-tic)
-                try:
-                    beeline.bln_e_output(strcmd_g, query_result_file)
-                except:
-                    print "    ****  copy to local failed, retry!"
-                    beeline.bln_e_output(strcmd_g, query_result_file)
+                #try:
+                #    beeline.bln_e_output(strcmd_g, query_result_file)
+                #except:
+                #    print "    ****  copy to local failed, retry!"
+                #    beeline.bln_e_output(strcmd_g, query_result_file)
                 break
             except:
                 # delete the folder if summarization failed.
