@@ -19,8 +19,13 @@ def main():
     print "# starting processing time is " + str(ts) + " = " + time.strftime('GMT %Y-%m-%d %H:%M:%S', time.localtime(ts))
     print "###################"
 
-    cmd_str = 'gwsh %s "ls %s"' % (config.region_view_hour_data_source, config.mrqos_query_result)
-    remote_file_list = sp.check_output(cmd_str, shell=True).strip().split('\n')
+    cmd_str = 'gwsh %s "ls %s/region_view_hour.*.csv"' % (config.region_view_hour_data_source, config.mrqos_query_result)
+    try:
+        remote_file_list = sp.check_output(cmd_str, shell=True).strip().split('\n')
+    except sp.CalledProcessError as e:
+        print "no remote file(s) or cannot connect to remote cluster, stopping."
+        return
+
 
     for target_file in remote_file_list:
         print "processing the file: %s" % target_file
