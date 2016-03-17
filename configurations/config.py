@@ -49,6 +49,7 @@ mrqos_join_delete = 60 * 60 * 24 * 15 # 15 days
 
 mrqos_region_delete = 60 * 60 * 24 * 5 # 5 days
 region_view_hour_delete = 60 * 60 * 24 * 5 # 5 days
+case_view_hour_delete = 60 * 60 * 24 * 3 # 3 days
 
 #==============================================================================
 # # Shell Scripts
@@ -78,3 +79,4 @@ region_view_hour_init = '/u4/ychang/Projects/18-MRQOS/SQLite3/region_view_hour_i
 case_view_hour_db = '/opt/web-data/SQLite3/case_view_hour.db'
 case_view_hour_init = '/u4/ychang/Projects/18-MRQOS/SQLite3/case_view_hour_init.sql'
 region_view_hour_data_local = '/home/ychang/Documents/Projects/18-DDC/MRQOS_local_data/region_view_hour/'
+case_view_hour_data_local = '/home/ychang/Documents/Projects/18-DDC/MRQOS_local_data/case_view_hour/'
