@@ -4,7 +4,7 @@ SET mapred.child.java.opts=-Xmx4G -XX:+UseConcMarkSweepGC;
 
 USE mrqos;
 
-INSERT OVERWRITE TABLE region_view_hour PARTITION (datestamp=%s, hour=%s)
+INSERT OVERWRITE TABLE case_view_hour PARTITION (datestamp=%s, hour=%s)
 
 SELECT maprule, geoname, netname,
        case_score_target, case_ra_load, case_nsd_demand, case_eu_demand, case_uniq_region,
