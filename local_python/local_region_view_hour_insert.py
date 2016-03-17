@@ -77,6 +77,9 @@ def main():
     sp.check_call(cmd_str, shell=True)
 
 
+    # ################# #
+    # CASE VIEW PROCESS #
+    # ################# #
 
 if __name__ == '__main__':
     sys.exit(main())
