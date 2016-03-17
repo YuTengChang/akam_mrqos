@@ -23,6 +23,7 @@ hdfs_qos_rg_info = '/ghostcache/hadoop/data/MRQOS/mrqos_region/datestamp=%s/hour
 hdfs_qos_rg_hour = '/ghostcache/hadoop/data/MRQOS/mrqos_region_hour/datestamp=%s/hour=%s'
 hdfs_qos_rg_day = '/ghostcache/hadoop/data/MRQOS/mrqos_region_day/datestamp=%s'
 hdfs_qos_rg_view_hour = '/ghostcache/hadoop/data/MRQOS/region_view_hour/datestamp=%s/hour=%s'
+hdfs_qos_case_view_hour = '/ghostcache/hadoop/data/MRQOS/case_view_hour/datestamp=%s/hour=%s'
 
 #==============================================================================
 # # Local File Locations
