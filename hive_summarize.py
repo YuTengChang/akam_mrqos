@@ -24,7 +24,7 @@ def main():
     print "# Start processing the data back in " + datenow + " for two-week window"
     print "# starting processing time is " + str(timenow)
     print "###################"
-
+    max_retrial = 10
 
     # update the ts table for later summarize usage. file uploaded to HDFS
     print "    ****  create new mrqos_ts table."
@@ -32,9 +32,19 @@ def main():
 
     # open the file for writing the results
     print "    ****  running hive summarizing script."
-    f = open('/home/testgrp/MRQOS/mrqos_data/summarized_table.tmp','w')
-    sp.check_call(['hive','-f','/home/testgrp/MRQOS/MRQOS_table_summarize.hive'],stdout=f)
-    f.close()
+    retrial = 0
+    while retrial < max_retrial:
+        try:
+            tic = time.time()
+            f = open('/home/testgrp/MRQOS/mrqos_data/summarized_table.tmp','w')
+            sp.check_call(['hive','-f','/home/testgrp/MRQOS/MRQOS_table_summarize.hive'],stdout=f)
+            print "# success with time cost = %s" % str(time.time()-tic)
+            break
+        except:
+            retrial += 1
+            print "# failed retrial #%s with time cost = %s" % (str(retrial), str(time.time()-tic))
+        f.close()
+
 
     # process the file, take country only
     cmd = """cat /home/testgrp/MRQOS/mrqos_data/summarized_table.tmp | sed s:NULL:0:g | sed 's/\t/,/g' | awk -F',' '{x=length($4); if(x==2){print $0;}}' | awk -F',' '{if($3>0){$1=""; $2=""; print $0;}}' | sed 's/^\s\+//g' > /home/testgrp/MRQOS/mrqos_data/summarized_processed.tmp""";
@@ -48,13 +58,31 @@ def main():
 
     # compute COMPOUND-ERROR-METRIC
     print "    ****  running hive script for compound error metrics."
-    f = open('/home/testgrp/MRQOS/mrqos_data/compound_metric.tmp','w')
-    sp.check_call(['hive','-f','/home/testgrp/MRQOS/MRQOS_table_levels.hive'],stdout=f)
+    retrial = 0
+    while retrial < max_retrial:
+        try:
+            tic = time.time()
+            f = open('/home/testgrp/MRQOS/mrqos_data/compound_metric.tmp','w')
+            sp.check_call(['hive','-f','/home/testgrp/MRQOS/MRQOS_table_levels.hive'],stdout=f)
+            print "# success with time cost = %s" % str(time.time()-tic)
+        except:
+            retrial += 1
+            print "# failed retrial #%s with time cost = %s" % (str(retrial), str(time.time()-tic))
     f.close()
 
     # obtain the summarized statistics that spanned [-28d, -14d]
     print "    ****  running hive queries for 2w comparisons."
-    sp.check_call( [config.obtain_14d], shell=True )
+    retrial = 0
+    while retrial < max_retrial:
+        try:
+            tic = time.time()
+            sp.check_call( [config.obtain_14d], shell=True )
+            print "# success with time cost = %s" % str(time.time()-tic)
+        except:
+            retrial += 1
+            print "# failed retrial #%s with time cost = %s" % (str(retrial), str(time.time()-tic))
+
+
 
 
 def upload_to_hive(listname, hdfs_d, ts, tablename):
