@@ -38,11 +38,11 @@ def main():
             tic = time.time()
             f = open('/home/testgrp/MRQOS/mrqos_data/summarized_table.tmp','w')
             sp.check_call(['hive','-f','/home/testgrp/MRQOS/MRQOS_table_summarize.hive'],stdout=f)
-            print "# success with time cost = %s" % str(time.time()-tic)
+            print "    # success with time cost = %s" % str(time.time()-tic)
             break
         except:
             retrial += 1
-            print "# failed retrial #%s with time cost = %s" % (str(retrial), str(time.time()-tic))
+            print "    # failed retrial #%s with time cost = %s" % (str(retrial), str(time.time()-tic))
         f.close()
 
 
@@ -64,10 +64,10 @@ def main():
             tic = time.time()
             f = open('/home/testgrp/MRQOS/mrqos_data/compound_metric.tmp','w')
             sp.check_call(['hive','-f','/home/testgrp/MRQOS/MRQOS_table_levels.hive'],stdout=f)
-            print "# success with time cost = %s" % str(time.time()-tic)
+            print "    # success with time cost = %s" % str(time.time()-tic)
         except:
             retrial += 1
-            print "# failed retrial #%s with time cost = %s" % (str(retrial), str(time.time()-tic))
+            print "    # failed retrial #%s with time cost = %s" % (str(retrial), str(time.time()-tic))
     f.close()
 
     # obtain the summarized statistics that spanned [-28d, -14d]
@@ -77,10 +77,10 @@ def main():
         try:
             tic = time.time()
             sp.check_call( [config.obtain_14d], shell=True )
-            print "# success with time cost = %s" % str(time.time()-tic)
+            print "    # success with time cost = %s" % str(time.time()-tic)
         except:
             retrial += 1
-            print "# failed retrial #%s with time cost = %s" % (str(retrial), str(time.time()-tic))
+            print "    # failed retrial #%s with time cost = %s" % (str(retrial), str(time.time()-tic))
 
 
 
