@@ -78,9 +78,9 @@ def main():
     sp.check_call(cmd_str, shell=True)
 
 
-    # ################# #
-    # CASE VIEW PROCESS #
-    # ################# #
+    # #################################### #
+    # CASE VIEW PROCESS (separate process) #
+    # #################################### #
     print "  >> case_view_hour <<"
 
     cmd_str = 'gwsh %s "ls %s/case_view_hour.*.csv"' % (config.region_view_hour_data_source, config.mrqos_query_result)
