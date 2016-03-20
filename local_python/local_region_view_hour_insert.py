@@ -59,6 +59,7 @@ def main():
         cmd_str = "echo '.import %s region_view_hour' >> %s" % (local_file,
                                                                 os.path.join(config.region_view_hour_data_local, 'input_query.sql'))
         sp.check_call(cmd_str, shell=True)
+
         # data import
         cmd_str = '/opt/anaconda/bin/sqlite3 %s < %s' % (config.region_view_hour_db,
                                                          os.path.join(config.region_view_hour_data_local, 'input_query.sql'))
