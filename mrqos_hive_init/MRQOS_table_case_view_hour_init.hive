@@ -7,7 +7,7 @@ create external table case_view_hour (
     geoname STRING,
     netname STRING,
     case_score_target INT,
-    case_ra_load INT,
+    case_ra_load BIGINT,
     case_nsd_demand DOUBLE,
     case_eu_demand DOUBLE,
     case_uniq_region INT,
