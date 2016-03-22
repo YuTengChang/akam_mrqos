@@ -79,6 +79,7 @@ def main():
             tic = time.time()
             sp.check_call( [config.obtain_14d], shell=True )
             print "    # success with time cost = %s" % str(time.time()-tic)
+            break
         except:
             retrial += 1
             print "    # failed retrial #%s with time cost = %s" % (str(retrial), str(time.time()-tic))
