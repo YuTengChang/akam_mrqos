@@ -65,6 +65,7 @@ def main():
             f = open('/home/testgrp/MRQOS/mrqos_data/compound_metric.tmp','w')
             sp.check_call(['hive','-f','/home/testgrp/MRQOS/MRQOS_table_levels.hive'],stdout=f)
             print "    # success with time cost = %s" % str(time.time()-tic)
+            break
         except:
             retrial += 1
             print "    # failed retrial #%s with time cost = %s" % (str(retrial), str(time.time()-tic))
