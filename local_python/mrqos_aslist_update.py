@@ -14,12 +14,12 @@ import configurations.config as config
 
 def main():
     tic = time.time()
-    query_str = '''sql2 -qmap.dev.query.akadns.net "select name, count(1) counts, string_join(cast(asnum as string),',') aslist from a_maprule_qos_aslist group by name;" | sed 's/\s\+/,/g' | tail -n+3 | head -n-1 > %s''' % config.aslist_file
+    query_str = '''sql2 -qmap.dev.query.akadns.net "select name, count(1) counts, string_join(cast(asnum as string),':') aslist from a_maprule_qos_aslist group by name;" | sed 's/\s\+/,/g' | tail -n+3 | head -n-2 | sed 's/^,//g' > %s''' % config.aslist_file
     sp.check_call(query_str, shell=True)
 
     check_str = '''wc -l %s | awk '{print $1}' ''' % config.aslist_file
     n_lines = int(sp.check_output(check_str, shell=True).rstrip('\n'))
-    print "initial query takes time: %s" % str(time.time()-tic)
+    print "initial query takes time: %s sec and lines: %s." % (str(time.time()-tic), str(n_lines))
 
     maximum_retrial = 20
     n_retrials = 1
@@ -29,10 +29,11 @@ def main():
             tic = time.time()
             sp.check_call(query_str, shell=True)
             n_lines = int(sp.check_output(check_str, shell=True).rstrip('\n'))
-            print "retrial #%s query takes time: %s" % (n_retrials, str(time.time()-tic))
+            print "retrial #%s query takes time: %s sec and lines: %s." % (n_retrials, str(time.time()-tic), str(n_lines))
         else:
             print "reached maximum retrials."
             break
+
 
 
 
