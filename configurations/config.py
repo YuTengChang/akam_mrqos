@@ -78,5 +78,7 @@ region_view_hour_db = '/opt/web-data/SQLite3/ra_mrqos.db'
 region_view_hour_init = '/u4/ychang/Projects/18-MRQOS/SQLite3/region_view_hour_init.sql'
 case_view_hour_db = '/opt/web-data/SQLite3/case_view_hour.db'
 case_view_hour_init = '/u4/ychang/Projects/18-MRQOS/SQLite3/case_view_hour_init.sql'
+
 region_view_hour_data_local = '/home/ychang/Documents/Projects/18-DDC/MRQOS_local_data/region_view_hour/'
 case_view_hour_data_local = '/home/ychang/Documents/Projects/18-DDC/MRQOS_local_data/case_view_hour/'
+aslist_file = '/home/ychang/Documents/Projects/18-DDC/MRQOS_local_data/mrqos_aslist.csv'
