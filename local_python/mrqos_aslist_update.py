@@ -23,6 +23,7 @@ def main():
 
     maximum_retrial = 20
     n_retrials = 1
+    success_fetch_flag = True
 
     while n_lines < 10:
         if n_retrials < maximum_retrial:
@@ -32,10 +33,13 @@ def main():
             print "retrial #%s query takes time: %s sec and lines: %s." % (n_retrials, str(time.time()-tic), str(n_lines))
         else:
             print "reached maximum retrials."
+            success_fetch_flag = False
             break
 
-
-
+    # initialize and import the SQLite table
+    if success_fetch_flag:
+        import_str = ''' /opt/anaconda/bin/sqlite3 %s < %s ''' % (config.case_view_hour_db, config.alist_init_import)
+        sp.check_call(import_str, shell=True)
 
 if __name__ == '__main__':
     sys.exit(main())
