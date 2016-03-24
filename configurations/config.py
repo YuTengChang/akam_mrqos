@@ -48,7 +48,7 @@ mrqos_table_delete = 60 * 60 # 1800 sec = 60 minutes
 mrqos_join_delete = 60 * 60 * 24 * 15 # 15 days
 
 mrqos_region_delete = 60 * 60 * 24 * 5 # 5 days
-region_view_hour_delete = 60 * 60 * 24 * 5 # 5 days
+region_view_hour_delete = 60 * 60 * 24 * 4 # 4 days
 case_view_hour_delete = 60 * 60 * 24 * 3 # 3 days
 
 #==============================================================================
