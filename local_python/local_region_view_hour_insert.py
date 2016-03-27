@@ -128,9 +128,9 @@ def main():
         sp.check_call(cmd_str, shell=True)
 
         # move to VM
-        cmd_str = 'scp %s ychang@%s:%s/%s' % (local_file,
-                                              config.web_server_machine,
-                                              os.path.join(config.case_view_hour_data_VM, target_file))
+        cmd_str = 'scp %s ychang@%s:%s' % (local_file,
+                                           config.web_server_machine,
+                                           os.path.join(config.case_view_hour_data_VM, target_file))
         sp.check_call(cmd_str, shell=True)
         # VM import sql
         cnd_str = "ssh %s 'echo .separator , > %s' " % (config.web_server_machine,
