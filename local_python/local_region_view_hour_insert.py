@@ -131,10 +131,12 @@ def main():
         cmd_str = 'scp %s ychang@%s:%s' % (local_file,
                                            config.web_server_machine,
                                            os.path.join(config.case_view_hour_data_VM, target_file))
+        print cmd_str
         sp.check_call(cmd_str, shell=True)
         # VM import sql
-        cnd_str = "ssh %s 'echo .separator , > %s' " % (config.web_server_machine,
+        cmd_str = "ssh %s 'echo .separator , > %s' " % (config.web_server_machine,
                                                         os.path.join(config.case_view_hour_data_VM, 'input_query.sql'))
+        print cmd_str
         sp.check_call(cmd_str, shell=True)
         cmd_str = "ssh %s 'echo .import %s case_view_hour >> %s' " % (config.web_server_machine.split,
                                                                       os.path.join(config.case_view_hour_data_VM, target_file),
@@ -144,6 +146,7 @@ def main():
         cmd_str = "ssh %s '/opt/anaconda/bin/sqlite3 %s < %s' " % (config.web_server_machine.split,
                                                                    config.case_view_hour_db,
                                                                    os.path.join(config.case_view_hour_data_VM, 'input_query.sql'))
+        print cmd_str
 
         # remove local file
         # os.remove(local_temp) #< this could be a backup.
