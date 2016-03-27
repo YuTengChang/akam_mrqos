@@ -88,3 +88,6 @@ alist_init_import = '/home/ychang/Documents/Projects/18-DDC/MRQOS/local_other_sc
 region_view_hour_data_local = '/home/ychang/Documents/Projects/18-DDC/MRQOS_local_data/region_view_hour/'
 case_view_hour_data_local = '/home/ychang/Documents/Projects/18-DDC/MRQOS_local_data/case_view_hour/'
 aslist_file = '/home/ychang/Documents/Projects/18-DDC/MRQOS_local_data/mrqos_aslist.csv'
+
+region_view_hour_data_VM = '/u0/ychang/Projects/18-DDC/MRQOS_local_data/region_view_hour/'
+case_view_hour_data_VM = '/u0/ychang/Projects/18-DDC/MRQOS_local_data/case_view_hour/'
