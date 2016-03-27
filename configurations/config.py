@@ -77,10 +77,13 @@ region_view_hour_data_source = '81.52.137.180'
 web_server_machine = '172.25.23.222' #(need to check periodically against: 'dev-platformperf-scidb02.kendall.corp.akamai.com')
 
 region_view_hour_db = '/opt/web-data/SQLite3/ra_mrqos.db'
-region_view_hour_init = '/u4/ychang/Projects/18-MRQOS/SQLite3/region_view_hour_init.sql'
+#region_view_hour_init = '/u4/ychang/Projects/18-MRQOS/SQLite3/region_view_hour_init.sql'
 case_view_hour_db = '/opt/web-data/SQLite3/case_view_hour.db'
-case_view_hour_init = '/u4/ychang/Projects/18-MRQOS/SQLite3/case_view_hour_init.sql'
-alist_init_import = '/u4/ychang/Projects/18-MRQOS/SQLite3/aslist_init_and_import.sql'
+#case_view_hour_init = '/u4/ychang/Projects/18-MRQOS/SQLite3/case_view_hour_init.sql'
+#alist_init_import = '/u4/ychang/Projects/18-MRQOS/SQLite3/aslist_init_and_import.sql'
+region_view_hour_init = '/home/ychang/Documents/Projects/18-DDC/MRQOS/local_other_script/region_view_hour_init.sql'
+case_view_hour_init = '/home/ychang/Documents/Projects/18-DDC/MRQOS/local_other_script/case_view_hour_init.sql'
+alist_init_import = '/home/ychang/Documents/Projects/18-DDC/MRQOS/local_other_script/aslist_init_and_import.sql'
 
 region_view_hour_data_local = '/home/ychang/Documents/Projects/18-DDC/MRQOS_local_data/region_view_hour/'
 case_view_hour_data_local = '/home/ychang/Documents/Projects/18-DDC/MRQOS_local_data/case_view_hour/'
