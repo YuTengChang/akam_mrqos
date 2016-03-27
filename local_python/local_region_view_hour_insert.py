@@ -147,6 +147,12 @@ def main():
                                                                    config.case_view_hour_db,
                                                                    os.path.join(config.case_view_hour_data_VM, 'input_query.sql'))
         print cmd_str
+        sp.check_call(cmd_str, shell=True)
+        # VM data remove
+        cmd_str = "ssh %s 'rm %s' " % (config.web_server_machine,
+                                       os.path.join(config.case_view_hour_data_VM, target_file))
+        print cmd_str
+        sp.check_call(cmd_str, shell=True)
 
         # remove local file
         # os.remove(local_temp) #< this could be a backup.
