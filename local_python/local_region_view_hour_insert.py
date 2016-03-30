@@ -164,7 +164,7 @@ def main():
     sp.check_call(cmd_str, shell=True)
 
     # expire the data from SQLite database on VM
-    print "now do the cleaning on VM."
+    print "now do the cleaning on VM.."
     expire_case_view_hour_vm = config.case_view_hour_delete + 60*60*24*4 # 3+4 days expiration
     expire_date = time.strftime('%Y%m%d', time.gmtime(float(ts - expire_case_view_hour_vm)))
     sql_str = 'delete from case_view_hour where date=%s; vacuum;' % str(expire_date)
