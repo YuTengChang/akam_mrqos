@@ -83,6 +83,10 @@ def main():
                                                                    config.region_view_hour_db,
                                                                    os.path.join(config.region_view_hour_data_VM, 'input_query.sql'))
         sp.check_call(cmd_str, shell=True)
+        # VM data remove
+        cmd_str = "ssh %s 'rm %s' " % (config.web_server_machine,
+                                       os.path.join(config.region_view_hour_data_VM, target_file))
+        sp.check_call(cmd_str, shell=True)
 
         # remove local file
         # os.remove(local_temp) #< this could be a backup.
@@ -90,11 +94,20 @@ def main():
 
     # expire the data from SQLite database
     print "now do the cleaning."
-    expire_region_view_hour = config.region_view_hour_delete # 5 days expiration
+    expire_region_view_hour = config.region_view_hour_delete # 3 days expiration
     expire_date = time.strftime('%Y%m%d', time.gmtime(float(ts - expire_region_view_hour)))
     sql_str = 'delete from region_view_hour where date=%s; vacuum;' % str(expire_date)
     cmd_str = '/opt/anaconda/bin/sqlite3 %s "%s"' % (config.region_view_hour_db,
                                                      sql_str)
+    sp.check_call(cmd_str, shell=True)
+    # expire the data from SQLite database on VM
+    print "now do the cleaning on VM."
+    expire_region_view_hour_vm = config.region_view_hour_delete + 60*60*24*3 # 3+3 days expiration (~ 1-week)
+    expire_date = time.strftime('%Y%m%d', time.gmtime(float(ts - expire_region_view_hour_vm)))
+    sql_str = 'delete from region_view_hour where date=%s; vacuum;' % str(expire_date)
+    cmd_str = '''ssh %s '/opt/anaconda/bin/sqlite3 %s "%s" ' ''' % (config.web_server_machine,
+                                                                    config.region_view_hour_db,
+                                                                    sql_str)
     sp.check_call(cmd_str, shell=True)
 
 
@@ -184,7 +197,7 @@ def main():
 
     # expire the data from SQLite database on VM
     print "now do the cleaning on VM."
-    expire_case_view_hour_vm = config.case_view_hour_delete + 60*60*24*5 # 3+5 days expiration (> 1-week)
+    expire_case_view_hour_vm = config.case_view_hour_delete + 60*60*24*3 # 2+3 days expiration (~ 1-week)
     expire_date = time.strftime('%Y%m%d', time.gmtime(float(ts - expire_case_view_hour_vm)))
     sql_str = 'delete from case_view_hour where date=%s; vacuum;' % str(expire_date)
     cmd_str = '''ssh %s '/opt/anaconda/bin/sqlite3 %s "%s" ' ''' % (config.web_server_machine,
