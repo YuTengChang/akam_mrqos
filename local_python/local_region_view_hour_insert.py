@@ -102,7 +102,7 @@ def main():
     sp.check_call(cmd_str, shell=True)
     # expire the data from SQLite database on VM
     print "now do the cleaning on VM."
-    expire_region_view_hour_vm = config.region_view_hour_delete + 60*60*24*3 # 3+3 days expiration (~ 1-week)
+    expire_region_view_hour_vm = config.region_view_hour_delete + 60*60*24*4 # 1+4 days expiration (~ 1-week)
     expire_date = time.strftime('%Y%m%d', time.gmtime(float(ts - expire_region_view_hour_vm)))
     sql_str = 'delete from region_view_hour where date=%s; vacuum;' % str(expire_date)
     cmd_str = '''ssh %s '/opt/anaconda/bin/sqlite3 %s "%s" ' ''' % (config.web_server_machine,
