@@ -65,6 +65,20 @@ def main():
                                                          os.path.join(config.region_view_hour_data_local, 'input_query.sql'))
         sp.check_call(cmd_str, shell=True)
 
+        # move to VM
+        cmd_str = 'scp %s ychang@%s:%s' % (local_file,
+                                           config.web_server_machine,
+                                           os.path.join(config.region_view_hour_data_VM, target_file))
+        sp.check_call(cmd_str, shell=True)
+        # VM import sql
+        cmd_str = "ssh %s 'echo .separator , > %s' " % (config.web_server_machine,
+                                                        os.path.join(config.region_view_hour_data_VM, 'input_query.sql'))
+        sp.check_call(cmd_str, shell=True)
+        cmd_str = "ssh %s 'echo .import %s region_view_hour >> %s' " % (config.web_server_machine,
+                                                                      os.path.join(config.region_view_hour_data_VM, target_file),
+                                                                      os.path.join(config.region_view_hour_data_VM, 'input_query.sql'))
+        sp.check_call(cmd_str, shell=True)
+
         # remove local file
         # os.remove(local_temp) #< this could be a backup.
         os.remove(local_file)
