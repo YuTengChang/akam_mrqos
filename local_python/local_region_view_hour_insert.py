@@ -78,6 +78,11 @@ def main():
                                                                       os.path.join(config.region_view_hour_data_VM, target_file),
                                                                       os.path.join(config.region_view_hour_data_VM, 'input_query.sql'))
         sp.check_call(cmd_str, shell=True)
+        # VM data import
+        cmd_str = "ssh %s '/opt/anaconda/bin/sqlite3 %s < %s' " % (config.web_server_machine,
+                                                                   config.region_view_hour_db,
+                                                                   os.path.join(config.region_view_hour_data_VM, 'input_query.sql'))
+        sp.check_call(cmd_str, shell=True)
 
         # remove local file
         # os.remove(local_temp) #< this could be a backup.
