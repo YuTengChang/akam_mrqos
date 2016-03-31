@@ -13,3 +13,7 @@ create table case_view_hour (
         date integer,
         hour varchar
 );
+create index if not exists date_idx on case_view_hour (date ASC);
+create index if not exists maprule_idx on case_view_hour (maprule ASC);
+create index if not exists geoname_idx on case_view_hour (geoname ASC);
+create index if not exists netname_idx on case_view_hour (netname ASC);

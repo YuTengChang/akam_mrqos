@@ -19,3 +19,5 @@ create table region_view_hour (
         date integer,
         hour varchar
  );
+create index if not exists date_idx on region_view_hour (date ASC);
+create index if not exists region_idx on region_view_hour (region ASC);
