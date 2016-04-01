@@ -63,7 +63,8 @@ def main():
         # data import
         cmd_str = '/opt/anaconda/bin/sqlite3 %s < %s' % (config.region_view_hour_db,
                                                          os.path.join(config.region_view_hour_data_local, 'input_query.sql'))
-        sp.check_call(cmd_str, shell=True)
+        # sp.check_call(cmd_str, shell=True)
+        # turn off the local import of the region_view_hour database
 
         # move to VM
         cmd_str = 'scp %s ychang@%s:%s' % (local_file,
@@ -99,7 +100,9 @@ def main():
     sql_str = 'delete from region_view_hour where date=%s; vacuum;' % str(expire_date)
     cmd_str = '/opt/anaconda/bin/sqlite3 %s "%s"' % (config.region_view_hour_db,
                                                      sql_str)
-    sp.check_call(cmd_str, shell=True)
+    # sp.check_call(cmd_str, shell=True)
+    # SQLite3 clean up turned off on local dataset
+
     # expire the data from SQLite database on VM
     print "now do the cleaning on VM."
     expire_region_view_hour_vm = config.region_view_hour_delete + 60*60*24*4 # 1+4 days expiration (~ 1-week)
