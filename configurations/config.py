@@ -49,7 +49,7 @@ mrqos_join_delete = 60 * 60 * 24 * 15 # 15 days
 
 mrqos_region_delete = 60 * 60 * 24 * 5 # 5 days
 region_view_hour_delete = 60 * 60 * 24 * 1 # 1 days
-case_view_hour_delete = 60 * 60 * 24 * 2 # 2 days
+case_view_hour_delete = 60 * 60 * 24 * 1 # 1 days
 
 #==============================================================================
 # # Shell Scripts
