@@ -75,7 +75,7 @@ def main():
         except:
             print "    **** # scp failure. "
             cmd_str = """ echo 'dummy' > %s """ % os.path.join(local_dir, 'temp.csv')
-            sp.check_call(cmd_str, shell=True
+            sp.check_call(cmd_str, shell=True)
         query_retry_time += 1
         if query_retry_time > max_retrial:
             print "    **** reach max re-trial, quitting..."
