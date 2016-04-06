@@ -48,24 +48,34 @@ def main():
 
     print "    ****  mapmon leader machine: " + mapmon_machine
 
-    print "    ****  obtaining from mapmon."
+    print "    ****  obtaining database at mapmon."
     cmd_str = """ gwsh -2 %s "bash -s" <  %s """ % ( mapmon_machine, mapmon_query_bash_file )
     print "    ****  command: " + cmd_str
     sp.check_call(cmd_str, shell=True)
     print "    ****  scp file to local"
     print "    ****  scp command: " + scp_from_mapmon
-    sp.check_call(scp_from_mapmon, shell=True)
+    try:
+        sp.check_call(scp_from_mapmon, shell=True)
+    except:
+        print "    **** # scp failure. "
+        cmd_str = """ echo 'dummy' > %s """ % os.path.join(local_dir, 'temp.csv')
+        sp.check_call(cmd_str, shell=True)
 
     # if query failed, re-try:
     while os.stat(os.path.join(local_dir, 'temp.csv')).st_size < 10000:
         mapmon_machine = sp.check_output('/u4/ychang/bin/mapper-leader mapmon', shell=True)
         mapmon_machine = mapmon_machine.strip()
         scp_from_mapmon = """ scp -Sgwsh testgrp@%s:%s %s""" % (mapmon_machine, mapmon_file, os.path.join(local_dir, 'temp.csv'))
-        print "    ****  obtaining from mapmon."
+        print "    ****  obtaining database at mapmon."
         cmd_str = """ gwsh -2 %s "bash -s" < %s """ % ( mapmon_machine, mapmon_query_bash_file )
         sp.check_call(cmd_str, shell=True)
         print "    ****  scp file to local"
-        sp.check_call(scp_from_mapmon, shell=True)
+        try:
+            sp.check_call(scp_from_mapmon, shell=True)
+        except:
+            print "    **** # scp failure. "
+            cmd_str = """ echo 'dummy' > %s """ % os.path.join(local_dir, 'temp.csv')
+            sp.check_call(cmd_str, shell=True
         query_retry_time += 1
         if query_retry_time > max_retrial:
             print "    **** reach max re-trial, quitting..."
