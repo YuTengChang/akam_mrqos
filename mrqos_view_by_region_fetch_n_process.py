@@ -24,7 +24,7 @@ def main():
     # variable settings
     query_retry_time = 1
     max_retrial = 10
-    mapmon_machine = sp.check_output('/u4/ychang/bin/mapper-leader mapmon', shell=True)
+    mapmon_machine = sp.check_output('/home/ychang/bin/bin/mapper-leader mapmon', shell=True)
     mapmon_machine = mapmon_machine.strip()
     cluster_namenode = "81.52.137.195"
     mapmon_file = "/home/testgrp/full-table-mrqos-view-by-region"
