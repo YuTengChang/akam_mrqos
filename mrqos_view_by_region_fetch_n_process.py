@@ -23,7 +23,7 @@ def main():
 
     # variable settings
     query_retry_time = 1
-    max_retrial = 10
+    max_retrial = 20
     mapmon_machine = sp.check_output('/home/ychang/bin/bin/mapper-leader mapmon', shell=True)
     mapmon_machine = mapmon_machine.strip()
     cluster_namenode = "81.52.137.195"
