@@ -48,13 +48,21 @@ def main():
 
     print "    ****  mapmon leader machine: " + mapmon_machine
 
-    print "    ****  obtaining database at mapmon."
-    cmd_str = """ gwsh -2 %s "bash -s" <  %s """ % ( mapmon_machine, mapmon_query_bash_file )
-    print "    ****  command: " + cmd_str
-    sp.check_call(cmd_str, shell=True)
-    print "    ****  scp file to local"
-    print "    ****  scp command: " + scp_from_mapmon
+    # try the mapmon bash processing (db acquire)
     try:
+        print "    ****  obtaining database at mapmon."
+        cmd_str = """ gwsh -2 %s "bash -s" <  %s """ % ( mapmon_machine, mapmon_query_bash_file )
+        print "    ****  command: " + cmd_str
+        sp.check_call(cmd_str, shell=True)
+    except:
+        print "    **** # bash process at mapmon failure. "
+        cmd_str = """ echo 'dummy' > %s """ % os.path.join(local_dir, 'temp.csv')
+        sp.check_call(cmd_str, shell=True)
+
+    # try copy the db to local
+    try:
+        print "    ****  scp file to local"
+        print "    ****  scp command: " + scp_from_mapmon
         sp.check_call(scp_from_mapmon, shell=True)
     except:
         print "    **** # scp failure. "
@@ -68,14 +76,22 @@ def main():
         scp_from_mapmon = """ scp -Sgwsh testgrp@%s:%s %s""" % (mapmon_machine, mapmon_file, os.path.join(local_dir, 'temp.csv'))
         print "    ****  obtaining database at mapmon."
         cmd_str = """ gwsh -2 %s "bash -s" < %s """ % ( mapmon_machine, mapmon_query_bash_file )
-        sp.check_call(cmd_str, shell=True)
-        print "    ****  scp file to local"
         try:
+            sp.check_call(cmd_str, shell=True)
+        except:
+            print "    **** # bash process at mapmon failure. "
+            cmd_str = """ echo 'dummy' > %s """ % os.path.join(local_dir, 'temp.csv')
+            sp.check_call(cmd_str, shell=True)
+
+        try:
+            print "    ****  scp file to local"
             sp.check_call(scp_from_mapmon, shell=True)
         except:
             print "    **** # scp failure. "
             cmd_str = """ echo 'dummy' > %s """ % os.path.join(local_dir, 'temp.csv')
             sp.check_call(cmd_str, shell=True)
+
+        # ending mechanism
         query_retry_time += 1
         if query_retry_time > max_retrial:
             print "    **** reach max re-trial, quitting..."
