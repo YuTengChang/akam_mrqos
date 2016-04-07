@@ -109,6 +109,7 @@ def main():
                                                                        cluster_namenode,
                                                                        config.mrqos_data,
                                                                        str(timenow))
+    print "    **** command: %s" % (cmd_str)
     sp.check_call(cmd_str, shell=True)
 
 if __name__ == '__main__':
