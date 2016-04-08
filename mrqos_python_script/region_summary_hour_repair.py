@@ -36,19 +36,29 @@ def main(argv):
         elif opt in ("-h", "--hour"):
             hour = arg
 
-    print 'datestamp = %s' % datestamp
-    print 'hour = %s' % hour
+    ts = calendar.timegm(time.gmtime())
+    print "###################"
+    print "# Performing the repair of the  mrqos_region summary"
+    print "# starting processing time is " + str(ts) + " = " + time.strftime('GMT %Y-%m-%d %H:%M:%S', time.gmtime(ts))
+    print "###################"
+
+    if (not datestamp and not hour):
+        print 'region_summary_hour_repair.py -d <datestamp> -h <hour>'
+        sys.exit(2)
+
+    print 'Fixing datestamp = %s' % datestamp
+
+    if not hour:
+        hour_list = [str("%02d" % x) for x in range(24)]
+        print 'Fixing hour = %s' % hour_list
+    else:
+        print 'Fixing hour = %s' % hour
 
     return
 
-    ts = calendar.timegm(time.gmtime())
-    print "###################"
-    print "# Performing the hourly mrqos_region summary"
-    print "# starting processing time is " + str(ts) + " = " + time.strftime('GMT %Y-%m-%d %H:%M:%S', time.gmtime(ts))
-    print "###################"
-    ts_last_hour = ts-3600
-    datestamp = time.strftime('%Y%m%d', time.gmtime(float(ts_last_hour)))
-    hourstamp = time.strftime('%H', time.gmtime(float(ts_last_hour)))
+    #ts_last_hour = ts-3600
+    #datestamp = time.strftime('%Y%m%d', time.gmtime(float(ts_last_hour)))
+    #hourstamp = time.strftime('%H', time.gmtime(float(ts_last_hour)))
     #hour_list = [str("%02d" % x) for x in range(24)]
     region_summary_retrial_max = 10
 
