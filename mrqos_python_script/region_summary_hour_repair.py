@@ -69,7 +69,7 @@ def main(argv):
         hourstamp = hour
         cleanup_mrqos_region_related_tables(datestamp, hourstamp)
 
-    return
+    print "    #**** rebuild the db / table: "
 
     # ############################### #
     # The SUMMARY HOUR hive procedure #
@@ -177,7 +177,6 @@ def main(argv):
                 print "    ******  failed with time cost = %s upto #retrials=%s" % (str(time.time()-tic), str(count_retrial))
                 hdfsutil.rm(config.hdfs_qos_rg_view_hour % (datestamp, hourstamp), r=True)
                 count_retrial += 1
-
     else:
         print " file exists."
 
