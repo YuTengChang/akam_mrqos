@@ -54,13 +54,22 @@ def main(argv):
     else:
         print 'Fixing hour = %s' % hour
 
-    return
-
     #ts_last_hour = ts-3600
     #datestamp = time.strftime('%Y%m%d', time.gmtime(float(ts_last_hour)))
     #hourstamp = time.strftime('%H', time.gmtime(float(ts_last_hour)))
     #hour_list = [str("%02d" % x) for x in range(24)]
     region_summary_retrial_max = 10
+
+
+    print "    #**** first perform table cleanups: "
+    if not hour:
+        for hourstamp in hour_list:
+            cleanup_mrqos_region_related_tables(datestamp, hourstamp)
+    else:
+        hourstamp = hour
+        cleanup_mrqos_region_related_tables(datestamp, hourstamp)
+
+    return
 
     # ############################### #
     # The SUMMARY HOUR hive procedure #
