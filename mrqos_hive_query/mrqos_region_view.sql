@@ -272,3 +272,136 @@ WHERE datestamp=20160315 and hour=10
 ) a
 GROUP BY maprule, geoname, netname, case_score_target, case_ra_load, case_nsd_demand, case_eu_demand, case_uniq_region
 limit 1;
+
+========================================================================================================================
+TEST PROCEDURE OF MRQOS_REGION_SUMMARIZE_HOUR
+========================================================================================================================
+
+SELECT * FROM
+(
+
+SELECT c2.*, c1.score_target FROM
+(SELECT maprule, geoname, netname, max(targetvalue) score_target FROM score GROUP BY maprule, geoname, netname) c1
+ INNER JOIN
+(
+SELECT
+    b.maprule,
+    b.geoname,
+    b.netname,
+    b.region,
+    b.avg_region_score,
+    b.max_region_score,
+    b.avg_region_nsd_demand,
+    b.daily_region_nsd_demand,
+    b.avg_region_eu_demand,
+    b.daily_region_eu_demand,
+    b.daily_region_ra_load,
+    b.avg_case_percent_pre_norm_load,
+    b.avg_case_percent_load,
+    b.avg_recorded_load_percentage,
+    b.case_percent_load,
+    b.case_percent_nsd_demand,
+    b.case_percent_eu_demand,
+    b.case_ra_load,
+    b.case_nsd_demand,
+    b.case_eu_demand,
+    b.case_sum_max_region_percent_load,
+    b.case_uniq_region,
+    a.name,
+    a.ecor,
+    a.continent,
+    a.country,
+    a.city,
+    round(a.latitude,3) latitude,
+    round(a.longitude,3) longitude,
+    a.asnum,
+    a.provider,
+    a.region_capacity,
+    a.ecor_capacity,
+    a.prp,
+    a.numghosts
+FROM
+( select * from mapper.barebones a1, (select max(day) maxday from mapper.barebones) a2 where a1.day=a2.maxday
+) a
+INNER JOIN
+(
+    SELECT b1.maprule maprule,
+           b1.geoname geoname,
+           b1.netname netname,
+           b1.region region,
+           round(b1.avg_region_score,2) avg_region_score,
+           round(b1.max_region_score,2) max_region_score,
+           round(b1.avg_region_nsd_demand,4) avg_region_nsd_demand,
+           round(b1.daily_region_nsd_demand,4) daily_region_nsd_demand,
+           round(b1.avg_region_eu_demand,4) avg_region_eu_demand,
+           round(b1.daily_region_eu_demand,4) daily_region_eu_demand,
+           b1.daily_region_ra_load daily_region_ra_load,
+           round(b1.case_percent_pre_norm_load,4) avg_case_percent_pre_norm_load,
+           round(b1.case_percent_load,4) avg_case_percent_load,
+           round(b1.recorded_load_percentage,4) avg_recorded_load_percentage,
+           CASE WHEN b2.case_ra_load>0 THEN round(100*b1.daily_region_ra_load/b2.case_ra_load,4) ELSE 0.0 END case_percent_load,
+           CASE WHEN b2.case_nsd_demand>0 THEN round(100*b1.daily_region_nsd_demand/b2.case_nsd_demand,4) ELSE 0.0 END case_percent_nsd_demand,
+           CASE WHEN b2.case_eu_demand>0 THEN round(100*b1.daily_region_eu_demand/b2.case_eu_demand,4) ELSE 0.0 END case_percent_eu_demand,
+           b2.case_ra_load case_ra_load,
+           b2.case_nsd_demand case_nsd_demand,
+           b2.case_eu_demand case_eu_demand,
+           b2.case_sum_max_region_percent_load case_sum_max_region_percent_load,
+           b2.uniq_region case_uniq_region,
+           b1.datestamp,
+           b1.hour
+    FROM
+    (
+        SELECT maprule,
+               geoname,
+               netname,
+               region,
+               avg(score) avg_region_score,
+               max(score) max_region_score,
+               avg(nsd_demand) avg_region_nsd_demand,
+               sum(nsd_demand) daily_region_nsd_demand,
+               avg(eu_demand) avg_region_eu_demand,
+               sum(eu_demand) daily_region_eu_demand,
+               sum(ra_load) daily_region_ra_load,
+               avg(case_percent_pre_norm_load) case_percent_pre_norm_load,
+               avg(case_percent_load) case_percent_load,
+               avg(recorded_load_percentage) recorded_load_percentage,
+               datestamp,
+               hour
+        FROM mrqos_region
+        WHERE datestamp=20160407 and hour=20
+        GROUP BY maprule, geoname, netname, region, datestamp, hour
+    ) b1
+    INNER JOIN
+    (
+        SELECT maprule,
+               geoname,
+               netname,
+               sum(ra_load) case_ra_load,
+               sum(nsd_demand) case_nsd_demand,
+               sum(eu_demand) case_eu_demand,
+               round(sum(max_case_percent_load),4) case_sum_max_region_percent_load,
+               count(distinct(region)) uniq_region
+        FROM
+        (
+            SELECT maprule,
+                   geoname,
+                   netname,
+                   region,
+                   sum(ra_load) ra_load,
+                   sum(nsd_demand) nsd_demand,
+                   sum(eu_demand) eu_demand,
+                   max(CASE WHEN case_percent_load>0 THEN case_percent_load ELSE 0 END) max_case_percent_load
+            FROM mrqos_region
+            WHERE datestamp=20160407 and hour=20
+            GROUP BY maprule, geoname, netname, region
+        ) b3
+        GROUP BY maprule, geoname, netname
+    ) b2
+    ON b1.maprule=b2.maprule AND b1.geoname=b2.geoname AND b1.netname=b2.netname
+) b
+ON a.region=b.region
+WHERE b.case_percent_load >= 0.00005
+) c2
+on c1.maprule=c2.maprule and c1.geoname=c2.geoname and c1.netname=c2.netname
+
+) everyrow LIMIT 3;

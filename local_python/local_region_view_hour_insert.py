@@ -90,7 +90,8 @@ def main():
         sp.check_call(cmd_str, shell=True)
 
         # remove local file
-        # os.remove(local_temp) #< this could be a backup.
+        os.remove(local_temp)
+        shutil.copyfile(local_file, local_temp) #< this could be a backup.
         os.remove(local_file)
 
     # expire the data from SQLite database
@@ -187,7 +188,8 @@ def main():
 
         # remove local file
         os.remove(local_temp)
-        # os.remove(local_file) #< this could be a backup.
+        shutil.copyfile(local_file, local_temp) #< this could be a backup.
+        os.remove(local_file)
 
     # expire the data from SQLite database
     print "now do the cleaning."
