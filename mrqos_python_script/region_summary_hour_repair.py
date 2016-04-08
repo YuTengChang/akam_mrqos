@@ -19,9 +19,9 @@ import getopt
 def main(argv):
     """ get the date and hour for the specified day and hour. Clean(drop) and rebuild the table partition. """
     try:
-        opts, args = getopt.getopt(argv,"hd:o:",["datestamp=","hour="])
+        opts, args = getopt.getopt(argv,"qd:h:",["datestamp=","hour="])
     except getopt.GetoptError:
-        print 'test.py -i <inputfile> -o <outputfile>'
+        print 'region_summary_hour_repair.py -d <datestamp> -h <hour>'
         sys.exit(2)
 
     hour =''
@@ -29,7 +29,7 @@ def main(argv):
 
     for opt, arg in opts:
         if opt == '-q':
-            print 'test.py -d <datestamp> -h <hour>'
+            print 'region_summary_hour_repair.py -d <datestamp> -h <hour>'
             sys.exit()
         elif opt in ("-d", "--datestamp"):
             datestamp = arg
