@@ -89,7 +89,7 @@ def main():
                                        os.path.join(config.region_view_hour_data_VM, target_file))
         sp.check_call(cmd_str, shell=True)
 
-        # remove local file
+        # remove local file (change the backup scheme)
         os.remove(local_temp)
         shutil.copyfile(local_file, local_temp) #< this could be a backup.
         os.remove(local_file)
@@ -186,7 +186,7 @@ def main():
                                        os.path.join(config.case_view_hour_data_VM, target_file))
         sp.check_call(cmd_str, shell=True)
 
-        # remove local file
+        # remove local file (change the backup scheme)
         os.remove(local_temp)
         shutil.copyfile(local_file, local_temp) #< this could be a backup.
         os.remove(local_file)
