@@ -112,7 +112,7 @@ def main():
     cmd_str = '''ssh %s "/opt/anaconda/bin/sqlite3 %s \\\"%s\\\" " ''' % (config.web_server_machine,
                                                                     config.region_view_hour_db,
                                                                     sql_str)
-    print cmd_str
+    # print cmd_str
     sp.check_call(cmd_str, shell=True)
 
 
