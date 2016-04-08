@@ -13,9 +13,34 @@ import calendar
 import configurations.config as config
 import configurations.hdfsutil as hdfsutil
 import configurations.beeline as beeline
+import subprocess as sp
+import getopt
 
-def main():
-    """ get the date and hour for the previous hour. Will check from the beginning of the day, insert when missing. """
+def main(argv):
+    """ get the date and hour for the specified day and hour. Clean(drop) and rebuild the table partition. """
+    try:
+        opts, args = getopt.getopt(argv,"hd:o:",["datestamp=","hour="])
+    except getopt.GetoptError:
+        print 'test.py -i <inputfile> -o <outputfile>'
+        sys.exit(2)
+
+    hour =''
+    datestamp = ''
+
+    for opt, arg in opts:
+        if opt == '-q':
+            print 'test.py -d <datestamp> -h <hour>'
+            sys.exit()
+        elif opt in ("-d", "--datestamp"):
+            datestamp = arg
+        elif opt in ("-h", "--hour"):
+            hour = arg
+
+    print 'datestamp = %s' % datestamp
+    print 'hour = %s' % hour
+
+    return
+
     ts = calendar.timegm(time.gmtime())
     print "###################"
     print "# Performing the hourly mrqos_region summary"
@@ -63,28 +88,6 @@ def main():
     else:
         print " file exists."
 
-    # check if the summary has been performed since the beginning of the day, last check on day X is X+1/0:30:00
-    #for hour in hour_list:
-    #    if hour < hourstamp:
-    #        print "    ****  checking day = %s, hour = %s." % (datestamp, hour),
-    #        if hdfsutil.test_file(os.path.join(config.hdfs_qos_rg_hour % (datestamp, hour), '000000_0.deflate')):
-    #            print " file not exits,",
-    #            f = open(os.path.join(config.mrqos_hive_query, 'mrqos_region_summarize_hour.hive'), 'r')
-    #            strcmd = f.read()
-    #            strcmd_s = strcmd % (datestamp, hour, datestamp, hour, datestamp, hour)
-    #            f.close()
-    #            print " BLN for hourly summary for day = %s, hour = %s." %(datestamp, hour)
-    #            tic = time.time()
-    #            try:
-    #                beeline.bln_e(strcmd_s)
-    #                print "    ******  success with time cost = %s." % str(time.time()-tic)
-    #            except:
-    #                # delete the folder if summarization failed.
-    #                print "    ******  summarization failed with time cost %s." % str(time.time()-tic)
-    #                # hdfsutil.rm(config.hdfs_qos_rg_hour % (datestamp, hour), r=True)
-    #        else:
-    #            print " file exists."
-
 
     # ############################ #
     # The CASE VIEW hive procedure #
@@ -121,7 +124,6 @@ def main():
 
     else:
         print " file exists."
-
 
 
     # ############################## #
@@ -161,6 +163,23 @@ def main():
         print " file exists."
 
 
+def cleanup_mrqos_region_related_tables(datestamp, hour):
+    tables = ['mrqos_region_hour', 'case_view_hour', 'region_view_hour']
+    for table_item in tables:
+        try:
+            # drop partitions (ok even if partition does not exist)
+            hiveql_str = 'use mrqos; alter table %s drop if exists partition(datestamp=%s, hour=%s)' % (table_item,
+                                                                                                        str(datestamp),
+                                                                                                        str(hour))
+            beeline.bln_e(hiveql_str)
+            # remove data from HDFS (ok even if folder in hdfs does not exist)
+            hdfs_d = os.path.join(config.hdfs_table, table_item, 'datestamp=%s' % str(datestamp), 'hour=%s' % str(hour))
+            hdfsutil.rm(hdfs_d, r=True)
+        except sp.CalledProcessError:
+            print ">> failed in hive table clean up in table: %s for partition datestamp=%s, hour=%s." % (table_item,
+                                                                                                          str(datestamp),
+                                                                                                          str(hour))
+            pass
 
 # ==============================================================================
 # # remove partitions from hive table
@@ -172,4 +191,4 @@ def main():
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    sys.exit(main(sys.argv[1:]))
