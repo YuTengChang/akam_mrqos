@@ -113,7 +113,7 @@ def main():
                                                                     config.region_view_hour_db,
                                                                     sql_str)
     # print cmd_str
-    sp.check_call(cmd_str, shell=True)
+    #sp.check_call(cmd_str, shell=True)
 
 
     # #################################### #
@@ -210,7 +210,7 @@ def main():
                                                                           config.case_view_hour_db,
                                                                           sql_str)
     #print cmd_str
-    sp.check_call(cmd_str, shell=True)
+    #sp.check_call(cmd_str, shell=True)
 
 
 if __name__ == '__main__':
