@@ -9,8 +9,8 @@ import shutil
 import time
 import calendar
 import subprocess as sp
-sys.path.append('/home/ychang/Documents/Projects/18-DDC/MRQOS/')
-import configurations.config as config
+#sys.path.append('/home/ychang/Documents/Projects/18-DDC/MRQOS/')
+#import configurations.config as config
 
 def main():
     ts = calendar.timegm(time.gmtime())
