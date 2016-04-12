@@ -118,7 +118,7 @@ select
      round(case when ictd_freq>0 then 100*ictd_area/(n_count*(100-ict_tar)) else 0 end, 2) avg_ictd
 from (
     select
-        to_date(from_unixtime((unix_timestamp()-(unix_timestamp()%86400))-3*86400)) STARTDATE,
+        to_date(from_unixtime((unix_timestamp()-(unix_timestamp()%86400))-3r*86400)) STARTDATE,
         to_date(from_unixtime(unix_timestamp()-(unix_timestamp()%86400))) ENDDATE,
         maprule,
         geoname,
