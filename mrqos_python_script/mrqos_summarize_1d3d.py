@@ -40,18 +40,21 @@ def my_retrial(max_retrial, script_file, output_file=''):
         try:
             tic = time.time()
             if len(output_file) > 0:
-                print "  file opened  "
                 f = open('%s' % output_file, 'w')
+                print "  file opened: %s" % output_file
                 sp.check_call(['hive', '-f', '%s' % script_file], stdout=f)
+                print "  script running: %s" % script_file
+                f.close()
             else:
                 sp.check_call(['hive', '-f', '%s' % script_file])
             print "    # success with time cost = %s" % str(time.time()-tic)
+
             break
         except:
             retrial += 1
             print "    # failed retrial #%s with time cost = %s" % (str(retrial), str(time.time()-tic))
-        if len(output_file) > 0:
-            f.close()
+        #if len(output_file) > 0:
+        #    f.close()
 
 
 def upload_to_hive(listname, hdfs_d, partition_name, partition_idx, tablename):
