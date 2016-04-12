@@ -21,14 +21,14 @@ def main():
     datenow = str(datetime.date.today()-datetime.timedelta(1))
     datenow = datenow[0:4]+datenow[5:7]+datenow[8:10]
     print "###################"
-    print "# Start processing the data back in " + datenow + " for two-week window"
+    print "# Start processing the data back in " + datenow + " for 1d/3d window"
     print "# starting processing time is " + str(timenow)
     print "###################"
     max_retrial = 10
 
     print "    ****  running hive summarizing script."
-    script_file = '/home/ychang/MRQOS/mrqos_hive_query/MRQOS_table_summarize_1d.hive'
-    output_file = '/home/ychang/MRQOS/mrqos_data/summarized_table_1d.tmp'
+    script_file = '/home/testgrp/MRQOS/mrqos_hive_query/MRQOS_table_summarize_1d.hive'
+    output_file = '/home/testgrp/MRQOS/mrqos_data/summarized_table_1d.tmp'
     my_retrial(max_retrial, script_file, output_file=output_file)
 
     return
