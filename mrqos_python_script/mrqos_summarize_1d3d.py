@@ -25,11 +25,32 @@ def main():
     print "# starting processing time is " + str(timenow)
     print "###################"
     max_retrial = 10
-    print datenow
+
+    print "    ****  running hive summarizing script."
+    script_file = '/home/ychang/MRQOS/mrqos_hive_query/MRQOS_table_summarize_1d.hive'
+    output_file = '/home/ychang/MRQOS/mrqos_data/summarized_table_1d.tmp'
+    my_retrial(max_retrial, script_file, output_file=output_file)
+
     return
 
 
-def my_retrial(retrial_max, command, outputfile=''):
+def my_retrial(max_retrial, script_file, output_file=''):
+    retrial = 0
+    while retrial < max_retrial:
+        try:
+            tic = time.time()
+            if len(output_file) > 0:
+                f = open('%s' % output_file, 'w')
+                sp.check_call(['hive', '-f', '%s' % script_file], stdout=f)
+            else:
+                sp.check_call(['hive', '-f', '%s' % script_file])
+            print "    # success with time cost = %s" % str(time.time()-tic)
+            break
+        except:
+            retrial += 1
+            print "    # failed retrial #%s with time cost = %s" % (str(retrial), str(time.time()-tic))
+        if len(output_file) > 0:
+            f.close()
 
 
 def upload_to_hive(listname, hdfs_d, partition_name, partition_idx, tablename):
