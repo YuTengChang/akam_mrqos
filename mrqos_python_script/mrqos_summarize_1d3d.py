@@ -40,6 +40,7 @@ def my_retrial(max_retrial, script_file, output_file=''):
         try:
             tic = time.time()
             if len(output_file) > 0:
+                print "  file opened  "
                 f = open('%s' % output_file, 'w')
                 sp.check_call(['hive', '-f', '%s' % script_file], stdout=f)
             else:
