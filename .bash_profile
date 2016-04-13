@@ -13,6 +13,8 @@ export HADOOP_CONF_DIR='/a/third-party/hadoop/conf'
 export HADOOP_USER_NAME=akamai
 
 # Spark related
+export PYSPARK_PYTHON=/a/bin/python2.7
+export SPARK_JAR=/a/third-party/spark/spark-assembly-1.3.0-cdh5.4.3-hadoop2.6.0-cdh5.4.3.jar
 alias pyspark_cluster='MASTER=spark://23.3.136.52:7077  pyspark'
 
 # PIG related (from Kevin)
