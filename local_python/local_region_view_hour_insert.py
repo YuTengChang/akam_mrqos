@@ -196,7 +196,7 @@ def main():
     print "now do the local DB cleaning."
     expire_case_view_hour = config.case_view_hour_delete # 3 days expiration
     expire_date = time.strftime('%Y%m%d', time.gmtime(float(ts - expire_case_view_hour)))
-    sql_str = 'delete from case_view_hour where date<=%s; vacuum;' % str(expire_date)
+    sql_str = '''PRAGMA temp_store_directory='/home/ychang/temp'; delete from case_view_hour where date<=%s; vacuum;''' % str(expire_date)
     cmd_str = '/opt/anaconda/bin/sqlite3 %s "%s"' % (config.case_view_hour_db,
                                                      sql_str)
     print cmd_str
