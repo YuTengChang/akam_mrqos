@@ -23,7 +23,7 @@ def main():
     expire_region_view_hour_vm = 60*60*24*(4+1) # 1+4 days expiration (~ 1-week)
     expire_date = time.strftime('%Y%m%d', time.gmtime(float(ts - expire_region_view_hour_vm)))
     shutil.copyfile(region_view_hour_db, region_view_hour_db_2)
-    sql_str = '''PRAGMA temp_store_directory='/opt/web-data/temp'; delete from region_view_hour where date=%s; vacuum;''' % str(expire_date)
+    sql_str = '''PRAGMA temp_store_directory='/opt/web-data/temp'; delete from region_view_hour where date<%s; vacuum;''' % str(expire_date)
     cmd_str = '''/opt/anaconda/bin/sqlite3 %s "%s"  ''' % (region_view_hour_db_2,
                                                            sql_str)
     sp.check_call(cmd_str, shell=True)
@@ -33,7 +33,7 @@ def main():
     expire_region_view_hour_vm = 60*60*24*(4+1) # 1+4 days expiration (~ 1-week)
     expire_date = time.strftime('%Y%m%d', time.gmtime(float(ts - expire_region_view_hour_vm)))
     shutil.copyfile(case_view_hour_db, case_view_hour_db_2)
-    sql_str = '''PRAGMA temp_store_directory='/opt/web-data/temp'; delete from case_view_hour where date=%s; vacuum;''' % str(expire_date)
+    sql_str = '''PRAGMA temp_store_directory='/opt/web-data/temp'; delete from case_view_hour where date<%s; vacuum;''' % str(expire_date)
     cmd_str = '''/opt/anaconda/bin/sqlite3 %s "%s"  ''' % (case_view_hour_db_2,
                                                            sql_str)
     sp.check_call(cmd_str, shell=True)
