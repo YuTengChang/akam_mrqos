@@ -29,8 +29,8 @@ def main():
     # this is one day summary (last day, partition datestamp = X-1)
     print "    #****  running hive summarizing script."
     script_file = '/home/testgrp/MRQOS/mrqos_hive_query/MRQOS_table_summarize_1d.hive'
-    output_file = os.path.join(config.mrqos_data, 'summarized_processed_1d.tmp')
-    processed_file = '/home/testgrp/MRQOS/mrqos_data/summarized_processed_1d.tmp'
+    output_file = os.path.join(config.mrqos_data, 'summarized_1d.tmp')
+    processed_file = os.path.join(config.mrqos_data, 'summarized_processed_1d.tmp')
     my_retrial(max_retrial, script_file, output_file=output_file)
     # process the file, take country only
     cmd = """cat %s | sed s:NULL:0:g | sed 's/\t/,/g' | awk -F',' '{x=length($4); if(x==2){print $0;}}' | awk -F',' '{if($3>0){$1=""; $2=""; print $0;}}' | sed 's/^\s\+//g' > %s""" % (output_file,
@@ -46,8 +46,8 @@ def main():
     # this is three-day summary (last 3 days, partition datestamp = X-1)
     print "    #****  running hive summarizing script."
     script_file = '/home/testgrp/MRQOS/mrqos_hive_query/MRQOS_table_summarize_3d.hive'
-    output_file = os.path.join(config.mrqos_data, 'summarized_processed_3d.tmp')
-    processed_file = '/home/testgrp/MRQOS/mrqos_data/summarized_processed_3d.tmp'
+    output_file = os.path.join(config.mrqos_data, 'summarized_3d.tmp')
+    processed_file = os.path.join(config.mrqos_data, 'summarized_processed_3d.tmp')
     my_retrial(max_retrial, script_file, output_file=output_file)
     # process the file, take country only
     cmd = """cat %s | sed s:NULL:0:g | sed 's/\t/,/g' | awk -F',' '{x=length($4); if(x==2){print $0;}}' | awk -F',' '{if($3>0){$1=""; $2=""; print $0;}}' | sed 's/^\s\+//g' > %s""" % (output_file,
