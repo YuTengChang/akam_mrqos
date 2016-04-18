@@ -98,7 +98,7 @@ def main():
     print "now do the cleaning."
     expire_region_view_hour = config.region_view_hour_delete # 3 days expiration
     expire_date = time.strftime('%Y%m%d', time.gmtime(float(ts - expire_region_view_hour)))
-    sql_str = 'delete from region_view_hour where date=%s; vacuum;' % str(expire_date)
+    sql_str = 'delete from region_view_hour where date<=%s; vacuum;' % str(expire_date)
     cmd_str = '/opt/anaconda/bin/sqlite3 %s "%s"' % (config.region_view_hour_db,
                                                      sql_str)
     # sp.check_call(cmd_str, shell=True)
@@ -196,7 +196,7 @@ def main():
     print "now do the cleaning."
     expire_case_view_hour = config.case_view_hour_delete # 3 days expiration
     expire_date = time.strftime('%Y%m%d', time.gmtime(float(ts - expire_case_view_hour)))
-    sql_str = 'delete from case_view_hour where date=%s; vacuum;' % str(expire_date)
+    sql_str = 'delete from case_view_hour where date<=%s; vacuum;' % str(expire_date)
     cmd_str = '/opt/anaconda/bin/sqlite3 %s "%s"' % (config.case_view_hour_db,
                                                      sql_str)
     sp.check_call(cmd_str, shell=True)
