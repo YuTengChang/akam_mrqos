@@ -155,4 +155,4 @@ class GenericHadoopError(Exception):
         self.message = "Something went wrong in deleting a partition or associated data"
 
 if __name__=='__main__':
-    sys.exit(main())
+    sys.exit(main(sys.argv[1:]))
