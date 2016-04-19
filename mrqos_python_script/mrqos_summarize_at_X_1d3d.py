@@ -76,7 +76,7 @@ def main(argv):
     #my_retrial(max_retrial, script_file, output_file=output_file)
     # process the file, take country only
     #cmd = """cat %s | sed s:NULL:0:g | sed 's/\t/,/g' | awk -F',' '{x=length($4); if(x==2){print $0;}}' | awk -F',' '{if($3>0){$1=""; $2=""; print $0;}}' | sed 's/^\s\+//g' > %s""" % (output_file,
-                                                                                                                                                                                        processed_file)
+    #                                                                                                                                                                                    processed_file)
     #sp.check_call(cmd, shell=True)
 
     # upload the summarized table in hive
