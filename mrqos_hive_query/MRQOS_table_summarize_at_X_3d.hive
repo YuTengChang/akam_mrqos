@@ -118,7 +118,7 @@ select
      round(case when ictd_freq>0 then 100*ictd_area/(n_count*(100-ict_tar)) else 0 end, 2) avg_ictd
 from (
     select
-        to_date(from_unixtime(%s-86400)) STARTDATE,
+        to_date(from_unixtime(%s-3*86400)) STARTDATE,
         to_date(from_unixtime(%s)) ENDDATE,
         maprule,
         geoname,
@@ -214,7 +214,7 @@ from (
         count(*) n_count
     from
         mrqos_join
-    where cast(ts as bigint) >= (%s-86400)
+    where cast(ts as bigint) >= (%s-3*86400)
          and cast(ts as bigint) < (%s)
     group by
     geoname, maprule, netname

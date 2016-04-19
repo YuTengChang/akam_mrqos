@@ -53,8 +53,6 @@ def main(argv):
     strcmd_s = strcmd % (epochtime, epochtime, epochtime, epochtime)
     f.close()
 
-
-
     output_file = os.path.join(config.mrqos_data, 'summarized_1d_at_X.tmp')
     processed_file = os.path.join(config.mrqos_data, 'summarized_processed_1d.tmp')
     my_retrial(max_retrial, strcmd_s, output_file=output_file)
@@ -64,26 +62,33 @@ def main(argv):
     sp.check_call(cmd, shell=True)
 
     # upload the summarized table in hive
-    #print "    #****  upload the summarized table to HDFS."
-    #hdfs_d = os.path.join(config.hdfs_table,'mrqos_sum_1d','datestamp=%s' % str(datenow))
-    #upload_to_hive(processed_file, hdfs_d, 'datestamp', str(datenow), 'mrqos_sum_1d')
+    print "    #****  upload the summarized table to HDFS."
+    hdfs_d = os.path.join(config.hdfs_table,'mrqos_sum_1d','datestamp=%s' % str(datestamp))
+    upload_to_hive(processed_file, hdfs_d, 'datestamp', str(datestamp), 'mrqos_sum_1d')
 
 
     # this is three-day summary (last 3 days, partition datestamp = X-1)
-    #print "    #****  running hive summarizing script."
-    #script_file = '/home/testgrp/MRQOS/mrqos_hive_query/MRQOS_table_summarize_3d.hive'
-    #output_file = os.path.join(config.mrqos_data, 'summarized_3d.tmp')
-    #processed_file = os.path.join(config.mrqos_data, 'summarized_processed_3d.tmp')
-    #my_retrial(max_retrial, script_file, output_file=output_file)
+    print "    #****  running hive summarizing script."
+    script_file = os.path.join(config.mrqos_hive_query, 'MRQOS_table_summarize_at_X_3d.hive')
+    epochtime = str(int( time.mktime(time.strptime(datestamp,'%Y%m%d')) ))
+
+    f = open(script_file, 'r')
+    strcmd = f.read()
+    strcmd_s = strcmd % (epochtime, epochtime, epochtime, epochtime)
+    f.close()
+
+    output_file = os.path.join(config.mrqos_data, 'summarized_3d_at_X.tmp')
+    processed_file = os.path.join(config.mrqos_data, 'summarized_processed_3d.tmp')
+    my_retrial(max_retrial, strcmd_s, output_file=output_file)
     # process the file, take country only
-    #cmd = """cat %s | sed s:NULL:0:g | sed 's/\t/,/g' | awk -F',' '{x=length($4); if(x==2){print $0;}}' | awk -F',' '{if($3>0){$1=""; $2=""; print $0;}}' | sed 's/^\s\+//g' > %s""" % (output_file,
-    #                                                                                                                                                                                    processed_file)
-    #sp.check_call(cmd, shell=True)
+    cmd = """cat %s | sed s:NULL:0:g | sed 's/\t/,/g' | awk -F',' '{x=length($4); if(x==2){print $0;}}' | awk -F',' '{if($3>0){$1=""; $2=""; print $0;}}' | sed 's/^\s\+//g' > %s""" % (output_file,
+                                                                                                                                                                                        processed_file)
+    sp.check_call(cmd, shell=True)
 
     # upload the summarized table in hive
-    #print "    #****  upload the summarized table to HDFS."
-    #hdfs_d = os.path.join(config.hdfs_table,'mrqos_sum_3d','datestamp=%s' % str(datenow))
-    #upload_to_hive(processed_file, hdfs_d, 'datestamp', str(datenow), 'mrqos_sum_3d')
+    print "    #****  upload the summarized table to HDFS."
+    hdfs_d = os.path.join(config.hdfs_table,'mrqos_sum_3d','datestamp=%s' % str(datestamp))
+    upload_to_hive(processed_file, hdfs_d, 'datestamp', str(datestamp), 'mrqos_sum_3d')
 
     return
 
