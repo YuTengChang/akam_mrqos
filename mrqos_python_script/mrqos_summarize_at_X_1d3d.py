@@ -19,16 +19,16 @@ def main(argv):
     """  this function will compute the statistics of MRQOS tables within the
     past two weeks (X-1 day : X-2 days) and (X-1 day : X-4 days)"""
     try:
-        opts, args = getopt.getopt(argv,"qd:",["datestamp="])
+        opts, args = getopt.getopt(argv[1:], "hd:", ["help", "datestamp="])
     except getopt.GetoptError:
-        print 'region_summary_hour_repair.py -d <datestamp>'
+        print 'mrqos_summarize_at_X_1d3d.py -d <datestamp>'
         sys.exit(2)
 
     datestamp = ''
 
     for opt, arg in opts:
-        if opt == '-q':
-            print 'region_summary_hour_repair.py -d <datestamp>'
+        if opt == '-h':
+            print 'mrqos_summarize_at_X_1d3d.py -d <datestamp>'
             sys.exit()
         elif opt in ("-d", "--datestamp"):
             datestamp = arg
