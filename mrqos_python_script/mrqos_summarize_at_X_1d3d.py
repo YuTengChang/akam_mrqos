@@ -20,7 +20,7 @@ def main(argv):
     past two weeks (X-1 day : X-2 days) and (X-1 day : X-4 days)"""
     print argv
     try:
-        opts, args = getopt.getopt(argv[1:], "hd:", ["help", "datestamp="])
+        opts, args = getopt.getopt(argv, "hd:", ["help", "datestamp="])
     except getopt.GetoptError:
         print 'mrqos_summarize_at_X_1d3d.py -d <datestamp>'
     #    sys.exit(2)
