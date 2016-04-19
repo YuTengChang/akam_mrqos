@@ -23,7 +23,7 @@ def main(argv):
         opts, args = getopt.getopt(argv[1:], "hd:", ["help", "datestamp="])
     except getopt.GetoptError:
         print 'mrqos_summarize_at_X_1d3d.py -d <datestamp>'
-        sys.exit(2)
+    #    sys.exit(2)
 
     datestamp = ''
 
