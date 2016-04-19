@@ -19,7 +19,7 @@ import getopt
 def main(argv):
     """  this function will compute the statistics of MRQOS tables within the
     past two weeks (X-1 day : X-2 days) and (X-1 day : X-4 days)"""
-    print argv
+    print sys.argv
     try:
         opts, args = getopt.getopt(argv, "hd:", ["help", "datestamp="])
     except getopt.GetoptError:
