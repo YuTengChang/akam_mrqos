@@ -48,7 +48,9 @@ def main():
         sp.check_call(cmd_str, shell=True)
 
         # rename the file at VM
-        cmd_str = ''' ssh %s -A 'sudo mv /opt/lp/%s /opt/lp/%s' ''' % (file, file+'_p')
+        cmd_str = ''' ssh %s -A 'sudo mv /opt/lp/%s /opt/lp/%s' ''' % (config.web_server_machine,
+                                                                       file,
+                                                                       file+'_p')
         sp.check_call(cmd_str, shell=True)
 
         # cleanup the local files
