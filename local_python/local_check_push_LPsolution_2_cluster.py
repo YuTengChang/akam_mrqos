@@ -30,7 +30,7 @@ def main():
     for file in production_filelist:
         print "    **** processing the solution: "+str(file)
         # fetch the folder from VM
-        cmd_str = 'scp -r ychang@dev-platformperf-scidb02:/opt/lp/%s %s' % (file, os.path.join(local_lp_folder, file))
+        cmd_str = 'scp -r ychang@dev-platformperf-scidb02:/opt/lp/%s %s' % (file, local_lp_folder)
         sp.check_call(cmd_str, shell=True)
         local_solution_folder = os.path.join(os.path.join(local_lp_folder, file), 'vis')
 
