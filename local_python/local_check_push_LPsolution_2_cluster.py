@@ -28,8 +28,31 @@ def main():
     print production_filelist
 
     for file in production_filelist:
+        print "    **** processing the solution: "+str(file)
+        # fetch the folder from VM
         cmd_str = 'scp ychang@dev-platformperf-scidb02:/opt/lp/%s %s' % (file, os.path.join(local_lp_folder, file))
         sp.check_call(cmd_str, shell=True)
+        local_solution_folder = os.path.join(os.path.join(local_lp_folder, file), 'vis')
+
+        # processing the file locally
+        cmd_str = '''cat %s/vis_map_country_network %s/vis_map_country | sed 's/|/ /g' | awk '{if (NF<9){$2=$2" ANY";} print $0;}' > %s/%s ''' % (local_solution_folder,
+                                                                                                                                                  local_solution_folder,
+                                                                                                                                                  local_solution_folder,
+                                                                                                                                                  'vis_all_'+file)
+        sp.check_call(cmd_str, shell=True)
+
+        # upload to the cluster (81.52.137.195)
+        cmd_str = ''' scp -Sgwsh %s/%s testgrp@s195m.ddc:/home/testgrp/MRQOS/mrqos_data/lp/%s''' % (local_solution_folder,
+                                                                                                    'vis_all_'+file,
+                                                                                                    'vis_all_'+file)
+        sp.check_call(cmd_str, shell=True)
+
+        # rename the file at VM
+        cmd_str = ''' ssh %s -A 'sudo mv /opt/lp/%s /opt/lp/%s' ''' % (file, file+'_p')
+        sp.check_call(cmd_str, shell=True)
+
+        # cleanup the local files
+        shutil.rmtree(local_solution_folder)
 
 
 if __name__ == '__main__':
