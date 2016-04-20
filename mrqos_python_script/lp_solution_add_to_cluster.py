@@ -30,6 +30,7 @@ def main():
         print "    **** processing file: "+file_idx
         filedate = file_idx.split('_')[-2].replace('out','20')
         filedate = time.strftime('%Y%m%d', time.gmtime(time.mktime(time.strptime(filedate, '%Y%m%d'))+86400))
+        print filedate
 
         # upload the summarized table in hive
         print "    ****  upload the summarized table to HDFS for file: "+file_idx
