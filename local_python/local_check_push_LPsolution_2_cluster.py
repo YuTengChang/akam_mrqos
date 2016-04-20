@@ -27,7 +27,7 @@ def main():
     production_filelist = [y for y in [x.split('/')[-2] for x in filelist.split('\n')[:-1]] if y[-5:] == '_prod']
     print production_filelist
 
-    for file in production_list:
+    for file in production_filelist:
         cmd_str = 'scp ychang@dev-platformperf-scidb02:/opt/lp/%s %s' % (file, os.path.join(local_lp_folder, file))
         sp.check_call(cmd_str, shell=True)
 
