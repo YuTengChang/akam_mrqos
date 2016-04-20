@@ -54,7 +54,7 @@ def main():
         sp.check_call(cmd_str, shell=True)
 
         # cleanup the local files
-        shutil.rmtree(local_solution_folder)
+        shutil.rmtree(os.path.join(local_lp_folder, file))
 
 
 if __name__ == '__main__':
