@@ -25,14 +25,20 @@ def main():
 
     filelist = glob.glob(os.path.join(config.lp_solution_depot,'*_prod'))
 
-    for file in filelist:
-        print "    **** processing file: "+file
+    for file_idx in filelist:
+        print "    **** processing file: "+file_idx
+        filedate = file_idx.split('_')[-2].replace('out','20')
 
+        # upload the summarized table in hive
+        print "    #****  upload the summarized table to HDFS for file: "+file_idx
+        hdfs_d = os.path.join(config.hdfs_table, 'lp_solution_day', 'datestamp=%s' % str(filedate))
+        try:
+            upload_to_hive(file_idx, hdfs_d, 'datestamp', str(filedate), 'lp_solution_day')
 
-    # upload the summarized table in hive
-    print "    #****  upload the summarized table to HDFS."
-    hdfs_d = os.path.join(config.hdfs_table,'mrqos_sum_1d','datestamp=%s' % str(datenow))
-    upload_to_hive(processed_file, hdfs_d, 'datestamp', str(datenow), 'mrqos_sum_1d')
+        # clean ups temp file
+            os.remove(file)
+        except:
+            print "upload failed. File %s retains." % file_idx
 
 
 def upload_to_hive(listname, hdfs_d, partition_name, partition_idx, tablename):
