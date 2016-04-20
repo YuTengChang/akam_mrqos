@@ -35,7 +35,7 @@ def main():
         local_solution_folder = os.path.join(os.path.join(local_lp_folder, file), 'vis')
 
         # processing the file locally
-        cmd_str = '''cat %s/vis_map_country_network %s/vis_map_country | sed 's/|/ /g' | awk '{if (NF<9){$2=$2" ANY";} print $0;}' > %s/%s ''' % (local_solution_folder,
+        cmd_str = '''cat %s/vis_map_country_network %s/vis_map_country | sed 's/|/ /g' | awk '{if (NF<9){$2=$2" ANY";} print $0;}' | grep -v 'score_target' > %s/%s ''' % (local_solution_folder,
                                                                                                                                                   local_solution_folder,
                                                                                                                                                   local_solution_folder,
                                                                                                                                                   'vis_all_'+file)
