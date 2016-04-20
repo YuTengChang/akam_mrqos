@@ -36,7 +36,7 @@ mrqos_data_backup = '/home/testgrp/MRQOS/mrqos_data/backup'
 mrqos_hive_query = '/home/testgrp/MRQOS/mrqos_hive_query'
 mrqos_query_result = '/home/testgrp/query_results'
 #mrqos_data_join_backup = '/home/testgrp/MRQOS/mrqos_data/backup/000000_0.deflate'
-
+lp_solution_depot = '/home/testgrp/MRQOS/mrqos_data/lp'
 
 #==============================================================================
 # # Constant Configurations
@@ -92,3 +92,4 @@ aslist_file = '/home/ychang/Documents/Projects/18-DDC/MRQOS_local_data/mrqos_asl
 
 region_view_hour_data_VM = '/u0/ychang/Projects/18-DDC/MRQOS_local_data/region_view_hour/'
 case_view_hour_data_VM = '/u0/ychang/Projects/18-DDC/MRQOS_local_data/case_view_hour/'
+

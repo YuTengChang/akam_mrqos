@@ -1,0 +1,20 @@
+USE mrqos;
+
+drop table lp_solution_day;
+
+create external table lp_solution_day (
+    maprule INT,
+    geoname STRING,
+    netname STRING,
+    load DOUBLE,
+    score_target INT,
+    in_country_target INT,
+    score DOUBLE,
+    in_country_pct DOUBLE,
+    deficit DOUBLE)
+
+partitioned by (datestamp STRING)
+row format delimited
+fields terminated by '\t'
+lines terminated by '\n'
+location '/ghostcache/hadoop/data/MRQOS/lp_solution_day';
