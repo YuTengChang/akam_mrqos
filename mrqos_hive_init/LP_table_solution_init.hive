@@ -15,6 +15,6 @@ create external table lp_solution_day (
 
 partitioned by (datestamp STRING)
 row format delimited
-fields terminated by '\t'
+fields terminated by ' '
 lines terminated by '\n'
 location '/ghostcache/hadoop/data/MRQOS/lp_solution_day';

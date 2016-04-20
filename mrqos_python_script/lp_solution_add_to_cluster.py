@@ -31,13 +31,13 @@ def main():
         filedate = file_idx.split('_')[-2].replace('out','20')
 
         # upload the summarized table in hive
-        print "    #****  upload the summarized table to HDFS for file: "+file_idx
+        print "    ****  upload the summarized table to HDFS for file: "+file_idx
         hdfs_d = os.path.join(config.hdfs_table, 'lp_solution_day', 'datestamp=%s' % str(filedate))
         try:
             upload_to_hive(file_idx, hdfs_d, 'datestamp', str(filedate), 'lp_solution_day')
 
         # clean ups temp file
-            os.remove(file)
+            os.remove(file_idx)
         except:
             print "upload failed. File %s retains." % file_idx
 
