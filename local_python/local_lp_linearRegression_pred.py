@@ -69,7 +69,7 @@ def main():
     for geo in geo_list:
         print " >> now calculating geo: %s <<" % geo
         this_row = my_reg_set(df, geo, test_size_ratio=my_test_size_ratio, repetence=my_repetence)
-        df_out.iloc[df_out_count] = this_row
+        df_out.loc[df_out_count] = this_row
         df_out_count += 1
 
     df_out.to_csv(os.path.join(file_folder, output_file_name))
