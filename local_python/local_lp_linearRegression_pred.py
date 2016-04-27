@@ -69,8 +69,9 @@ def main():
     for geo in geo_list:
         print " >> now calculating geo: %s <<" % geo
         this_row = my_reg_set(df, geo, test_size_ratio=my_test_size_ratio, repetence=my_repetence)
-        df_out.loc[df_out_count] = this_row
-        df_out_count += 1
+        if this_row[0] != -1:
+            df_out.loc[df_out_count] = this_row
+            df_out_count += 1
 
     df_out.to_csv(os.path.join(file_folder, output_file_name))
 
@@ -86,7 +87,8 @@ def my_reg_set(df, geo_set, test_size_ratio=0.20, repetence=1):
     '''
     df_interested = df[df.geoname.isin([geo_set]) & ~df.netname.isin(['ANY']) & ~df.score_target.isin([10000])]
     df_length = len(df_interested)
-    # df_interested.head(5)
+    if df_length < 3:
+        return [-1]
 
     #fig = plt.figure(num=None, figsize=(18, 12), dpi=80, facecolor='w', edgecolor='k')
     regression_result = []
