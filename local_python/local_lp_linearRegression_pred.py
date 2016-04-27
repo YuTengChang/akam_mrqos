@@ -120,7 +120,7 @@ def my_reg_set(df, geo_set, test_size_ratio=0.20, repetence=1):
             intercept = intercept + [float(regr.intercept_)]
             coeff = coeff + [float(regr.coef_)]
 
-        regression_result = regression_result + [y_list,
+        regression_result = regression_result + [y_index,
                                                  round(numpy.mean(score),2),
                                                  round(numpy.mean(intercept),2),
                                                  round(numpy.mean(coeff),3)]
