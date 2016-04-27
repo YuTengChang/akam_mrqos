@@ -87,6 +87,7 @@ def my_reg_set(df, geo_set, test_size_ratio=0.20, repetence=1):
     '''
     df_interested = df[df.geoname.isin([geo_set]) & ~df.netname.isin(['ANY']) & ~df.score_target.isin([10000])]
     df_length = len(df_interested)
+    # if there is not enough data points, skip this case.
     if df_length < 3:
         return [-1]
 
