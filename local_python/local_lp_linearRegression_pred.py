@@ -84,7 +84,7 @@ def my_reg_set(df, geo_set, test_size_ratio=0.20, repetence=1):
     :param repetence: how many times we like to repeat the training/testing and then report the average
     :return:
     '''
-    df_interested = df[df.geoname.isin(geo_set) & ~df.netname.isin(['ANY']) & ~df.score_target.isin([10000])]
+    df_interested = df[df.geoname.isin([geo_set]) & ~df.netname.isin(['ANY']) & ~df.score_target.isin([10000])]
     df_length = len(df_interested)
     # df_interested.head(5)
 
