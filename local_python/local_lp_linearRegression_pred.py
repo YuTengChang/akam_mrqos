@@ -58,7 +58,7 @@ def main():
     df = dff.convert_objects(convert_numeric=True)
     df = df.sort(['datestamp'], ascending=1)
     uniq_datestamp = sorted(list(set(df.datestamp)))
-    uniq_datestamp = '.'.join(uniq_datestamp)
+    uniq_datestamp = '.'.join([str(x) for x in uniq_datestamp])
     output_file_name = output_file_name+'.'+uniq_datestamp+'.csv'
 
     geo_list = sorted(list(set(df.geoname)))
