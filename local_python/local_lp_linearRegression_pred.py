@@ -202,7 +202,7 @@ def my_reg_set(df, geo_set, test_size_ratio=0.20, repetence=1, load_threshold=10
     df_length = len(df_interested)
     total_load = numpy.sum(df_interested.load)
     # if there is not enough data points, skip this case.
-    if df_length < 5:
+    if df_length < 20:
         return [-1]
 
     #fig = plt.figure(num=None, figsize=(18, 12), dpi=80, facecolor='w', edgecolor='k')
