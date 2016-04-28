@@ -236,7 +236,9 @@ def my_reg_set(df, geo_set, test_size_ratio=0.20, repetence=1, load_threshold=10
             intercept = intercept + [float(regr.intercept_)]
             coeff = coeff + [float(regr.coef_)]
 
-        print score
+        # [for debug] print score
+        # score = 1-u/v where u=((y_true - y_pred) ** 2).sum() and v=((y_true - y_true.mean()) ** 2).sum()
+        # score<=1 and 1 meaning no prediction error
         regression_result = regression_result + [y_index,
                                                  round(numpy.mean(score), 2),
                                                  round(numpy.mean(intercept), 2),
