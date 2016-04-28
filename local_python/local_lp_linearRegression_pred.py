@@ -59,7 +59,9 @@ def main():
     df = df.sort(['datestamp'], ascending=1)
     uniq_datestamp = sorted(list(set(df.datestamp)))
     uniq_datestamp = '.'.join([str(x) for x in uniq_datestamp])
-    output_file_name = output_file_name+'.'+uniq_datestamp+'.csv'
+    output_file_name = '%s.update_%s.%s.csv' % (output_file_name,
+                                                time.strftime('%Y%m%d', time.localtime(ts)),
+                                                uniq_datestamp)
 
     geo_list = sorted(list(set(df.geoname)))
     my_test_size_ratio = 0.20
