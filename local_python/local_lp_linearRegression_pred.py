@@ -156,12 +156,12 @@ def my_lp_scatter_generation(df, geoname, intercept, slope, figure_path, load_th
         dfa = pd.concat([dfa, dft], axis=1)
 
     # now generating the figure files
-    marker_size_ref = math.log(df2.load.quantile(.1))/100
+    marker_size_ref = df2.load.quantile(.1)/100
     # sizeref=marker_size_ref,
     scatter_netname = [Scatter(x=dfa[netname+'_score'],
                             y=dfa[netname+'_sp95_t95'],
                             text=dfa[netname+'_text'],
-                            marker=Marker(size=[math.log(x) for x in dfa[netname+'_load']], sizemode='area', sizeref=marker_size_ref),
+                            marker=Marker(size=[10*math.log(x) for x in dfa[netname+'_load']], sizemode='area', sizeref=marker_size_ref),
                             mode='markers',
                             name=netname) for netname in netname_list]
 
