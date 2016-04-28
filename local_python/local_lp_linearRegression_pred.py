@@ -61,6 +61,7 @@ def main():
     geo_list = sorted(list(set(df.geoname)))
     my_test_size_ratio = 0.20
     my_repetence = 10
+    load_threshold = 10
 
     headers_out = ['geoname', 'samples', 'test_size_ratio', 'repetence',
                    'sp95_t95', 'score_t95', 'intercept_t95', 'coeff_t95',
@@ -73,7 +74,7 @@ def main():
 
     for geo in geo_list:
         print " >> now calculating geo: %s <<" % geo
-        this_row = my_reg_set(df, geo, test_size_ratio=my_test_size_ratio, repetence=my_repetence, figure_folder=figure_folder)
+        this_row = my_reg_set(df, geo, test_size_ratio=my_test_size_ratio, repetence=my_repetence, load_threshold=load_threshold, figure_folder=figure_folder)
         if this_row[0] != -1:
             df_out.loc[df_out_count] = this_row
             df_out_count += 1
@@ -82,13 +83,14 @@ def main():
 
     return
 
-def my_lp_scatter_generation(df, geoname, intercept, slope, figure_path):
+def my_lp_scatter_generation(df, geoname, intercept, slope, figure_path, load_threshold):
     '''
     :param df: dataframe that contains the information
     :param geoname: geoname that applies
     :param intercept: regression parameter intercept
     :param slope: regression parameter slope(corf)
     :param figure_path: figure full path for storing
+    :param load_threshold: only compute the case with load > load_threshold
     :return: nan
     '''
     # prepare the dataframe for plotting
@@ -147,10 +149,12 @@ def my_lp_scatter_generation(df, geoname, intercept, slope, figure_path):
         dfa = pd.concat([dfa, dft], axis=1)
 
     # now generating the figure files
+    marker_size_ref = df2.load.quantile(.1)/10
+
     scatter_netname = [Scatter(x=dfa[netname+'_score'],
                             y=dfa[netname+'_sp95_t95'],
                             text=dfa[netname+'_text'],
-                            marker=Marker(size=dfa[netname+'_load'], sizemode='area', sizeref=25,),
+                            marker=Marker(size=dfa[netname+'_load'], sizemode='area', sizeref=marker_size_ref,),
                             mode='markers',
                             name=netname) for netname in netname_list]
 
@@ -170,7 +174,7 @@ def my_lp_scatter_generation(df, geoname, intercept, slope, figure_path):
 
     layout = Layout(xaxis=XAxis(title='LP predicted score'),
                     yaxis=YAxis(title='score @ 95(pop):95(temporal)'),
-                    title='%s LP prediction and real data with load > 100' % geoname)
+                    title='%s LP prediction and real data with load > %s' % (geoname, str(load_threshold)))
 
     fig = Figure(data=data, layout=layout)
     plot(fig, filename=figure_path)
@@ -230,7 +234,7 @@ def my_reg_set(df, geo_set, test_size_ratio=0.20, repetence=1, load_threshold=10
 
     regression_result = [geo_set, df_length, test_size_ratio, repetence] + regression_result
     figure_path = os.path.join(figure_folder, '%s_lp_mrqos.html' % geo_set)
-    my_lp_scatter_generation(df_interested, geo_set, regression_result[6], regression_result[7], figure_path)
+    my_lp_scatter_generation(df_interested, geo_set, regression_result[6], regression_result[7], figure_path, load_threshold)
     return regression_result
 
 
