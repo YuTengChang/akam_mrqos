@@ -99,9 +99,7 @@ def my_lp_scatter_generation(df, geoname, intercept, slope, figure_path, load_th
     netname_list = list(set(df2.netname))
     this_netname = netname_list[0]
     dft = df2[df2.netname==this_netname]
-    dft['text'] = ['Country: %s</br>Netname: \
-        %s</br>Maprule: %s</br>Target score:%s</br>LP score: %s</br>s95_t95: \
-        %s</br>s95_t75: %s</br>Load: %s</br>Solution Date: %s' \
+    dft['text'] = ['Country: %s</br>Netname: %s</br>Maprule: %s</br>Target score:%s</br>LP score: %s</br>s95_t95: %s </br>s95_t75: %s</br>Load: %s</br>Solution Date: %s' \
                        % (geoname,
                           netname,
                           maprule,
@@ -127,9 +125,7 @@ def my_lp_scatter_generation(df, geoname, intercept, slope, figure_path, load_th
 
     for this_netname in netname_list[1:]:
         dft = df2[df2.netname==this_netname]
-        dft['text'] = ['Country: %s</br>Netname: \
-        %s</br>Maprule: %s</br>Target score:%s</br>LP score: %s</br>s95_t95: \
-        %s</br>s95_t75: %s</br>Load: %s</br>Solution Date: %s' \
+        dft['text'] = ['Country: %s</br>Netname: %s</br>Maprule: %s</br>Target score:%s</br>LP score: %s</br>s95_t95: %s </br>s95_t75: %s</br>Load: %s</br>Solution Date: %s' \
                        % (geoname,
                           netname,
                           maprule,
