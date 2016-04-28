@@ -33,7 +33,7 @@ def main():
     file_folder = '/u4/ychang/Projects/18-MRQOS/Data'
     file_name = 'lp_out_and_performance.csv'
     figure_folder = '/var/www/Figures/lp_pred'
-    output_file_name = 'lp_out_and_performance_prediction.csv'
+    output_file_name = 'lp_out_and_perf'
     file_source = os.path.join(file_folder, file_name)
     data = numpy.genfromtxt(file_source, delimiter='\t', skip_header=1, dtype='str')
 
@@ -57,11 +57,14 @@ def main():
     dff = pd.DataFrame(data, columns=headers)
     df = dff.convert_objects(convert_numeric=True)
     df = df.sort(['datestamp'], ascending=1)
+    uniq_datestamp = sorted(list(set(df.datestamp)))
+    uniq_datestamp = '.'.join(uniq_datestamp)
+    output_file_name = output_file_name+'.'+uniq_datestamp+'.csv'
 
     geo_list = sorted(list(set(df.geoname)))
     my_test_size_ratio = 0.20
     my_repetence = 10
-    load_threshold = 10
+    load_threshold = 20
 
     headers_out = ['geoname', 'samples', 'test_size_ratio', 'repetence',
                    'sp95_t95', 'score_t95', 'intercept_t95', 'coeff_t95',
@@ -99,7 +102,7 @@ def my_lp_scatter_generation(df, geoname, intercept, slope, figure_path, load_th
     netname_list = list(set(df2.netname))
     this_netname = netname_list[0]
     dft = df2[df2.netname==this_netname]
-    dft['text'] = ['Country: %s</br>Netname: %s</br>Maprule: %s</br>Target score:%s</br>LP score: %s</br>s95_t95: %s </br>s95_t75: %s</br>Load: %s</br>Solution Date: %s' \
+    dft['text'] = ['Country: %s</br>Netname: %s</br>Maprule: %s</br>Target score: %s</br>LP score: %s</br>s95_t95: %s </br>s95_t75: %s</br>Load: %s</br>Solution Date: %s' \
                        % (geoname,
                           netname,
                           maprule,
@@ -125,7 +128,7 @@ def my_lp_scatter_generation(df, geoname, intercept, slope, figure_path, load_th
 
     for this_netname in netname_list[1:]:
         dft = df2[df2.netname==this_netname]
-        dft['text'] = ['Country: %s</br>Netname: %s</br>Maprule: %s</br>Target score:%s</br>LP score: %s</br>s95_t95: %s </br>s95_t75: %s</br>Load: %s</br>Solution Date: %s' \
+        dft['text'] = ['Country: %s</br>Netname: %s</br>Maprule: %s</br>Target score: %s</br>LP score: %s</br>s95_t95: %s </br>s95_t75: %s</br>Load: %s</br>Solution Date: %s' \
                        % (geoname,
                           netname,
                           maprule,
