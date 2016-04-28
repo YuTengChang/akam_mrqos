@@ -100,20 +100,22 @@ def my_lp_scatter_generation(df, geoname, intercept, slope, figure_path, load_th
     this_netname = netname_list[0]
     dft = df2[df2.netname==this_netname]
     dft['text'] = ['Country: %s</br>Netname: \
-        %s</br>Maprule: %s</br>LP score: %s</br>s95_t95: \
+        %s</br>Maprule: %s</br>Target score:%s</br>LP score: %s</br>s95_t95: \
         %s</br>s95_t75: %s</br>Load: %s</br>Solution Date: %s' \
                        % (geoname,
                           netname,
                           maprule,
+                          score_target,
                           score,
                           sp95_t95,
                           sp95_t75,
                           load,
                           datestamp) \
-                       for (geoname, netname, maprule, score, sp95_t95, sp95_t75, load, datestamp) \
+                       for (geoname, netname, maprule, score_target, score, sp95_t95, sp95_t75, load, datestamp) \
                        in zip(dft.geoname,
                               dft.netname,
                               dft.maprule,
+                              dft.score_target,
                               dft.score,
                               dft.sp95_t95,
                               dft.sp95_t75,
@@ -126,20 +128,22 @@ def my_lp_scatter_generation(df, geoname, intercept, slope, figure_path, load_th
     for this_netname in netname_list[1:]:
         dft = df2[df2.netname==this_netname]
         dft['text'] = ['Country: %s</br>Netname: \
-        %s</br>Maprule: %s</br>LP score: %s</br>s95_t95: \
+        %s</br>Maprule: %s</br>Target score:%s</br>LP score: %s</br>s95_t95: \
         %s</br>s95_t75: %s</br>Load: %s</br>Solution Date: %s' \
                        % (geoname,
                           netname,
                           maprule,
+                          score_target,
                           score,
                           sp95_t95,
                           sp95_t75,
                           load,
                           datestamp) \
-                       for (geoname, netname, maprule, score, sp95_t95, sp95_t75, load, datestamp) \
+                       for (geoname, netname, maprule, score_target, score, sp95_t95, sp95_t75, load, datestamp) \
                        in zip(dft.geoname,
                               dft.netname,
                               dft.maprule,
+                              dft.score_target,
                               dft.score,
                               dft.sp95_t95,
                               dft.sp95_t75,
