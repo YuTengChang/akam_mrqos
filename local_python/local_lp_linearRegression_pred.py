@@ -14,6 +14,7 @@ import subprocess as sp
 import random
 from sklearn import linear_model
 from sklearn.cross_validation import train_test_split
+import math
 sys.path.append('/home/ychang/Documents/Projects/18-DDC/MRQOS/')
 import configurations.config as config
 
@@ -155,12 +156,12 @@ def my_lp_scatter_generation(df, geoname, intercept, slope, figure_path, load_th
         dfa = pd.concat([dfa, dft], axis=1)
 
     # now generating the figure files
-    marker_size_ref = df2.load.quantile(.1)/10
+    marker_size_ref = math.log(df2.load.quantile(.1)/10)
     # sizeref=marker_size_ref,
     scatter_netname = [Scatter(x=dfa[netname+'_score'],
                             y=dfa[netname+'_sp95_t95'],
                             text=dfa[netname+'_text'],
-                            marker=Marker(size=dfa[netname+'_load'], sizemode='area', sizeref=marker_size_ref),
+                            marker=Marker(size=[math.log(x) for x in dfa[netname+'_load']], sizemode='area', sizeref=marker_size_ref),
                             mode='markers',
                             name=netname) for netname in netname_list]
 
