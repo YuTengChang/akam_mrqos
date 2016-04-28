@@ -157,7 +157,7 @@ def my_lp_scatter_generation(df, geoname, intercept, slope, figure_path, load_th
 
     # now generating the figure files
     marker_size_ref = df2.load.quantile(.5)/40
-    print "market_size_ref=%s" % (str(marker_size_ref))
+    # [debug only] print "market_size_ref=%s" % (str(marker_size_ref))
     # sizeref=marker_size_ref,
     scatter_netname = [Scatter(x=dfa[netname+'_score'],
                             y=dfa[netname+'_sp95_t95'],
@@ -236,10 +236,11 @@ def my_reg_set(df, geo_set, test_size_ratio=0.20, repetence=1, load_threshold=10
             intercept = intercept + [float(regr.intercept_)]
             coeff = coeff + [float(regr.coef_)]
 
+        print score
         regression_result = regression_result + [y_index,
-                                                 round(numpy.mean(score),2),
-                                                 round(numpy.mean(intercept),2),
-                                                 round(numpy.mean(coeff),3)]
+                                                 round(numpy.mean(score), 2),
+                                                 round(numpy.mean(intercept), 2),
+                                                 round(numpy.mean(coeff), 3)]
 
     regression_result = [geo_set, df_length, test_size_ratio, repetence, total_load] + regression_result
     figure_path = os.path.join(figure_folder, '%s_lp_mrqos.html' % geo_set)
