@@ -83,7 +83,8 @@ def main():
             df_out_count += 1
 
     df_out.to_csv(os.path.join(file_folder, output_file_name), index=False)
-
+    sp.check_call('cp %s %s' % (os.path.join(file_folder, output_file_name),
+                                os.path.join('/var/www/txt', output_file_name)), shell=True)
     return
 
 def my_lp_scatter_generation(df, geoname, intercept, slope, figure_path, load_threshold):
