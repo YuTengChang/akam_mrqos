@@ -17,6 +17,10 @@ from sklearn.cross_validation import train_test_split
 sys.path.append('/home/ychang/Documents/Projects/18-DDC/MRQOS/')
 import configurations.config as config
 
+from plotly.offline import download_plotlyjs, init_notebook_mode, iplot
+from plotly.offline import plot
+from plotly.graph_objs import Scatter
+from plotly.graph_objs import *
 
 def main():
     ts = calendar.timegm(time.gmtime())
@@ -28,8 +32,9 @@ def main():
 
     file_folder = '/u4/ychang/Projects/18-MRQOS/Data'
     file_name = 'lp_out_and_performance.csv'
+    figure_folder = '/var/www/Figures/lp_pred'
     output_file_name = 'lp_out_and_performance_prediction.csv'
-    file_source =  os.path.join(file_folder, file_name)
+    file_source = os.path.join(file_folder, file_name)
     data = numpy.genfromtxt(file_source, delimiter='\t', skip_header=1, dtype='str')
 
     headers = ["maprule", "geoname", "netname", "load", "score_target", "in_country_target", "score",
@@ -68,7 +73,7 @@ def main():
 
     for geo in geo_list:
         print " >> now calculating geo: %s <<" % geo
-        this_row = my_reg_set(df, geo, test_size_ratio=my_test_size_ratio, repetence=my_repetence)
+        this_row = my_reg_set(df, geo, test_size_ratio=my_test_size_ratio, repetence=my_repetence, figure_folder=figure_folder)
         if this_row[0] != -1:
             df_out.loc[df_out_count] = this_row
             df_out_count += 1
@@ -77,15 +82,113 @@ def main():
 
     return
 
-def my_reg_set(df, geo_set, test_size_ratio=0.20, repetence=1):
+def my_lp_scatter_generation(df, geoname, intercept, slope, figure_path):
+    '''
+    :param df: dataframe that contains the information
+    :param geoname: geoname that applies
+    :param intercept: regression parameter intercept
+    :param slope: regression parameter slope(corf)
+    :param figure_path: figure full path for storing
+    :return: nan
+    '''
+    # prepare the dataframe for plotting
+    df2 = df.loc[:,['maprule','geoname','netname','load','score','score_target','sp95_t95','sp95_t75','datestamp']]
+    [min_x, max_x] = [min(df2.score), max(df2.score)]
+    netname_list = list(set(df2.netname))
+    this_netname = netname_list[0]
+    dft = df2[df2.netname==this_netname]
+    dft['text'] = ['Country: %s</br>Netname: \
+        %s</br>Maprule: %s</br>LP score: %s</br>s95_t95: \
+        %s</br>s95_t75: %s</br>Load: %s</br>Solution Date: %s' \
+                       % (geoname,
+                          netname,
+                          maprule,
+                          score,
+                          sp95_t95,
+                          sp95_t75,
+                          load,
+                          datestamp) \
+                       for (geoname, netname, maprule, score, sp95_t95, sp95_t75, load, datestamp) \
+                       in zip(dft.geoname,
+                              dft.netname,
+                              dft.maprule,
+                              dft.score,
+                              dft.sp95_t95,
+                              dft.sp95_t75,
+                              dft.load,
+                              dft.datestamp)]
+
+    dft.columns = [this_netname+'_'+x for x in dft.columns]
+    dfa = dft.copy()
+
+    for this_netname in netname_list[1:]:
+        dft = df2[df2.netname==this_netname]
+        dft['text'] = ['Country: %s</br>Netname: \
+        %s</br>Maprule: %s</br>LP score: %s</br>s95_t95: \
+        %s</br>s95_t75: %s</br>Load: %s</br>Solution Date: %s' \
+                       % (geoname,
+                          netname,
+                          maprule,
+                          score,
+                          sp95_t95,
+                          sp95_t75,
+                          load,
+                          datestamp) \
+                       for (geoname, netname, maprule, score, sp95_t95, sp95_t75, load, datestamp) \
+                       in zip(dft.geoname,
+                              dft.netname,
+                              dft.maprule,
+                              dft.score,
+                              dft.sp95_t95,
+                              dft.sp95_t75,
+                              dft.load,
+                              dft.datestamp)]
+        dft.columns = [this_netname+'_'+x for x in dft.columns]
+        dfa = pd.concat([dfa, dft], axis=1)
+
+    # now generating the figure files
+    scatter_netname = [Scatter(x=dfa[netname+'_score'],
+                            y=dfa[netname+'_sp95_t95'],
+                            text=dfa[netname+'_text'],
+                            marker=Marker(size=dfa[netname+'_load'], sizemode='area', sizeref=25,),
+                            mode='markers',
+                            name=netname) for netname in netname_list]
+
+    scatter_line = Scatter(x=[min_x, max_x],
+                           y=[min_x, max_x],
+                           mode='line',
+                           marker=Marker(color='black'),
+                           name='one-to-one')
+
+    scatter_line2 = Scatter(x=[min_x, max_x],
+                            y=[intercept+slope*min_x, intercept+slope*max_x],
+                            mode='line',
+                            marker=Marker(color='blue'),
+                            name='regression')
+
+    data = Data(scatter_netname+[scatter_line]+[scatter_line2])
+
+    layout = Layout(xaxis=XAxis(title='LP predicted score'),
+                    yaxis=YAxis(title='score @ 95(pop):95(temporal)'),
+                    title='%s LP prediction and real data with load > 100' % geoname)
+
+    fig = Figure(data=data, layout=layout)
+    plot(fig, filename=figure_path)
+
+
+
+def my_reg_set(df, geo_set, test_size_ratio=0.20, repetence=1, load_threshold=100, figure_folder='/var/www/Figures/lp_pred'):
     '''
     :param df: dataframe that contains the information
     :param geo_set: geo_set that applies
     :param test_size_ratio: the split of train and test set size from original db(df)
     :param repetence: how many times we like to repeat the training/testing and then report the average
+    :param load_threshold: only takes case with load greater than the load_threshold
     :return:
     '''
+    # only take particular network/ISP, meaningful target, and load > 100 Mbps case
     df_interested = df[df.geoname.isin([geo_set]) & ~df.netname.isin(['ANY']) & ~df.score_target.isin([10000])]
+    df_interested = df_interested[df_interested.load > load_threshold]
     df_length = len(df_interested)
     # if there is not enough data points, skip this case.
     if df_length < 3:
@@ -126,27 +229,9 @@ def my_reg_set(df, geo_set, test_size_ratio=0.20, repetence=1):
                                                  round(numpy.mean(coeff),3)]
 
     regression_result = [geo_set, df_length, test_size_ratio, repetence] + regression_result
+    figure_path = os.path.join(figure_folder, '%s_lp_mrqos.html' % geo_set)
+    my_lp_scatter_generation(df_interested, geo_set, regression_result[6], regression_result[7], figure_path)
     return regression_result
-
-        # plotting
-        # subplot_idx = 231+this_index
-        # ax = fig.add_subplot(subplot_idx)
-        # plt.scatter(X_test, y_test,  color='black')
-        # plt.plot(X_test, regr.predict(X_test), color='blue', linewidth=1)
-        # plt.plot(X_test, X_test, color='red', linewidth=0.5)
-
-        # ax.set_title('%s %s %.2f (%.2f, %.3f)' % (y_index,
-        #                                         geo_set,
-        #                                         regr.score(X_test, y_test),
-        #                                         regr.intercept_,
-        #                                         regr.coef_))
-
-        # ax.set_xlabel('LP Predicted')
-        # ax.set_ylabel('Performance (1d)')
-
-    # plt.show()
-
-    print regr.get_params()
 
 
 if __name__ == '__main__':
