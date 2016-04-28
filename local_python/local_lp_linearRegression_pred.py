@@ -68,7 +68,7 @@ def main():
     my_repetence = 10
     load_threshold = 20
 
-    headers_out = ['geoname', 'samples', 'test_size_ratio', 'repetence',
+    headers_out = ['geoname', 'samples', 'test_size_ratio', 'repetence', 'load',
                    'sp95_t95', 'score_t95', 'intercept_t95', 'coeff_t95',
                    'sp95_t90', 'score_t90', 'intercept_t90', 'coeff_t90',
                    'sp95_t85', 'score_t85', 'intercept_t85', 'coeff_t85',
@@ -200,8 +200,9 @@ def my_reg_set(df, geo_set, test_size_ratio=0.20, repetence=1, load_threshold=10
     df_interested = df[df.geoname.isin([geo_set]) & ~df.netname.isin(['ANY']) & ~df.score_target.isin([10000])]
     df_interested = df_interested[df_interested.load > load_threshold]
     df_length = len(df_interested)
+    total_load = numpy.sum(df_interested.load)
     # if there is not enough data points, skip this case.
-    if df_length < 3:
+    if df_length < 5:
         return [-1]
 
     #fig = plt.figure(num=None, figsize=(18, 12), dpi=80, facecolor='w', edgecolor='k')
@@ -238,9 +239,9 @@ def my_reg_set(df, geo_set, test_size_ratio=0.20, repetence=1, load_threshold=10
                                                  round(numpy.mean(intercept),2),
                                                  round(numpy.mean(coeff),3)]
 
-    regression_result = [geo_set, df_length, test_size_ratio, repetence] + regression_result
+    regression_result = [geo_set, df_length, test_size_ratio, repetence, total_load] + regression_result
     figure_path = os.path.join(figure_folder, '%s_lp_mrqos.html' % geo_set)
-    my_lp_scatter_generation(df_interested, geo_set, regression_result[6], regression_result[7], figure_path, load_threshold)
+    my_lp_scatter_generation(df_interested, geo_set, regression_result[7], regression_result[8], figure_path, load_threshold)
     return regression_result
 
 
