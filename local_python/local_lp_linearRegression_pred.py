@@ -86,8 +86,14 @@ def main():
             df_out_count += 1
 
     df_out.to_csv(os.path.join(file_folder, output_file_name), index=False)
+    # copy summary file
     sp.check_call('cp %s %s' % (os.path.join(file_folder, output_file_name),
                                 os.path.join('/var/www/txt', output_file_name)), shell=True)
+    sp.check_call('scp -r /var/www/txt/%s ychang@dev-platformperf-scidb02:/var/www/txt/%s' % (output_file_name,
+                                                                                              output_file_name), shell=True)
+
+    # copy figure files
+    sp.check_call('scp -r /var/www/Figures/lp_pred ychang@dev-platformperf-scidb02:/var/www/Figures', shell=True)
     return
 
 def my_lp_scatter_generation(df, geoname, intercept, slope, figure_path, load_threshold):
