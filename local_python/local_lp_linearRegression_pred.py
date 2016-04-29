@@ -100,8 +100,51 @@ def my_lp_scatter_generation(df, geoname, intercept, slope, figure_path, load_th
     :param load_threshold: only compute the case with load > load_threshold
     :return: nan
     '''
+
+    mr_full_dictionary = {'33': '33 [na] pri=8',
+                    '146': '146 [c] pri=6',
+                    '147': '147 [l] pri=7',
+                    '150': '150 [p] pri=6',
+                    '151': '151 [x] pri=13',
+                    '152': '152 [a] pri=11',
+                    '154': '154 [r] pri=6',
+                    '156': '156 [ca] pri=8',
+                    '191': '191 [nus] pri=7',
+                    '489': '489 [ca2] pri=10',
+                    '2951': '2951 [e1] pri=5',
+                    '2952': '2952 [e2] pri=8',
+                    '2953': '2953 [e3] pri=10',
+                    '2955': '2955 [e5] pri=5',
+                    '2956': '2956 [e6] pri=7',
+                    '2957': '2957 [e7] pri=5',
+                    '2958': '2958 [e8] pri=7',
+                    '2959': '2959 [e9] pri=8',
+                    '2962': '2962 [e12] pri=12',
+                    '2964': '2964 [e14] pri=7',
+                    '2965': '2965 [e15] pri=10',
+                    '2967': '2967 [e17] pri=6',
+                    '2970': '2970 [e20] pri=13',
+                    '2971': '2971 [e21] pri=9',
+                    '4992': '4992 [ksd] pri=7',
+                    '7401': '7401 [ig1] pri=10',
+                    '7402': '7402 [ig2] pri=10',
+                    '9631': '9631 [b5] pri=10',
+                    '9632': '9632 [b6] pri=10',
+                    '9633': '9633 [b7] pri=10',
+                    '9636': '9636 [b1] pri=10',
+                    '9637': '9637 [b2] pri=10',
+                    '9638': '9638 [b3] pri=10',
+                    '9639': '9639 [b4] pri=10',
+                    '9640': '9640 [c1] pri=10',
+                    '9641': '9641 [c2] pri=10',
+                    '9642': '9642 [c3] pri=10',
+                    '9644': '9644 [g1] pri=6',
+                    '9645': '9645 [g2] pri=6',
+                    '9691': '9691 [d2] pri=4'}
+
     # prepare the dataframe for plotting
     df2 = df.loc[:,['maprule','geoname','netname','load','score','score_target','sp95_t95','sp95_t75','datestamp']]
+    df2.maprule = [mr_full_dictionary[str(x)] for x in df2.maprule]
     [min_x, max_x] = [min(df2.score), max(df2.score)]
     netname_list = list(set(df2.netname))
     this_netname = netname_list[0]
