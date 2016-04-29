@@ -156,7 +156,7 @@ def my_lp_scatter_generation(df, geoname, intercept, slope, figure_path, load_th
         dfa = pd.concat([dfa, dft], axis=1)
 
     # now generating the figure files
-    marker_size_ref = df2.load.quantile(.5)/60
+    marker_size_ref = df2.load.quantile(.5)/100
     # [debug only] print "market_size_ref=%s" % (str(marker_size_ref))
     # sizeref=marker_size_ref,
     scatter_netname = [Scatter(x=dfa[netname+'_score'],
