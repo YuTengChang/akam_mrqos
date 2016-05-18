@@ -51,7 +51,7 @@ def main():
     # try the mapmon bash processing (db acquire)
     try:
         print "    ****  obtaining database at mapmon."
-        cmd_str = """ gwsh -2 %s "bash -s" <  %s """ % ( mapmon_machine, mapmon_query_bash_file )
+        cmd_str = """ gwsh -2 -D -v %s "bash -s" <  %s """ % ( mapmon_machine, mapmon_query_bash_file )
         print "    ****  command: " + cmd_str
         sp.check_call(cmd_str, shell=True)
     except:
@@ -75,7 +75,7 @@ def main():
         mapmon_machine = mapmon_machine.strip()
         scp_from_mapmon = """ scp -Sgwsh testgrp@%s:%s %s""" % (mapmon_machine, mapmon_file, os.path.join(local_dir, 'temp.csv'))
         print "    ****  obtaining database at mapmon."
-        cmd_str = """ gwsh -2 %s "bash -s" < %s """ % ( mapmon_machine, mapmon_query_bash_file )
+        cmd_str = """ gwsh -2 -D -v %s "bash -s" < %s """ % ( mapmon_machine, mapmon_query_bash_file )
         try:
             sp.check_call(cmd_str, shell=True)
         except:
