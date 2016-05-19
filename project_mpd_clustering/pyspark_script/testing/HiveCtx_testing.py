@@ -182,18 +182,22 @@ mpgidx_capw_caps_rgs = reglist_mpgid_avgDistance_capacity_nReg_country.zipWithIn
 # (reg, [[[pair-A, pair-B], cap-w, cap-s], [reg-lat, reg-lon, reg-cap, reg-country, reg-numvips, reg-service]])
 # after reduce by key -
 # ([pair-A, pair-B], [cap-w, cap-s, sum-of-reg-def-cap])
-# only pick pairs that differ less than 5 regions
+# only pick pairs that differ less than 10 regions
 # drop half of the bidirectional pairs
-mpgidx_capw_caps_rgs.cartesian(mpgidx_capw_caps_rgs)\
+reg_pair_capacities = mpgidx_capw_caps_rgs.cartesian(mpgidx_capw_caps_rgs)\
     .map(lambda x: ([x[0][0], x[1][0]], x[0][1], x[0][2],\
                     [a for a in x[0][3].split(':')+x[1][3].split(':')\
                               if (a not in x[0][3].split(':')) or (a not in x[1][3].split(':'))] ))\
     .filter(lambda x: x[0][0] < x[0][1])\
-    .filter(lambda x: len(x[3]) < 5)\
+    .filter(lambda x: len(x[3]) < 10)\
     .map(lambda x: ((x[0], x[1], x[2]), [int(x) for x in x[3]]))\
     .flatMapValues(lambda x: x)\
-    .map(lambda x: (x[1], x[0]))\
-    .join(region_latlon)\
+    .map(lambda x: (x[1], [x[0][0], x[0][1], x[0][2]]))
+
+reg_capacity = region_latlon.map(lambda x: (x[0], round(float(x[1][2])/1000000.0, 3)))
+
+reg_pair_capacities_reginfo = reg_capacity\
+    .join(reg_pair_capacities)\
     .map(lambda x: (x[1][0][0],\
                     [x[1][0][1],\
                      x[1][0][2],\
