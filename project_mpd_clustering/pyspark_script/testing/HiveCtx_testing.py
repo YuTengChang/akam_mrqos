@@ -14,8 +14,8 @@ def geodesic_distance(lat1, lon1, lat2, lon2):
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
     return [lat1, lon1, lat2, lon2, R*c]
 
-day_idx = '20160427'
-uuid_idx = '318c55e6-0c67-11e6-bbfd-300ed5cc4e6c'
+day_idx = '20160524'
+uuid_idx = '5febff9e-216c-11e6-9370-300ed5cc4e6c'
 
 getting_mappoint_data = ''' select b1.mpgid mpgid, b1.lat lat, b1.lon lon, b1.country country, b1.mpgload mpgload, b1.allowed_private_regions allowed_private_regions, b2.asnum asnum, b2.ip ip from (select mpgid, lat, lon, country, mpgload, allowed_private_regions from mapper.mappoints where day=%s and uuid="%s" and lat is not NULL and lon is not NULL and ghostonly=0 ) b1 left outer join (select collect_set(ip) ip, collect_set(asnum) asnum, mpgid from (select ip, mpd_uuid, mpgid, asnum, day from mapper.nsassoc where day=%s and mpd_uuid="%s") a group by mpgid) b2 on b2.mpgid=b1.mpgid ''' % (day_idx, uuid_idx, day_idx, uuid_idx)
 geo_total_cap_query = ''' select * from (select country, sum(region_capacity) geo_total_cap, sum(numvips) geo_total_numvips, service from (select region, country, region_capacity/1000000 region_capacity, prp, case ghost_services when "W" then "W" when "JW" then "W" when "S" then "S" when "KS" then "S" else "O" end service, numvips, day from mapper.barebones where prp="private" and day=%s) a group by country, service) b where service in ("W","S") ''' % day_idx
@@ -25,8 +25,8 @@ hiveCtx = HiveContext(sc)
 
 rows = hiveCtx.sql(getting_mappoint_data)
 
-regInfoRows = hiveCtx.sql('select * from mapper.barebones where day=%s and latitude is not NULL and longitude is not NULL and ghost_services in ("W","S","KS","JW")' % day_idx)
-
+#regInfoRows = hiveCtx.sql('select a.*, b.region_capacity, b.ecor_capacity, b.prp, case b.peak_bitcap_mbps when null then 0 else b.peak_bitcap_mbps end peak_bitcap_mbps, case b.peak_flitcap_mfps when null then 0 else b.peak_flitcap_mfps end peak_flitcap_mfps from (select * from mapper.barebones where day=%s and latitude is not NULL and longitude is not NULL and ghost_services in ("W","S","KS","JW")) a join (select * from mapper.regioncapday where day=%s) b on a.region=b.region' % (day_idx, day_idx))
+regInfoRows = hiveCtx.sql('select * from mapper.regioncapday where day=%s' % (day_idx))
 geo_total_cap = hiveCtx.sql(geo_total_cap_query)
 
 
@@ -45,10 +45,11 @@ region_mpginfo_pair = rows.map(lambda x: [[x.mpgid,
 # rdd format: [regionid, [reg-lat, reg-lon, reg-capacity, reg-country, reg-numvips, reg-service]]
 region_latlon = regInfoRows.map(lambda x: [x.region, [x.latitude,
                                                       x.longitude,
-                                                      x.region_capacity,
+                                                      x.peak_bitcap_mbps,
+                                                      x.peak_flitcap_mfps,
                                                       x.country,
                                                       x.numvips,
-                                                      'W' if x.ghost_services=='W' or x.ghost_services=='JW' else 'S']])
+                                                      'W' if x.network=='freeflow' else ('S' if x.network=='essl' else 'O')]])
 
 # perform the join into tuple of (K, (V1, V2):
 # (regionid, ([mpgid, mpg-lat, mpg-lon, mpg-country, mpg-load], [reg-lat, reg-lon, reg-cap, reg-country, reg-numvips, reg-service]))
