@@ -18,7 +18,8 @@ day_idx = '20160524'
 uuid_idx = '5febff9e-216c-11e6-9370-300ed5cc4e6c'
 
 getting_mappoint_data = ''' select b1.mpgid mpgid, b1.lat lat, b1.lon lon, b1.country country, b1.mpgload mpgload, b1.allowed_private_regions allowed_private_regions, b2.asnum asnum, b2.ip ip from (select mpgid, lat, lon, country, mpgload, allowed_private_regions from mapper.mappoints where day=%s and uuid="%s" and lat is not NULL and lon is not NULL and ghostonly=0 ) b1 left outer join (select collect_set(ip) ip, collect_set(asnum) asnum, mpgid from (select ip, mpd_uuid, mpgid, asnum, day from mapper.nsassoc where day=%s and mpd_uuid="%s") a group by mpgid) b2 on b2.mpgid=b1.mpgid ''' % (day_idx, uuid_idx, day_idx, uuid_idx)
-geo_total_cap_query = ''' select * from (select country, sum(region_capacity) geo_total_cap, sum(numvips) geo_total_numvips, service from (select region, country, region_capacity/1000000 region_capacity, prp, case ghost_services when "W" then "W" when "JW" then "W" when "S" then "S" when "KS" then "S" else "O" end service, numvips, day from mapper.barebones where prp="private" and day=%s) a group by country, service) b where service in ("W","S") ''' % day_idx
+geo_total_cap_query = ''' select * from (select country, network, sum(peak_bitcap_mbps) peak_bitcap_mbps, sum(peak_flitcap_mfps) peak_flitcap_mfps, sum(numvips) numvips from mapper.regioncapday where day=%s and network in ('freeflow', 'essl') and prp='private' group by country, network) a ''' % day_idx
+geo_total_cap_public_query = ''' select * from (select country, network, sum(peak_bitcap_mbps) peak_bitcap_mbps, sum(peak_flitcap_mfps) peak_flitcap_mfps, sum(numvips) numvips from mapper.regioncapday where day=%s and network in ('freeflow', 'essl') and prp='public' group by country, network) a ''' % day_idx
 
 
 hiveCtx = HiveContext(sc)
@@ -26,8 +27,9 @@ hiveCtx = HiveContext(sc)
 rows = hiveCtx.sql(getting_mappoint_data)
 
 #regInfoRows = hiveCtx.sql('select a.*, b.region_capacity, b.ecor_capacity, b.prp, case b.peak_bitcap_mbps when null then 0 else b.peak_bitcap_mbps end peak_bitcap_mbps, case b.peak_flitcap_mfps when null then 0 else b.peak_flitcap_mfps end peak_flitcap_mfps from (select * from mapper.barebones where day=%s and latitude is not NULL and longitude is not NULL and ghost_services in ("W","S","KS","JW")) a join (select * from mapper.regioncapday where day=%s) b on a.region=b.region' % (day_idx, day_idx))
-regInfoRows = hiveCtx.sql('select * from mapper.regioncapday where day=%s' % (day_idx))
+regInfoRows = hiveCtx.sql('select * from mapper.regioncapday where day=%s and peak_bitcap_mbps is not null and peak_flitcap_mfps is not null' % (day_idx))
 geo_total_cap = hiveCtx.sql(geo_total_cap_query)
+geo_total_cap_p = hiveCtx.sql(geo_total_cap_public_query)
 
 
 # rdd format: [regionid, [mpgid, mpg-lat, mpg-lon, mpg-country, mpg-load, mpg-asnum, mpg-nsip]]
@@ -42,19 +44,20 @@ region_mpginfo_pair = rows.map(lambda x: [[x.mpgid,
 
 #region_mpginfo_pair.first()
 
-# rdd format: [regionid, [reg-lat, reg-lon, reg-capacity, reg-country, reg-numvips, reg-service]]
+# rdd format: [regionid, [reg-lat, reg-lon, reg-capacity(bit mbps), reg-capacity(bit mfps), reg-country, reg-numvips, reg-service]]
 region_latlon = regInfoRows.map(lambda x: [x.region, [x.latitude,
                                                       x.longitude,
                                                       x.peak_bitcap_mbps,
                                                       x.peak_flitcap_mfps,
                                                       x.country,
                                                       x.numvips,
-                                                      'W' if x.network=='freeflow' else ('S' if x.network=='essl' else 'O')]])
+                                                      'W' if x.network=='freeflow' else ('S' if x.network=='essl' else 'O')]])\
+                            .filter(lambda x: x[1][6]=='W' or x[1][6]=='S')
 
 # perform the join into tuple of (K, (V1, V2):
 # (regionid, ([mpgid, mpg-lat, mpg-lon, mpg-country, mpg-load], [reg-lat, reg-lon, reg-cap, reg-country, reg-numvips, reg-service]))
 # rdd  = (mpgid, regionid, [lat1, lon1, lat2, lon2, distance],
-#               reg-cap, reg-country, reg-numvips, reg-services,
+#               reg-cap-bit(gbps), reg-cap-flit(gbps), reg-country, reg-numvips, reg-services,
 #               mpg-country, mpg-load, mpg-asnum, mpg-nsip)
 mpgid_reg_geo = region_mpginfo_pair.join(region_latlon).map(lambda x: [x[1][0][0],
                                                                        x[0],
@@ -62,10 +65,11 @@ mpgid_reg_geo = region_mpginfo_pair.join(region_latlon).map(lambda x: [x[1][0][0
                                                                                          x[1][0][2],
                                                                                          x[1][1][0],
                                                                                          x[1][1][1]),
-                                                                       round(float(x[1][1][2])/1000000.0, 3),
-                                                                       x[1][1][3], # reg-country
-                                                                       x[1][1][4], # reg-numvips
-                                                                       x[1][1][5], # reg-services
+                                                                       round(float(x[1][1][2])/1000.0, 3),
+                                                                       round(float(x[1][1][3])/1000.0, 3),
+                                                                       x[1][1][4], # reg-country
+                                                                       x[1][1][5], # reg-numvips
+                                                                       x[1][1][6], # reg-services
                                                                        x[1][0][3],
                                                                        x[1][0][4],
                                                                        x[1][0][5],
@@ -74,11 +78,12 @@ mpgid_reg_geo = region_mpginfo_pair.join(region_latlon).map(lambda x: [x[1][0][0
 mpgid_reg_geo.take(5)
 
 # filtering on mapping distance < 500 miles
+# filtering on region capacity fbps > 1Gbps
 # rdd format = (mpgid, [[regionid], distance, [capacity-w, capacity-s], numvips, 1, mpg-country, mpg-load, mpg-asnum, mpg-nsip])
 mpgid_reg_distance = mpgid_reg_geo.filter(lambda x: x[2][4] < 500)\
-    .filter(lambda x: x[4] == x[7])\
-    .filter(lambda x: x[3] > 1000)\
-    .map(lambda x: (x[0], [[x[1]], x[2][4], [x[3], 0] if x[6]=='W' else [0, x[3]], x[5], 1, x[7], x[8], x[9], x[10]]))
+    .filter(lambda x: x[5] == x[8])\
+    .filter(lambda x: x[3] > 1)\
+    .map(lambda x: (x[0], [[x[1]], x[2][4], [x[3], 0] if x[7]=='W' else [0, x[3]], x[6], 1, x[8], x[9], x[10], x[11]]))
 
 mpgid_reg_distance.first()
 
@@ -162,7 +167,7 @@ reglist_mpgid_avgDistance_capacity_nReg_country.take(5)
 
 # (mpg-country-list, [cluster-count, mpg-load])
 geo_clusterN_totalMpgLoad = reglist_mpgid_avgDistance_capacity_nReg_country\
-    .map(lambda x: (tuple(x[1][6]), [1, x[1][7]]))\
+    .map(lambda x: (x[0], [1, x[6]]))\
     .reduceByKey(lambda a, b: [a[0]+b[0],
                               a[1]+b[1]])
 
@@ -207,6 +212,9 @@ reg_pair_capacities_reginfo = reg_capacity\
     .take(5)
 
 
+# ============ Testing Adjacency/Distance Matrix ==============
+
+
 import pandas as pd
 geo_cluster_info_df = pd.DataFrame(columns=['geoname', 'mpg_count', 'total_mpg_load'])
 
@@ -220,8 +228,8 @@ geo_cluster_info_df.to_csv('/home/testgrp/geo_mpgClusterCount_mpgTotalLoad.csv',
 # another pd.DataFrmae
 country_avgDistance_capacity_nReg_mpgLoad_nMpg_reglist_mpglist = pd.DataFrame(columns=['geoname',
                                                                                        'avgDistance',
-                                                                                       'capacityW',
-                                                                                       'capacityS',
+                                                                                       'capacity_gbps',
+                                                                                       'capacity_gfps',
                                                                                        'numvips',
                                                                                        'nReg',
                                                                                        'mpgLoad',
@@ -235,42 +243,42 @@ geo_cluster_full_info = reglist_mpgid_avgDistance_capacity_nReg_country.collect(
 
 for item in range(len(geo_cluster_full_info)):
     temp = geo_cluster_full_info[item]
-    country_avgDistance_capacity_nReg_mpgLoad_nMpg_reglist_mpglist.loc[item] = [':'.join([str(x) for x in list(temp[1][6])]),
-                                                                                temp[1][1],
-                                                                                temp[1][2],
-                                                                                temp[1][3],
-                                                                                temp[1][4],
-                                                                                temp[1][5],
-                                                                                temp[1][7],
-                                                                                temp[1][8],
-                                                                                ':'.join([str(x) for x in temp[0]]),
-                                                                                ':'.join([str(x) for x in list(temp[1][0])]),
-                                                                                ':'.join([str(x) for x in temp[1][9]]) if len(temp[1][9])>0 else 'NULL',
-                                                                                ':'.join([str(x) for x in temp[1][10]]) if len(temp[1][10])>0 else 'NULL'
-                                                                               ] # the above should be temp[1][0] for the mpglist
+    country_avgDistance_capacity_nReg_mpgLoad_nMpg_reglist_mpglist.loc[item] = temp # the above should be temp[1][0] for the mpglist
 
 
 country_avgDistance_capacity_nReg_mpgLoad_nMpg_reglist_mpglist.to_csv('/home/testgrp/geo_full_cluster_info.csv',
                                                                       sep=',', index=False, header=True)
 
 # another pd.DataFrame
-geo_total_cap_forDB = geo_total_cap.map(lambda x: (x[0], [[x[1], 0] if x[3]=='W' else [0, x[1]], x[2]]))\
-                                    .reduceByKey(lambda a, b: [[a[0][0]+b[0][0], a[0][1]+b[0][1]], a[1]+b[1]])\
-                                    .collect()
+geo_total_cap_forDB = geo_total_cap.collect()
 
 country_private_cap = pd.DataFrame(columns=['geoname',
-                                            'total_private_cap_W',
-                                            'total_private_cap_S',
+                                            'network',
+                                            'total_private_cap_bit',
+                                            'total_private_cap_flit',
                                             'total_num_vips'])
 
 for item in range(len(geo_total_cap_forDB)):
     temp = geo_total_cap_forDB[item]
-    country_private_cap.loc[item] = [temp[0],
-                                     temp[1][0][0],
-                                     temp[1][0][1],
-                                     temp[1][1]]
+    country_private_cap.loc[item] = temp
 
 country_private_cap.to_csv('/home/testgrp/geo_total_cap.csv',
+                           sep=',', index=False, header=True)
+
+# another pd.DataFrame for public capacity
+geo_total_cap_forDB = geo_total_cap_p.collect()
+
+country_private_cap = pd.DataFrame(columns=['geoname',
+                                            'network',
+                                            'total_private_cap_bit',
+                                            'total_private_cap_flit',
+                                            'total_num_vips'])
+
+for item in range(len(geo_total_cap_forDB)):
+    temp = geo_total_cap_forDB[item]
+    country_private_cap.loc[item] = temp
+
+country_private_cap.to_csv('/home/testgrp/geo_total_cap_p.csv',
                            sep=',', index=False, header=True)
 
 # another pd.DataFrame
