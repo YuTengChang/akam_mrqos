@@ -27,8 +27,8 @@
 # #################   MRQOS   ####################
 ##################################################
 # run the query every 10 minutes and upload the data to HIVE
-#5,15,25,35,45,55 * * * * /home/testgrp/doasme_YT /home/testgrp/MRQOS/cron_query >> /home/testgrp/MRQOS/cron_query.log 2>&1
-#20 0 * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/hive_summarize.py >> /home/testgrp/MRQOS/cron_summary.log 2>&1
+#5,15,25,35,45,55 * * * * /home/testgrp/doasme_YT /home/testgrp/MRQOS/cron_query >> /home/testgrp/logs/cron_query.log 2>&1
+#20 0 * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/hive_summarize.py >> /home/testgrp/logs/cron_summary.log 2>&1
 #20 2 * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_python_script/mrqos_summarize_1d3d.py >> /home/testgrp/logs/cron_summary_1d3d.log 2>&1
 
 # region information from mrqos
