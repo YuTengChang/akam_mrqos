@@ -26,11 +26,11 @@ def main():
 
     # sync with old file (mr_dictionary)
     filename = 'mr_dictionary.txt'
-    file_source =  os.path.join(table_local_dir, filename)
+    file_source = os.path.join(table_local_dir, filename)
     data = numpy.genfromtxt(file_source, delimiter=',', skip_header=0, dtype='str')
     headers = ["maprule1", "service1", "description1", "mname1", "priority1"]
     df = pd.DataFrame(data, columns=headers)
-    file_source =  os.path.join(table_local_dir, table_local_file)
+    file_source = os.path.join(table_local_dir, table_local_file)
     data = numpy.genfromtxt(file_source, delimiter=',', skip_header=0, dtype='str')
     headers = ["maprule", "service", "description", "mname", "priority"]
     df2 = pd.DataFrame(data, columns=headers)
