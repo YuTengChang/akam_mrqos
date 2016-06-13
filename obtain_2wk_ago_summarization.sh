@@ -7,7 +7,7 @@ ts_2w=`echo $file_in_hdfs | cut -d"=" -f2`
 file_in_hdfs2=`/a/third-party/hadoop/bin//hadoop fs -ls /ghostcache/hadoop/data/MRQOS/mrqos_sum/ | tail -28 | head -1 | awk '{print $NF}'`
 ts_4w=`echo $file_in_hdfs2 | cut -d"=" -f2`
 file_in_hdfs3=`/a/third-party/hadoop/bin//hadoop fs -ls /ghostcache/hadoop/data/MRQOS/mrqos_sum/ | tail -3 | head -1 | awk '{print $NF}'`
-ts_3d=`echo $file_in_hdfs2 | cut -d"=" -f2`
+ts_3d=`echo $file_in_hdfs3 | cut -d"=" -f2`
 
 ts_now=`/a/third-party/hadoop/bin//hadoop fs -ls /ghostcache/hadoop/data/MRQOS/mrqos_sum/ | tail -1 | awk '{print $NF}' | cut -d"=" -f2`
 
