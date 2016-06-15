@@ -103,9 +103,11 @@ def main():
             print e.message
             try:
                 # upload the last succeeded one from local
+                print "    ****  copying backups from local to hdfs"
                 hdfsutil.put(local_file, hdfs_file)
                 try:
                     # using hive to add partitions to joined query results
+                    print "    ****  adding hive partitions"
                     hiveql_str = 'use mrqos; alter table mrqos_join add partition(ts=%s);' % str(timenow)
                     beeline.bln_e(hiveql_str)
                 except sp.CalledProcessError as e:
@@ -146,6 +148,7 @@ def mrqos_table_cleanup():
         if partition < timenow - config.mrqos_table_delete:
             for item in mtype:
                 try:
+                    print "      ##  handling table: %s with ts=%s" % (item, str(partition))
                     # drop partitions (ok even if partition does not exist)
                     hiveql_str = 'use mrqos; alter table ' + item + ' drop if exists partition(ts=%s)' % str(partition)
                     beeline.bln_e(hiveql_str)
@@ -177,11 +180,12 @@ def mrqos_join_cleanup():
     for partition in str_parts_list_int:
         if partition < timenow - config.mrqos_join_delete:
             try:
+                print "      ##  handling table: mrqos_join with ts=%s" % str(partition)
                 # drop partitions (ok even if partition does not exist)
-                hiveql_str = 'use mrqos; alter table mrqos_join drop if exists partition(ts=%s)' % partition
+                hiveql_str = 'use mrqos; alter table mrqos_join drop if exists partition(ts=%s)' % str(partition)
                 beeline.bln_e(hiveql_str)
                 # remove data from HDFS (ok even if folder in hdfs does not exist)
-                hdfs_d = os.path.join(config.hdfs_table, 'mrqos_join', 'ts=%s' % partition)
+                hdfs_d = os.path.join(config.hdfs_table, 'mrqos_join', 'ts=%s' % str(partition))
                 hdfsutil.rm(hdfs_d, r=True)
             except sp.CalledProcessError as e:
                 print ">> failed in hive table clean up in table: mrqos_join."
