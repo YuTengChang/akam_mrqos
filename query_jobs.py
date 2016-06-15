@@ -118,8 +118,10 @@ def main():
         print "HDFS upload failed, backup file retains"
 
     # clear the expired data in mrqos_table
+    print "    ****  clean up mrqos individual table."
     mrqos_table_cleanup()
     # clear the expired data in mrqos_join
+    print "    ****  clean up mrqos joined table."
     mrqos_join_cleanup()
 
 
@@ -150,8 +152,9 @@ def mrqos_table_cleanup():
                     # remove data from HDFS (ok even if folder in hdfs does not exist)
                     hdfs_d = os.path.join(config.hdfs_table, item, 'ts=%s' % partition)
                     hdfsutil.rm(hdfs_d, r=True)
-                except sp.CalledProcessError:
+                except sp.CalledProcessError as e:
                     print ">> failed in hive table clean up in table: %s." % item
+                    print e.message
                     pass
                     # raise GenericHadoopError
 
@@ -180,8 +183,9 @@ def mrqos_join_cleanup():
                 # remove data from HDFS (ok even if folder in hdfs does not exist)
                 hdfs_d = os.path.join(config.hdfs_table, 'mrqos_join', 'ts=%s' % partition)
                 hdfsutil.rm(hdfs_d, r=True)
-            except sp.CalledProcessError:
+            except sp.CalledProcessError as e:
                 print ">> failed in hive table clean up in table: mrqos_join."
+                print e.message
                 raise GenericHadoopError
 
 
