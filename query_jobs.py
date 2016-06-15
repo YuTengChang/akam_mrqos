@@ -98,8 +98,9 @@ def main():
             # have the local copy of the joined file
             print "    ****  copy the joined file for backup."
             hdfsutil.get(hdfs_file, local_file)
-        except:
+        except sp.CalledProcessError as e:
             print ">> direct join and insert failed, trying to copy the last succeeded one"
+            print e.message
             try:
                 # upload the last succeeded one from local
                 hdfsutil.put(local_file, hdfs_file)
@@ -107,8 +108,9 @@ def main():
                     # using hive to add partitions to joined query results
                     hiveql_str = 'use mrqos; alter table mrqos_join add partition(ts=%s);' % str(timenow)
                     beeline.bln_e(hiveql_str)
-                except sp.CalledProcessError:
+                except sp.CalledProcessError as e:
                     print ">> copying from duplicated file for mrqos_join failed in adding partitions"
+                    print e.message
                     #raise HiveCreatePartitionError
             except:
                 print "copying from duplicated file for mrqos_join failed in uploading to hdfs"
