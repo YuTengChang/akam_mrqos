@@ -26,18 +26,18 @@
 ##################################################
 # #################   MRQOS   ####################
 ##################################################
-# run the query every 10 minutes and upload the data to HIVE
+# run the query every 10 minutes and upload the data to HIVE (s195m)
 #5,15,25,35,45,55 * * * * /home/testgrp/doasme_YT /home/testgrp/MRQOS/cron_query >> /home/testgrp/logs/cron_query.log 2>&1
 #20 0 * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/hive_summarize.py >> /home/testgrp/logs/cron_summary.log 2>&1
 #20 2 * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_python_script/mrqos_summarize_1d3d.py >> /home/testgrp/logs/cron_summary_1d3d.log 2>&1
 
-# region information from mrqos
+# region information from mrqos (s195m)
 #9,19,29,39,49,59 * * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/query_insert_region_for_mrqos.py >> /home/testgrp/logs/cron_query_region.log 2>&1
 
 # lp solution push to HDFS
 #30 3 * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_python_script/lp_solution_add_to_cluster.py >> /home/testgrp/logs/cron_lp_push_to_hdfs.log 2>&1
 
-# region view
+# region view (s183m)
 #40 * * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_python_script/region_view_hour.py >> /home/testgrp/logs/cron_region_view_hour.log 2>&1
 
 
@@ -61,6 +61,6 @@
 ##################################################
 # #############   Region Tracker   ###############
 ##################################################
-# region summary
+# region summary (s180m)
 15 * * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_python_script/region_summary_hour.py >> /home/testgrp/logs/cron_region_summary_hour.log 2>&1
 
