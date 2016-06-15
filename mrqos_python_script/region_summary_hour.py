@@ -6,6 +6,7 @@ Created on Thu March 09 12:47:15 2016
 """
 import sys, os
 #import shutil
+import subprocess as sp
 
 sys.path.append('/home/testgrp/MRQOS/')
 import time
@@ -55,9 +56,10 @@ def main():
                 #    print "    ****  copy to local failed, retry!"
                 #    beeline.bln_e_output(strcmd_g, query_result_file)
                 break
-            except:
+            except sp.CalledProcessError as e:
                 # delete the folder if summarization failed.
                 print "    ******  failed with time cost = %s upto # retrials=%s" % (str(time.time()-tic), str(count_retrial))
+                print e.message
                 hdfsutil.rm(config.hdfs_qos_rg_hour % (datestamp, hourstamp), r=True)
                 count_retrial += 1
     else:
@@ -109,13 +111,15 @@ def main():
                 print "    ******  success with time cost = %s." % str(time.time()-tic)
                 try:
                     beeline.bln_e_output(strcmd_g, query_result_file)
-                except:
+                except sp.CalledProcessError as e:
                     print "    ****  copy to local failed, retry!"
+                    print e.message
                     beeline.bln_e_output(strcmd_g, query_result_file)
                 break
-            except:
+            except sp.CalledProcessError as e:
                 # delete the folder if summarization failed.
                 print "    ******  failed with time cost = %s upto #retrials=%s" % (str(time.time()-tic), str(count_retrial))
+                print e.message
                 hdfsutil.rm(config.hdfs_qos_case_view_hour % (datestamp, hourstamp), r=True)
                 count_retrial += 1
 
@@ -147,13 +151,15 @@ def main():
                 print "    ******  success with time cost = %s." % str(time.time()-tic)
                 try:
                     beeline.bln_e_output(strcmd_g, query_result_file)
-                except:
+                except sp.CalledProcessError as e:
                     print "    ****  copy to local failed, retry!"
+                    print e.message
                     beeline.bln_e_output(strcmd_g, query_result_file)
                 break
-            except:
+            except sp.CalledProcessError as e:
                 # delete the folder if summarization failed.
                 print "    ******  failed with time cost = %s upto #retrials=%s" % (str(time.time()-tic), str(count_retrial))
+                print e.message
                 hdfsutil.rm(config.hdfs_qos_rg_view_hour % (datestamp, hourstamp), r=True)
                 count_retrial += 1
 
