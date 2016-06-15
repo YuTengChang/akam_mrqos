@@ -3,8 +3,8 @@ import subprocess as sp
 import shlex
 
 #list_hive = ['bln']
-string_hive = 'beeline -u jdbc:hive2:// -n "" -p "" --silent=true --outputformat=tsv2 '
-list_hive = ['/a/third-party/hive/bin/beeline','-u','jdbc:hive2://','-n','""','-p','""','--silent=true']
+string_hive = 'beeline -u jdbc:hive2://s172m.ddc.akamai.com:10001 -n "" -p "" --silent=true --outputformat=tsv2 '
+list_hive = ['/a/third-party/hive/bin/beeline','-u','jdbc:hive2://s172m.ddc.akamai.com:10001','-n','""','-p','""','--silent=true']
 
 format_tsv2 = '--outputformat=tsv2 '
 format_tsv = '--outputformat=tsv '
