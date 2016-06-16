@@ -17,6 +17,10 @@ Created on Wed Apr 22 10:57:38 2015
 #hdfs_ra_load = '/ghostcache/hadoop/data/MRQOS/ra_load/ts=%s'
 hdfs_table = '/ghostcache/hadoop/data/MRQOS'
 hdfs_table_score = '/ghostcache/hadoop/data/MRQOS/score'
+hdfs_table_distance = '/ghostcache/hadoop/data/MRQOS/distance'
+hdfs_table_in_country = '/ghostcache/hadoop/data/MRQOS/in_country'
+hdfs_table_in_continent = '/ghostcache/hadoop/data/MRQOS/in_continent'
+hdfs_table_ra_load = '/ghostcache/hadoop/data/MRQOS/ra_load'
 hdfs_table_join = '/ghostcache/hadoop/data/MRQOS/mrqos_join'
 
 hdfs_qos_rg_info = '/ghostcache/hadoop/data/MRQOS/mrqos_region/datestamp=%s/hour=%s/ts=%s'

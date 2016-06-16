@@ -143,10 +143,14 @@ def mrqos_table_cleanup():
     # check if "partitions" is within the threshold, if not, drop in hive table and remove from hdfs
     timenow = int(time.time())
     mtype = ['score', 'distance', 'in_country', 'in_continent', 'ra_load']
+    for item in mtype:
+        exec('this_partitions = hdfsutil.ls(config.hdfs_table_%s)' % item)
+        str_parts_list = [i.split('=', 1)[1] for i in this_partitions]
+        str_parts_list_int = map(int, str_parts_list)
 
-    for partition in str_parts_list_int:
-        if partition < timenow - config.mrqos_table_delete:
-            for item in mtype:
+        for partition in str_parts_list_int:
+            if partition < timenow - config.mrqos_table_delete:
+
                 try:
                     print "      ##  handling table: %s with ts=%s" % (item, str(partition))
                     # drop partitions (ok even if partition does not exist)
