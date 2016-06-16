@@ -114,7 +114,7 @@ mpgid_reglist_avgDistance_capacity_nReg = mpgid_reg_distance\
 
 total_mpg_with_region = mpgid_reglist_avgDistance_capacity_nReg.count()
 
-# rdd format = ((reg-list), [[mpg-list], avg_distance, total_cap_w, total_cap_s, total_numvips,
+# rdd format = ((reg-list), [[mpg-list], avg_distance, total_cap_w, total_cap_s, total_numvips
 #                           reg-count, cluster_country, mpg-load, mpg-count])
 reglist_mpgid_avgDistance_capacity_nReg_country = mpgid_reglist_avgDistance_capacity_nReg\
     .map(lambda x: (tuple(x[1][0]), [[x[0]], # mpgid list
