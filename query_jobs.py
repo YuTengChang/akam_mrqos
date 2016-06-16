@@ -147,6 +147,9 @@ def mrqos_table_cleanup():
         exec('this_partitions = hdfsutil.ls(config.hdfs_table_%s)' % item)
         str_parts_list = [i.split('=', 1)[1] for i in this_partitions]
         str_parts_list_int = map(int, str_parts_list)
+        print "      ##  for table: %s" % item
+        print "      ##  ",
+        print str_parts_list_int
 
         for partition in str_parts_list_int:
             if partition < timenow - config.mrqos_table_delete:
