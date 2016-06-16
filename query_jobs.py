@@ -150,7 +150,6 @@ def mrqos_table_cleanup():
 
         for partition in str_parts_list_int:
             if partition < timenow - config.mrqos_table_delete:
-
                 try:
                     print "      ##  handling table: %s with ts=%s" % (item, str(partition))
                     # drop partitions (ok even if partition does not exist)
@@ -162,7 +161,6 @@ def mrqos_table_cleanup():
                 except sp.CalledProcessError as e:
                     print ">> failed in hive table clean up in table: %s." % item
                     print e.message
-                    pass
                     # raise GenericHadoopError
 
 
