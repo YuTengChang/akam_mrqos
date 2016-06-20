@@ -53,6 +53,7 @@ def bln_e(cmd, outformat='tsv2', database=''):
     list_used = shlex.split(bln_prepare_hiveql(outformat) + '-e "%s"' % cmd)
     string_used = ' '.join(list_used)
     print "this is the string used: "
+    print list_used
     print string_used
     #sp.check_call(list_used)
     sp.check_call(string_used, shell=True)
