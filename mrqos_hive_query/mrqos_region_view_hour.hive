@@ -1,7 +1,5 @@
 USE mrqos;
-
 INSERT OVERWRITE TABLE region_view_hour PARTITION (datestamp=%s, hour=%s)
-
 SELECT
     region_info.*,
     mr_region_table.distribution
