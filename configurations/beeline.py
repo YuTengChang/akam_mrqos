@@ -9,7 +9,7 @@ def newSplit(value):
     lex.commenters = ''
     return list(lex)
 
-string_hive = '''beeline -u jdbc:hive2://s172m.ddc.akamai.com:10001 -n "" -p "" --silent=true --outputformat=tsv2 '''
+string_hive = '''beeline -u jdbc:hive2://s172m.ddc.akamai.com:10001 -n "anonymous" -p "pp" --silent=true --outputformat=tsv2 '''
 list_hive = ['/a/third-party/hive/bin/beeline','-u','jdbc:hive2://s172m.ddc.akamai.com:10001','-n','""','-p','""','--silent=true']
 
 format_tsv2 = '--outputformat=tsv2 '
@@ -19,16 +19,12 @@ format_csv = '--outputformat=csv '
 format_dsv = '--outputformat=dsv '
 format_table = '--outputformat=table '
 
-
-
-
 def bln_prepare_hiveql(formatting):
     """
     return the beeline executable with possible overwritten output format
     :param formatting: the parameter used to specify the hive output
     :return: return string of executable and parameters
     """
-
     if (formatting == 'csv') | (formatting == 'CSV'):
         return string_hive + format_csv
     elif (formatting == 'csv2') | (formatting == 'CSV2'):
@@ -55,7 +51,6 @@ def bln_e(cmd, outformat='tsv2', database=''):
     :param database: hive database
     :return: no return
     """
-
     if database:
         cmd = 'use %s; ' % (database) + cmd
     list_used = newSplit(bln_prepare_hiveql(outformat) + '-e "%s"' % cmd)
