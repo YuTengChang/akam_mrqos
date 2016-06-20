@@ -51,10 +51,7 @@ def bln_e(cmd, outformat='tsv2', database=''):
     if database:
         cmd = 'use %s; ' % (database) + cmd
     list_used = shlex.split(bln_prepare_hiveql(outformat) + '-e "%s"' % cmd)
-    try:
-        sp.check_call(list_used)
-    except sp.CalledProcessError as e:
-        print e.message
+    sp.check_call(list_used)
 
 
 def bln_e_output(cmd, output_file, outformat='tsv2', database=''):
