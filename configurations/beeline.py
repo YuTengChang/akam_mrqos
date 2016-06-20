@@ -55,9 +55,11 @@ def bln_e(cmd, outformat='tsv2', database=''):
         cmd = 'use %s; ' % (database) + cmd
     list_used = newSplit(bln_prepare_hiveql(outformat) + '-e "%s"' % cmd)
     print "this is the string used: "
-    print list_used
-    sp.check_call(list_used)
-    #sp.check_call(string_used, shell=True)
+    #print list_used
+    string_used = ' '.join(list_used)
+    print string_used
+    #sp.check_call(list_used)
+    sp.check_call(string_used, shell=True)
 
 
 
