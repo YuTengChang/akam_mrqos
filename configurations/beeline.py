@@ -2,8 +2,14 @@ import os, sys
 import subprocess as sp
 import shlex
 
-#list_hive = ['bln']
-string_hive = 'beeline -u jdbc:hive2://s172m.ddc.akamai.com:10001 -n \"\" -p \"\" --silent=true --outputformat=tsv2 '
+def newSplit(value):
+    lex = shlex.shlex(value)
+    lex.quotes = '"'
+    lex.whitespace_split = True
+    lex.commenters = ''
+    return list(lex)
+
+string_hive = '''beeline -u jdbc:hive2://s172m.ddc.akamai.com:10001 -n "" -p "" --silent=true --outputformat=tsv2 '''
 list_hive = ['/a/third-party/hive/bin/beeline','-u','jdbc:hive2://s172m.ddc.akamai.com:10001','-n','""','-p','""','--silent=true']
 
 format_tsv2 = '--outputformat=tsv2 '
@@ -12,6 +18,8 @@ format_csv2 = '--outputformat=csv2 '
 format_csv = '--outputformat=csv '
 format_dsv = '--outputformat=dsv '
 format_table = '--outputformat=table '
+
+
 
 
 def bln_prepare_hiveql(formatting):
@@ -50,7 +58,7 @@ def bln_e(cmd, outformat='tsv2', database=''):
 
     if database:
         cmd = 'use %s; ' % (database) + cmd
-    list_used = shlex.split(bln_prepare_hiveql(outformat) + '-e "%s"' % cmd)
+    list_used = newSplit(bln_prepare_hiveql(outformat) + '-e "%s"' % cmd)
     string_used = ' '.join(list_used)
     print "this is the string used: "
     print list_used
