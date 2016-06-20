@@ -92,13 +92,8 @@ class queryDaemon(multiprocessing.Process):
         stdate_dte = tmi.datetime_to_startdate(stdate)
         offset = datetime.timedelta(hours = self.args['offset'])
         return stdate_dte - offset 
-        
-    
+
     def run_query(self,part_val):
         #this gets overwritten 
         return 
     
-    
-    
-    
-        
