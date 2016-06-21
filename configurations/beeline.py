@@ -9,7 +9,8 @@ def newSplit(value):
     lex.commenters = ''
     return list(lex)
 
-string_hive = '''beeline -u jdbc:hive2://s172m.ddc.akamai.com:10001 -n "anonymous" -p "pp" --silent=true --outputformat=tsv2 '''
+# report connected to: jdbc:hive2://s172m.ddc.akamai.com:10001
+string_hive = '''/a/third-party/hive/bin/beeline -u jdbc:hive2://s172m.ddc.akamai.com:10001 -n "anonymous" -p "pp" --silent=true --outputformat=tsv2 '''
 list_hive = ['/a/third-party/hive/bin/beeline','-u','jdbc:hive2://s172m.ddc.akamai.com:10001','-n','""','-p','""','--silent=true']
 
 format_tsv2 = '--outputformat=tsv2 '

@@ -31,6 +31,11 @@ def main():
 
     # check if the summary has been performed on this particular hour (last hour)
     folders_day = '/'.join(str(config.hdfs_qos_rg_view_hour % (datestamp, '00')).split('/')[0:-1])
+
+    # check if the summary folder for "this day" (datestamp) has been created or not, if not, create one
+    if hdfsutil.test_dic(folders_day):
+        hdfsutil.mkdir(folders_day)
+
     folders_in = [folders_day+'/hour=%s' % x for x in hour_list]
     folders_out = hdfsutil.ls(folders_day)
 
