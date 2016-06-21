@@ -10,8 +10,8 @@ def newSplit(value):
     return list(lex)
 
 # report connected to: jdbc:hive2://s172m.ddc.akamai.com:10001
-string_hive = '''/a/third-party/hive/bin/beeline -u jdbc:hive2://s172m.ddc.akamai.com:10001 -n "anonymous" -p "pp" --silent=true --outputformat=tsv2 '''
-list_hive = ['/a/third-party/hive/bin/beeline','-u','jdbc:hive2://s172m.ddc.akamai.com:10001','-n','""','-p','""','--silent=true']
+string_hive = '''/a/third-party/hive/bin/beeline -u jdbc:hive2:// -n "" -p "" --silent=true --outputformat=tsv2 '''
+list_hive = ['/a/third-party/hive/bin/beeline','-u','jdbc:hive2://','-n','""','-p','""','--silent=true']
 
 format_tsv2 = '--outputformat=tsv2 '
 format_tsv = '--outputformat=tsv '
@@ -55,12 +55,14 @@ def bln_e(cmd, outformat='tsv2', database=''):
     if database:
         cmd = 'use %s; ' % (database) + cmd
     list_used = newSplit(bln_prepare_hiveql(outformat) + '-e "%s"' % cmd)
-    print "this is the string used: "
+    sp.check_call(list_used)
     #print list_used
-    string_used = ' '.join(list_used)
-    print string_used
-    #sp.check_call(list_used)
-    sp.check_call(string_used, shell=True)
+    #string_used = ' '.join(list_used)
+
+    # string used
+    #print "this is the string used: "
+    #print string_used
+    #sp.check_call(string_used, shell=True)
 
 
 
