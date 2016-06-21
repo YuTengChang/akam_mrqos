@@ -3,6 +3,7 @@
 Created on Thu March 09 12:47:15 2016
 
 @author: ychang
+    retired code for mrqos_region_view_hour.hive
 """
 import sys, os
 #import shutil

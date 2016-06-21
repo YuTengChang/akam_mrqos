@@ -37,7 +37,7 @@
 # lp solution push to HDFS
 #30 3 * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_python_script/lp_solution_add_to_cluster.py >> /home/testgrp/logs/cron_lp_push_to_hdfs.log 2>&1
 
-# region view (s183m)
+# region view (s183m) : retired parts of cron
 #40 * * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_python_script/region_view_hour.py >> /home/testgrp/logs/cron_region_view_hour.log 2>&1
 
 
