@@ -34,6 +34,7 @@ alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 alias hls='hadoop fs -ls'
 alias bln='beeline -u jdbc:hive2:// -n "" -p "" --silent=false --showHeader=false --outputformat=tsv2'
+alias pspython = 'ps aux | grep python'
 
 # SCALA parameter
 export SCALA_HOME=/home/testgrp/installs/scala-2.11.8
