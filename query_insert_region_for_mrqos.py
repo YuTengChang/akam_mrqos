@@ -47,13 +47,12 @@ def main():
 
             print '    adding partition'
             hiveql_str = config.add_rg_partition % ( datestamp, hourstamp, ts )
-            #print '    '+hiveql_str
-            #sp.check_call(['hive','-e',hiveql_str])
             beeline.bln_e(hiveql_str)
 
             print '    remove local file: ' + qos_file
             os.remove(qos_file)
-        except:
+        except Exception as e:
+            print e.message
             print 'MRQOS region(RG) information update failed for timestamp=%s' % ( ts )
 
 
