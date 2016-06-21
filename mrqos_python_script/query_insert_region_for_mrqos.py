@@ -15,6 +15,7 @@ import configurations.hdfsutil as hdfs
 import configurations.config as config
 import configurations.beeline as beeline
 import time
+import subprocess as sp
 
 
 def main():
@@ -51,9 +52,13 @@ def main():
 
             print '    remove local file: ' + qos_file
             os.remove(qos_file)
-        except Exception as e:
+        except sp.CalledProcessError as e:
             print e.message
             print 'MRQOS region(RG) information update failed for timestamp=%s' % ( ts )
+            if 'File exists' in e.message:
+                print '    remove local file: ' + qos_file
+                os.remove(qos_file)
+
 
 
 if __name__=='__main__':
