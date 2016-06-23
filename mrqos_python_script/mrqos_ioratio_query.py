@@ -19,7 +19,7 @@ def main():
     query_item = ['maprule_info', 'mcm_machines']
     agg = 'mega.dev.query.akadns.net'
     for item in query_item:
-        cmd = ''' sql2 -q %s --csv "`cat %s.qr`" > %s.tmp ''' % (agg,
+        cmd = ''' sql2 -q %s --csv "`cat %s.qr`" | tail -n+3 > %s.tmp ''' % (agg,
                                                                  os.path.join(config.mrqos_query, item),
                                                                  os.path.join(config.mrqos_data, item))
         count = 0
