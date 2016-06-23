@@ -1,0 +1,18 @@
+USE mrqos;
+
+drop table mcm_machines;
+
+create external table mcm_machines (
+    ghostip STRING,
+    region INT,
+    regionName STRING,
+    primaryRole STRING,
+    hardwareType STRING,
+    network STRING
+)
+
+partitioned by (datestamp STRING, hour STRING, ts INT)
+row format delimited
+fields terminated by ','
+lines terminated by '\n'
+location '/ghostcache/hadoop/data/MRQOS/mcm_machines';

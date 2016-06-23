@@ -1,0 +1,23 @@
+USE mrqos;
+
+drop table maprule_info;
+
+create external table maprule_info (
+    ghostip STRING,
+    service STRING,
+    maprule_id INT,
+    maprule_name STRING,
+    hits INT,
+    connections INT,
+    flytes BIGINT,
+    bytes BIGINT,
+    bytes_in BIGING,
+    cpu BIGINT,
+    disk BIGINT
+)
+
+partitioned by (datestamp STRING, hour STRING, ts INT)
+row format delimited
+fields terminated by ','
+lines terminated by '\n'
+location '/ghostcache/hadoop/data/MRQOS/maprule_info';

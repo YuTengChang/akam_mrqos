@@ -39,10 +39,13 @@ def main():
         # multiple times with timeout scheme
         while (flag == 0) and (count < n_retrial):
             try:
+                tic = time.time()
                 with ytt.Timeout(t_timeout):
                     sp.call(cmd, shell=True)
                     flag = 1
-                    logger.info('Fatched Table: %s with %s retrials.' % (item, str(count)))
+                    logger.info('%s trial: Fatched Table: %s with %s sec.' % (str(count+1),
+                                                                              item,
+                                                                              str(time.time()-tic) ))
             except:
                 count += 1
         if flag == 0:
