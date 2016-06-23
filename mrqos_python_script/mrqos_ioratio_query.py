@@ -14,8 +14,18 @@ import YT_Timeout as ytt
 import configurations.config as config
 import configurations.hdfsutil as hdfsutil
 import configurations.beeline as beeline
+import logging
 
 def main():
+    # logging set-up
+    logging.basicConfig(filename=os.path.join(config.mrqos_logging, 'io_ratio_prefetch.log'),
+                        level=logging.INFO,
+                        format='%(asctime)s %(message)s',
+                        datefmt='%m/%d/%Y %H:%M:%S  ')
+    logger = logging.getLogger(__name__)
+
+    # start the script
+    logger.info('Fetch table(s) started.')
     query_item = ['maprule_info', 'mcm_machines']
     agg = 'mega.dev.query.akadns.net'
     for item in query_item:
@@ -32,8 +42,11 @@ def main():
                 with ytt.Timeout(t_timeout):
                     sp.call(cmd, shell=True)
                     flag = 1
+                    logger.info('Fatched Table: %s with %s retrials.' % (item, str(count)))
             except:
                 count += 1
+        if flag == 0:
+            logger.info('Table %s fetched failed.' % item)
 
 
 if __name__ == '__main__':
