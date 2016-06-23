@@ -1,0 +1,1 @@
+select ip, region, regionName, primaryRole, hardwareType, network from mcm_machines;

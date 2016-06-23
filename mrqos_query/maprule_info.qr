@@ -1,0 +1,1 @@
+select ghostip, service, maprule_id, maprule_name, hits, connections, flytes, bytes, bytes_in, cpu, disk from maprule_info;
