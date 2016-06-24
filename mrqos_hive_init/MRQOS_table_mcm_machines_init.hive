@@ -11,7 +11,7 @@ create external table mcm_machines (
     network STRING
 )
 
-partitioned by (datestamp STRING, hour STRING, ts INT)
+partitioned by (ts INT)
 row format delimited
 fields terminated by ','
 lines terminated by '\n'
