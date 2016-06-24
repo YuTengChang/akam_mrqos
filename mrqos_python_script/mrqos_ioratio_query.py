@@ -32,7 +32,7 @@ def main():
     datestamp = time.strftime('%Y%m%d', time.gmtime(float(ts)))
     hourstamp = time.strftime('%H', time.gmtime(float(ts)))
 
-    logger.info('Fetch table(s) started.')
+    logger.info('Fetch table(s) started at %s.' % str(ts))
     query_item = ['maprule_info', 'mcm_machines']
     agg = 'mega.dev.query.akadns.net'
 
