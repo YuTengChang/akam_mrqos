@@ -66,7 +66,7 @@ def main():
                                     'datestamp=%s' % datestamp,
                                     'hour=%s' % hourstamp,
                                     'ts=%s' % str(ts))
-            beeline.upload_to_hive(os.path.join(config.hdfs_table, item),
+            beeline.upload_to_hive(os.path.join(config.mrqos_data, item),
                                    hdfs_d,
                                    'datestamp=%s, hour=%s, ts=%s' % (datestamp,
                                                                      hourstamp,
