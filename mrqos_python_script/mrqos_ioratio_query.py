@@ -24,10 +24,18 @@ def main():
                         datefmt='%m/%d/%Y %H:%M:%S  ')
     logger = logging.getLogger(__name__)
 
+    # ##############################
     # start the script
+    # parameter setting
+
+    ts = int(time.time())
+    datestamp = time.strftime('%Y%m%d', time.gmtime(float(ts)))
+    hourstamp = time.strftime('%H', time.gmtime(float(ts)))
+
     logger.info('Fetch table(s) started.')
     query_item = ['maprule_info', 'mcm_machines']
     agg = 'mega.dev.query.akadns.net'
+
     for item in query_item:
         cmd = ''' sql2 -q %s --csv "`cat %s.qr`" | tail -n+3 > %s.tmp ''' % (agg,
                                                                  os.path.join(config.mrqos_query, item),
@@ -50,6 +58,31 @@ def main():
                 count += 1
         if flag == 0:
             logger.info('Table %s fetched failed.' % item)
+
+        # upload to hdfs and add hive partitions
+        try:
+            beeline.upload_to_hive(os.path.join(config.mrqos_data, item),
+                                   os.path.join(config.hdfs_table, item),
+                                   'datestamp=%s, hour=%s, ts=%s' % (datestamp,
+                                                                     hourstamp,
+                                                                     str(ts)),
+                                   'mrqos.%s' % item)
+        except sp.CalledProcessError as e:
+            logger.error('upload to hive and add partition failed')
+            logger.error('error: %s' % e.message)
+
+        ## obtain the last partition
+        #try:
+        #    partitions = beeline.show_partitions('mrqos.%s' % item).split('\n')[-1].split('=')[1]
+        #    exec('%s_par=partitions' % item)
+        #
+        #except sp.CalledProcessError as e:
+        #    logger.error('fetch partition error, table: %s' % item)
+        #    logger.error('error: %s' % e.message)
+
+
+
+
 
 
 if __name__ == '__main__':

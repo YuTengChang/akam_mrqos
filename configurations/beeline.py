@@ -84,6 +84,23 @@ def bln_e_output(cmd, output_file, outformat='tsv2', database=''):
     f_handle.close()
 
 
+def hive_output(cmd, outformat='tsv2', database=''):
+    if database:
+        cmd = 'use %s;' % (database) + cmd
+    list_used = shlex.split(bln_prepare_hiveql(outformat) + '-e "%s"' % cmd)
+    try:
+        p1 = sp.check_output(list_used)
+    except sp.CalledProcessError as e:
+        p1 = e.output
+    # get rid of the warned lines
+    p1_lines = p1.strip().split('\n')
+    p1_lines_fixed = []
+    for line in p1_lines:
+        if line.strip().split(' ')[0] != 'WARN:':
+            p1_lines_fixed.append(line)
+    return '\n'.join(p1_lines_fixed)
+
+
 def bln_f(hive_script, outformat='tsv2'):
     """
     create corresponding hive -f + hive_script_file
@@ -140,3 +157,40 @@ def bln_e_outcall(cmd, outputfile, outformat='tsv2', database=''):
     file_handle = open(outputfile, 'w')
     sp.call(list_used, stdout=file_handle)
     file_handle.close()
+
+
+# ==============================================================================
+# # upload to hdfs and link to hive table
+# ==============================================================================
+
+def upload_to_hive(listname, hdfs_d, partition, tablename):
+    """ this function will create a partition directory in hdfs with the requisite timestamp. It will
+    then add the partition to the table "tablename" with the appropriate "partition" """
+
+    # hdfs_d = config.hdfsclnspp % (ts)
+    # create the partition
+    try:
+        sp.check_call(['hadoop', 'fs', '-mkdir', hdfs_d])
+    # upload the data
+    except sp.CalledProcessError:
+        return 1
+    try:
+        sp.check_call(['hadoop', 'fs', '-put', listname, hdfs_d])
+    except sp.CalledProcessError:
+        return 2
+
+    # add the partition
+    try:
+        hiveql_str = 'use mrqos; alter table ' + tablename + ' add partition(%s);' % (partition)
+        bln_e(hiveql_str)
+    except sp.CalledProcessError:
+        return 3
+
+def show_partitions(tablename):
+    """
+    show partitions of a hive table by "tablename"
+    :param tablename:
+    :return:
+    """
+    hiveql_str = 'show partitions %s;' % tablename
+    return hive_output(hiveql_str)

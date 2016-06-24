@@ -74,3 +74,5 @@ def get(hdfs_file, local_file):
     print 'copying hdfs file %s to local file %s' % (hdfs_file, local_file)
     return sp.check_call('hadoop fs -get %s %s' % (hdfs_file, local_file),
                          shell=True)
+
+
