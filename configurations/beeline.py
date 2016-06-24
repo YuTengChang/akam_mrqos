@@ -3,6 +3,9 @@ import subprocess as sp
 import shlex
 import logging
 
+sys.path.append('/home/testgrp/MRQOS/')
+import configurations.config as config
+
 # report connected to: jdbc:hive2://s172m.ddc.akamai.com:10001
 string_hive = '''/a/third-party/hive/bin/beeline -u jdbc:hive2:// -n "" -p "" --silent=true --outputformat=tsv2 '''
 list_hive = ['/a/third-party/hive/bin/beeline','-u','jdbc:hive2://','-n','""','-p','""','--silent=true']
