@@ -1,13 +1,7 @@
 import os, sys
 import subprocess as sp
 import shlex
-
-def newSplit(value):
-    lex = shlex.shlex(value)
-    lex.quotes = '"'
-    lex.whitespace_split = True
-    lex.commenters = ''
-    return list(lex)
+import logging
 
 # report connected to: jdbc:hive2://s172m.ddc.akamai.com:10001
 string_hive = '''/a/third-party/hive/bin/beeline -u jdbc:hive2:// -n "" -p "" --silent=true --outputformat=tsv2 '''
@@ -19,6 +13,19 @@ format_csv2 = '--outputformat=csv2 '
 format_csv = '--outputformat=csv '
 format_dsv = '--outputformat=dsv '
 format_table = '--outputformat=table '
+
+logging.basicConfig(filename=os.path.join(config.mrqos_logging, 'default.log'),
+                        level=logging.INFO,
+                        format='%(asctime)s %(message)s',
+                        datefmt='%m/%d/%Y %H:%M:%S  ')
+logger_default = logging.getLogger()
+
+def newSplit(value):
+    lex = shlex.shlex(value)
+    lex.quotes = '"'
+    lex.whitespace_split = True
+    lex.commenters = ''
+    return list(lex)
 
 def bln_prepare_hiveql(formatting):
     """
@@ -163,7 +170,7 @@ def bln_e_outcall(cmd, outputfile, outformat='tsv2', database=''):
 # # upload to hdfs and link to hive table
 # ==============================================================================
 
-def upload_to_hive(listname, hdfs_d, partition, tablename):
+def upload_to_hive(listname, hdfs_d, partition, tablename, logger=logger_default):
     """ this function will create a partition directory in hdfs with the requisite timestamp. It will
     then add the partition to the table "tablename" with the appropriate "partition" """
 
@@ -171,20 +178,28 @@ def upload_to_hive(listname, hdfs_d, partition, tablename):
     # create the partition
     try:
         sp.check_call(['hadoop', 'fs', '-mkdir', hdfs_d])
-    # upload the data
-    except sp.CalledProcessError:
-        return 1
-    try:
-        sp.check_call(['hadoop', 'fs', '-put', listname, hdfs_d])
-    except sp.CalledProcessError:
-        return 2
+        logger.info('HDFS directory creation succeeded: %s' % hdfs_d)
+        try:
+            sp.check_call(['hadoop', 'fs', '-put', listname, hdfs_d])
+            logger.info('HDFS upload succeeded: %s' % listname)
+            try:
+                hiveql_str = 'use mrqos; alter table ' + tablename + ' add partition(%s);' % (partition)
+                bln_e(hiveql_str)
+                logger.info('add partition (alter table) succeeded %s' % tablename)
 
-    # add the partition
-    try:
-        hiveql_str = 'use mrqos; alter table ' + tablename + ' add partition(%s);' % (partition)
-        bln_e(hiveql_str)
-    except sp.CalledProcessError:
-        return 3
+            except sp.CalledProcessError as e:
+                logger.error('add partition (alter table) failed.')
+                logger.error('error: %s' % e.message)
+
+        except sp.CalledProcessError as e:
+            logger.error('HDFS upload failed.')
+            logger.error('error: %s' % e.message)
+
+    except sp.CalledProcessError as e:
+        logger.error('HDFS directory creation failed.')
+        logger.error('error: %s' % e.message)
+
+
 
 def show_partitions(tablename):
     """
