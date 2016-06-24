@@ -17,11 +17,11 @@ format_csv = '--outputformat=csv '
 format_dsv = '--outputformat=dsv '
 format_table = '--outputformat=table '
 
-logging.basicConfig(filename=os.path.join(config.mrqos_logging, 'default.log'),
-                        level=logging.INFO,
-                        format='%(asctime)s %(message)s',
-                        datefmt='%m/%d/%Y %H:%M:%S  ')
-logger_default = logging.getLogger()
+#logging.basicConfig(filename=os.path.join(config.mrqos_logging, 'default.log'),
+#                        level=logging.INFO,
+#                        format='%(asctime)s %(message)s',
+#                        datefmt='%m/%d/%Y %H:%M:%S  ')
+#logger_default = logging.getLogger("default")
 
 def newSplit(value):
     lex = shlex.shlex(value)
@@ -173,7 +173,7 @@ def bln_e_outcall(cmd, outputfile, outformat='tsv2', database=''):
 # # upload to hdfs and link to hive table
 # ==============================================================================
 
-def upload_to_hive(listname, hdfs_d, partition, tablename, logger=logger_default):
+def upload_to_hive(listname, hdfs_d, partition, tablename, logger):
     """ this function will create a partition directory in hdfs with the requisite timestamp. It will
     then add the partition to the table "tablename" with the appropriate "partition" """
 
@@ -193,10 +193,12 @@ def upload_to_hive(listname, hdfs_d, partition, tablename, logger=logger_default
             except sp.CalledProcessError as e:
                 logger.error('add partition (alter table) failed.')
                 logger.error('error: %s' % e.message)
+                sp.check_call(['hadoop', 'fs', '-rm', '-r', hdfs_d])
 
         except sp.CalledProcessError as e:
             logger.error('HDFS upload failed.')
             logger.error('error: %s' % e.message)
+            sp.check_call(['hadoop', 'fs', '-rm', '-r', hdfs_d])
 
     except sp.CalledProcessError as e:
         logger.error('HDFS directory creation failed.')
