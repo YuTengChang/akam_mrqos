@@ -11,7 +11,7 @@ create external table maprule_info (
     connections INT,
     flytes BIGINT,
     bytes BIGINT,
-    bytes_in BIGING,
+    bytes_in BIGINT,
     cpu BIGINT,
     disk BIGINT
 )
