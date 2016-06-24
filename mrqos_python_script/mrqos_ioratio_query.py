@@ -64,10 +64,12 @@ def main():
             hdfs_d = os.path.join(config.hdfs_table,
                                     item,
                                     'ts=%s' % str(ts))
+
             beeline.upload_to_hive(os.path.join(config.mrqos_data, item),
                                    hdfs_d,
                                    'ts=%s' % (str(ts)),
-                                   'mrqos.%s' % item)
+                                   'mrqos.%s' % item,
+                                   logger)
             logger.info('successfully upload to HDFS and add partition: mrqos.%s' % item)
 
         except sp.CalledProcessError as e:
