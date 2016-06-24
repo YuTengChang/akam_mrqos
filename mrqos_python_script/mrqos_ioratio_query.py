@@ -61,14 +61,21 @@ def main():
 
         # upload to hdfs and add hive partitions
         try:
-            beeline.upload_to_hive(os.path.join(config.mrqos_data, item),
-                                   os.path.join(config.hdfs_table, item),
+            hdfs_d = os.path.join(config.hdfs_table,
+                                    item,
+                                    'datestamp=%s' % datestamp,
+                                    'hour=%s' % hourstamp,
+                                    'ts=%s' % str(ts))
+            beeline.upload_to_hive(os.path.join(config.hdfs_table, item),
+                                   hdfs_d,
                                    'datestamp=%s, hour=%s, ts=%s' % (datestamp,
                                                                      hourstamp,
                                                                      str(ts)),
                                    'mrqos.%s' % item)
+            logger.info('successfully upload to HDFS and add partition: mrqos.%s' % item)
+
         except sp.CalledProcessError as e:
-            logger.error('upload to hive and add partition failed')
+            logger.error('upload to hive and add partition failed: mrqos.%s' % item)
             logger.error('error: %s' % e.message)
 
         ## obtain the last partition
