@@ -65,7 +65,7 @@ def main():
                                     item,
                                     'ts=%s' % str(ts))
 
-            beeline.upload_to_hive(os.path.join(config.mrqos_data, item),
+            beeline.upload_to_hive(os.path.join(config.mrqos_data, '%s.tmp' % item),
                                    hdfs_d,
                                    'ts=%s' % (str(ts)),
                                    'mrqos.%s' % item,
