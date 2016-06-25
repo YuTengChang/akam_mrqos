@@ -5,6 +5,7 @@ import logging
 
 sys.path.append('/home/testgrp/MRQOS/')
 import configurations.config as config
+import configurations.hdfsutil as hdfs
 
 # report connected to: jdbc:hive2://s172m.ddc.akamai.com:10001
 string_hive = '''/a/third-party/hive/bin/beeline -u jdbc:hive2:// -n "" -p "" --silent=true --outputformat=tsv2 '''
@@ -180,10 +181,12 @@ def upload_to_hive(listname, hdfs_d, partition, tablename, logger):
     # hdfs_d = config.hdfsclnspp % (ts)
     # create the partition
     try:
-        sp.check_call(['hadoop', 'fs', '-mkdir', hdfs_d])
+        # sp.check_call(['hadoop', 'fs', '-mkdir', hdfs_d])
+        hdfs.mkdir(hdfs_d)
         logger.info('HDFS directory creation succeeded: %s' % hdfs_d)
         try:
-            sp.check_call(['hadoop', 'fs', '-put', listname, hdfs_d])
+            # sp.check_call(['hadoop', 'fs', '-put', listname, hdfs_d])
+            hdfs.put(listname, hdfs_d)
             logger.info('HDFS upload succeeded: %s' % listname)
             try:
                 hiveql_str = 'use mrqos; alter table ' + tablename + ' add partition(%s);' % (partition)
@@ -193,12 +196,14 @@ def upload_to_hive(listname, hdfs_d, partition, tablename, logger):
             except sp.CalledProcessError as e:
                 logger.error('add partition (alter table) failed.')
                 logger.error('error: %s' % e.message)
-                sp.check_call(['hadoop', 'fs', '-rm', '-r', hdfs_d])
+                # sp.check_call(['hadoop', 'fs', '-rm', '-r', hdfs_d])
+                hdfs.rm(hdfs_d, r=True)
 
         except sp.CalledProcessError as e:
             logger.error('HDFS upload failed.')
             logger.error('error: %s' % e.message)
-            sp.check_call(['hadoop', 'fs', '-rm', '-r', hdfs_d])
+            # sp.check_call(['hadoop', 'fs', '-rm', '-r', hdfs_d])
+            hdfs.rm(hdfs_d, r=True)
 
     except sp.CalledProcessError as e:
         logger.error('HDFS directory creation failed.')
