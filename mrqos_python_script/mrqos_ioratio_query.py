@@ -20,7 +20,7 @@ def main():
     # logging set-up
     logging.basicConfig(filename=os.path.join(config.mrqos_logging, 'io_ratio_prefetch.log'),
                         level=logging.INFO,
-                        format='%(asctime)s %(message)s',
+                        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                         datefmt='%m/%d/%Y %H:%M:%S  ')
     logger = logging.getLogger(__name__)
 
