@@ -54,7 +54,7 @@ def main():
                     logger.info('%s trial: Fatched Table: %s with %s sec.' % (str(count+1),
                                                                               item,
                                                                               str(time.time()-tic) ))
-            except:
+            except Exception:
                 count += 1
         if flag == 0:
             logger.info('Table %s fetched failed.' % item)
