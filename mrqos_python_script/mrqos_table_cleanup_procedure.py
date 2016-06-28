@@ -27,6 +27,7 @@ def main():
     # ##############################
     # start the script
     # parameter setting
+    # ##############################
 
     ts = int(time.time())
     ts_timeout = ts - config.mrqos_table_delete * 24 * 3 # 3 days = (24*3) hours of time-out
@@ -57,7 +58,36 @@ def main():
         logger.error('removed data from hdfs failed')
         logger.error('error: %s' % e.message)
 
-    # alter hive tables:
+    # ##############################
+    # target table: maprule_info, mcm_machines
+    # ##############################
+
+    query_item = ['maprule_info', 'mcm_machines']
+
+    for scan in query_item:
+
+        list_to_clean = sorted(list(set([x.split('/')[0] for x in beeline.show_partitions('mrqos.%s' % scan).split('\n')])))
+        list_to_clean = [x for x in list_to_clean if ('=' in x and int(x.split('=')[1]) < ts_timeout)]
+
+        try:
+            # remove the hdfs folder
+            for item in list_to_clean:
+                hdfsutil.rm(os.path.join(config.hdfs_table,
+                                         '%s' % scan,
+                                         '%s' % item),
+                            r=True)
+
+            # alter the hive table: mrqos_region
+            try:
+                beeline.drop_partitions(tablename='mrqos.%s' % scan,
+                                        condition='ts<%s' % str(ts_timeout))
+            except sp.CalledProcessError as e:
+                logger.error('drop partition failed')
+                logger.error('error: %s' % e.message)
+
+        except sp.CalledProcessError as e:
+            logger.error('removed data from hdfs failed')
+            logger.error('error: %s' % e.message)
 
 
 
