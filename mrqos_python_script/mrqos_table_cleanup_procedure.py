@@ -38,7 +38,9 @@ def main():
     list_to_clean = sorted(list(set([x.split('/')[0] for x in beeline.show_partitions('mrqos.mrqos_region').split('\n')])))
     list_to_clean = [x for x in list_to_clean if ('=' in x and x.split('=')[1] < date_timeout)]
 
+    logger.info('handling table: mrqos_region')
     try:
+        logger.info('removing the data in HDFS')
         # remove the hdfs folder
         for item in list_to_clean:
             hdfsutil.rm(os.path.join(config.hdfs_table,
@@ -48,6 +50,7 @@ def main():
 
         # alter the hive table: mrqos_region
         try:
+            logger.info('drop partitions')
             beeline.drop_partitions(tablename='mrqos.mrqos_region',
                                     condition='datestamp<%s' % str(date_timeout))
         except sp.CalledProcessError as e:
@@ -65,11 +68,12 @@ def main():
     query_item = ['maprule_info', 'mcm_machines']
 
     for scan in query_item:
-
+        logger.info('handling table: %s' % scan)
         list_to_clean = sorted(list(set([x.split('/')[0] for x in beeline.show_partitions('mrqos.%s' % scan).split('\n')])))
         list_to_clean = [x for x in list_to_clean if ('=' in x and int(x.split('=')[1]) < ts_timeout)]
 
         try:
+            logger.info('removing the data in HDFS')
             # remove the hdfs folder
             for item in list_to_clean:
                 hdfsutil.rm(os.path.join(config.hdfs_table,
@@ -79,6 +83,7 @@ def main():
 
             # alter the hive table: mrqos_region
             try:
+                logger.info('drop partitions')
                 beeline.drop_partitions(tablename='mrqos.%s' % scan,
                                         condition='ts<%s' % str(ts_timeout))
             except sp.CalledProcessError as e:
