@@ -42,7 +42,7 @@ def main():
         for item in list_to_clean:
             hdfsutil.rm(os.path.join(config.hdfs_table,
                                      'mrqos_region',
-                                     'datestamp=%s' % item),
+                                     '%s' % item),
                         r=True)
 
         # alter the hive table: mrqos_region
