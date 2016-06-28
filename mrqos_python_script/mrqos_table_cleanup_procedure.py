@@ -50,7 +50,7 @@ def main():
 
         # alter the hive table: mrqos_region
         try:
-            logger.info('drop partitions')
+            logger.info('drop partitions, condition: datestamp<%s' % str(date_timeout))
             beeline.drop_partitions(tablename='mrqos.mrqos_region',
                                     condition='datestamp<%s' % str(date_timeout))
         except sp.CalledProcessError as e:
@@ -83,7 +83,7 @@ def main():
 
             # alter the hive table: mrqos_region
             try:
-                logger.info('drop partitions')
+                logger.info('drop partitions, condition: ts<%s' % str(ts_timeout))
                 beeline.drop_partitions(tablename='mrqos.%s' % scan,
                                         condition='ts<%s' % str(ts_timeout))
             except sp.CalledProcessError as e:
