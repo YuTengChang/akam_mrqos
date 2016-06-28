@@ -35,7 +35,7 @@ def main():
     # hourstamp = time.strftime('%H', time.gmtime(float(ts)))
 
     list_to_clean = sorted(list(set([x.split('/')[0] for x in beeline.show_partitions('mrqos.mrqos_region').split('\n')])))
-    list_to_clean = [x for x in list_to_clean if '=' in x]
+    list_to_clean = [x for x in list_to_clean if ('=' in x and x.split('=')[1] < date_timeout)]
 
     try:
         # remove the hdfs folder
