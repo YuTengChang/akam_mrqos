@@ -683,3 +683,67 @@ INNER JOIN
     GROUP BY c.region
 ) mr_region_table
 ON mr_region_table.region=region_info.region;
+
+
+==========================================
+TESTING
+==========================================
+
+SELECT casename,
+       CASE
+         WHEN Sum(bytes) > 0 THEN 100 * Sum(bytes_in) / Sum(bytes)
+         ELSE 0
+       END                                    in_out_ratio,
+       Max(targetvalue)                       targetvalue,
+       Sum(Cast(100 * percentage AS INTEGER)) coverage_pct
+FROM   (SELECT a.maprule     maprule,
+               a.geoname     geoname,
+               a.netname     netname,
+               a.targetvalue targetvalue,
+               b.casename    casename,
+               b.geo         geo,
+               b.aslist      aslist,
+               b.regionid    regionid,
+               b.percentage  percentage
+        FROM  (SELECT maprule,
+                      geoname,
+                      netname,
+                      Min(targetvalue) targetvalue
+               FROM   mrpm_maprule_qos_objectives
+               WHERE  attrname = 'IN-OUT-RATIO'
+               GROUP  BY maprule,
+                         geoname,
+                         netname) a,
+              (SELECT Max(casename)   casename,
+                      mapruleid,
+                      geo,
+                      aslist,
+                      regionid,
+                      Max(percentage) percentage
+               FROM   a_maprule_qos_view_by_region
+               GROUP  BY 2,
+                         3,
+                         4,
+                         5) b
+        WHERE  a.maprule = b.mapruleid
+               AND ( a.geoname = b.geo
+                      OR a.geoname = 'GLOBAL'
+                         AND b.geo = '' )
+               AND ( a.netname = b.aslist
+                      OR a.netname = 'ANY'
+                         AND b.aslist = '' )) ab,
+       (SELECT region,
+               maprule_id,
+               Sum(bytes)    bytes,
+               Sum(bytes_in) bytes_in
+        FROM   maprule_info d,
+               mcm_machines e
+        WHERE  d.ghostip = e.ghostip
+               AND d.ts=e.ts
+               AND d.ts=1467057781
+        GROUP  BY region,
+                  maprule_id) c
+WHERE  ab.maprule = c.maprule_id
+       AND ab.regionid = c.region
+GROUP  BY 1
+

@@ -209,7 +209,9 @@ def upload_to_hive(listname, hdfs_d, partition, tablename, logger):
         logger.error('HDFS directory creation failed.')
         logger.error('error: %s' % e.message)
 
-
+# ==============================================================================
+# # show partitions of hive tables
+# ==============================================================================
 
 def show_partitions(tablename):
     """
@@ -219,3 +221,18 @@ def show_partitions(tablename):
     """
     hiveql_str = 'show partitions %s;' % tablename
     return hive_output(hiveql_str)
+
+# ==============================================================================
+# # alter table drop partitions
+# ==============================================================================
+
+def drop_partitions(tablename, condition):
+    """
+    :param tablename:
+    :param condition:
+    :return:
+    """
+    hiveql_str = 'alter table %s drop if exists partition(%s)' % (tablename,
+                                                                  condition)
+    return bln_e(hiveql_str)
+
