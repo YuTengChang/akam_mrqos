@@ -40,6 +40,12 @@
 # region view (s183m) : retired parts of cron
 #40 * * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_python_script/region_view_hour.py >> /home/testgrp/logs/cron_region_view_hour.log 2>&1
 
+# in-out-ratio query
+12,32,52 * * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_python_script/mrqos_ioratio_query.py 2>&1
+
+# in-out-ratio and region tables cleanup
+25 1 * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_python_script/mrqos_table_cleanup_procedure.py 2>&1
+
 
 ##################################################
 # #################   RAANA   ####################
