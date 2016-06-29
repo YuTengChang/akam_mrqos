@@ -1,0 +1,23 @@
+USE mrqos;
+
+drop table if exists mrqos_ioratio;
+
+create external table mrqos_ioratio (
+    maprule INT,
+    geoname STRING,
+    netname STRING,
+    nsd_demand BIGINT,
+    eu_demand BIGINT,
+    ra_load BIGINT,
+    in_out_ratio DOUBLE,
+    hits BIGINT,
+    connections BIGINT,
+    b2f_ratio DOUBLE,
+    m_cpu DOUBLE,
+    disk BIGINT)
+
+partitioned by (datestamp STRING, hour STRING, ts STRING)
+row format delimited
+fields terminated by '\t'
+lines terminated by '\n'
+location '/ghostcache/hadoop/data/MRQOS/mrqos_ioratio';

@@ -1,0 +1,53 @@
+use MRQOS;
+
+INSERT OVERWRITE TABLE mrqos_ioratio PARTITION (datestamp=%s, hour=%s, ts=%s)
+
+SELECT ab.maprule maprule,
+       ab.geoname geoname,
+       ab.netname netname,
+       Sum(nsd_demand) nsd_demand,
+       Sum(eu_demand) eu_demand,
+       Sum(ra_load) ra_load,
+       CASE
+         WHEN Sum(bytes) > 0 THEN ROUND(100 * Sum(bytes_in) / Sum(bytes),3)
+         ELSE 0.0
+       END                                    in_out_ratio,
+       Sum(hits) hits,
+       Sum(connections) connections,
+       CASE
+         WHEN Sum(flytes) > 0 THEN ROUND(100 * Sum(bytes) / Sum(flytes),3)
+         ELSE 0.0
+       END                                    b2f_ratio,
+       round(Sum(cpu)/1000000,3) m_cpu,
+       Sum(disk) disk
+FROM   (SELECT  maprule,
+                geoname,
+                netname,
+                region,
+                nsd_demand,
+                eu_demand,
+                ra_load
+        FROM mrqos.mrqos_region
+        WHERE datestamp=%s
+            AND hour=%s
+            AND ts=%s
+        ) ab,
+       (SELECT region,
+               maprule_id,
+               Sum(bytes)    bytes,
+               Sum(bytes_in) bytes_in,
+               Sum(hits)    hits,
+               Sum(connections) connections,
+               Sum(flytes)  flytes,
+               Sum(cpu)     cpu,
+               Sum(disk)    disk
+        FROM   mrqos.maprule_info d,
+               mrqos.mcm_machines e
+        WHERE  d.ghostip = e.ghostip
+               AND d.ts=e.ts
+               AND d.ts=%s
+        GROUP  BY region,
+                  maprule_id) c
+WHERE  ab.maprule = c.maprule_id
+       AND ab.region = c.region
+GROUP  BY ab.maprule, ab.geoname, ab.netname;

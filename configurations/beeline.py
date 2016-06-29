@@ -222,6 +222,23 @@ def show_partitions(tablename):
     hiveql_str = 'show partitions %s;' % tablename
     return hive_output(hiveql_str)
 
+
+# ==============================================================================
+# # show partitions of hive tables
+# ==============================================================================
+
+def get_last_partitions(tablename):
+    """
+    show partitions of a hive table by "tablename"
+    :param tablename:
+    :return:
+    """
+    try:
+        rtn = [x for x in sorted(show_partitions(tablename).split('\n')) if '=' in x][-1]
+    except sp.CalledProcessError as e:
+        rtn = e.message
+    return rtn
+
 # ==============================================================================
 # # alter table drop partitions
 # ==============================================================================
