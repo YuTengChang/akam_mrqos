@@ -85,10 +85,5 @@ def main():
         #    logger.error('fetch partition error, table: %s' % item)
         #    logger.error('error: %s' % e.message)
 
-
-
-
-
-
 if __name__ == '__main__':
     sys.exit(main())
