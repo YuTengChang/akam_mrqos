@@ -8,8 +8,7 @@ SELECT ab.maprule maprule,
        Sum(nsd_demand) nsd_demand,
        Sum(eu_demand) eu_demand,
        Sum(ra_load) ra_load,
-       CASE
-         WHEN Sum(bytes) > 0 THEN ROUND(100 * Sum(bytes_in) / Sum(bytes),3)
+       CASE         WHEN Sum(bytes) > 0 THEN ROUND(100 * Sum(bytes_in) / Sum(bytes),3)
          ELSE 0.0
        END                                    in_out_ratio,
        Sum(hits) hits,
