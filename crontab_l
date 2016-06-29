@@ -43,6 +43,9 @@
 # in-out-ratio query
 12,32,52 * * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_python_script/mrqos_ioratio_query.py 2>&1
 
+# in-out-ratio join
+8,28,48 * * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_python_script/mrqos_ioratio_join.py 2>&1
+
 # in-out-ratio and region tables cleanup
 25 1 * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_python_script/mrqos_table_cleanup_procedure.py 2>&1
 
