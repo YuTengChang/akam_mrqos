@@ -64,6 +64,7 @@ def main():
         strcmd_s = strcmd % (datestamp, hourstamp, ts_region,
                              datestamp, hourstamp, ts_region,
                              ts_mapruleinfo)
+        print strcmd_s
         f.close()
         # strcmd_g = "SELECT maprule, geoname, netname, region, avg_region_score, score_target, hourly_region_nsd_demand, hourly_region_eu_demand, hourly_region_ra_load, case_ra_load, case_nsd_demand, case_eu_demand, case_uniq_region, name, ecor, continent, country, city, latitude, longitude, provider, region_capacity, ecor_capacity, prp, numghosts, datestamp, hour FROM mrqos.mrqos_region_hour WHERE datestamp=%s and hour=%s;" % (datestamp, hourstamp)
         # query_result_file = os.path.join(config.mrqos_query_result,'region_summary_hour.%s.%s.csv' % (datestamp, hourstamp))
