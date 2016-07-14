@@ -739,3 +739,32 @@ WHERE  ab.maprule = c.maprule_id
        AND ab.region = c.region
 GROUP  BY ab.maprule, ab.geoname, ab.netname
 
+==========================================
+TESTING: IORATIO SUMMARY
+==========================================
+SELECT  maprule,
+        geoname,
+        netname,
+        cast(percentile(nsd_demand, 0.9584) as int) nsd_demand_t95,
+        cast(avg(nsd_demand) as int) nsd_demand_t50,
+        cast(percentile(eu_demand, 0.9584) as int) eu_demand_t95,
+        cast(avg(eu_demand) as int) eu_demand_t50,
+        cast(percentile(ra_load, 0.9584) as int) ra_load_t95,
+        cast(avg(ra_load) as int) ra_load_t50,
+        round(cast(percentile(cast(in_out_ratio*1000 as int), 0.9584) as double)/1000, 3) in_out_ratio_t95,
+        round(avg(in_out_ratio), 3) in_out_ratio_t50,
+        cast(percentile(hits, 0.9584) as int) hits_t95,
+        cast(avg(hits) as int) hits_t50,
+        cast(percentile(connections, 0.9584) as int) connections_t95,
+        cast(avg(connections) as int) connections_t50,
+        round(cast(percentile(cast(b2f_ratio*1000 as int), 0.9584) as double)/1000, 3) b2f_ratio_t95,
+        round(avg(b2f_ratio), 3) b2f_ratio_t50,
+        round(cast(percentile(cast(m_cpu*1000 as int), 0.9584) as double)/1000, 3) m_cpu_t95,
+        cast(avg(m_cpu) as int) m_cpu_t50,
+        cast(percentile(disk, 0.9584) as int) disk_t95,
+        cast(avg(disk) as int) disk_t50,
+        count(*) case_count
+FROM mrqos.mrqos_ioratio
+WHERE datestamp > 20160710
+GROUP BY maprule, geoname, netname
+LIMIT 10;

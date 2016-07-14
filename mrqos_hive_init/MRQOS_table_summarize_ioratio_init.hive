@@ -1,0 +1,36 @@
+add jar /a/libexec/ddr-1.0.jar;
+
+USE mrqos;
+
+drop table if exists MRQOS_sum_io;
+
+create external table MRQOS_sum_io (
+	maprule INT,
+	geoname STRING,
+	netname STRING,
+    nsd_demand_t95 BIGINT,
+    nsd_demand_t50 BIGINT,
+    eu_demand_t95 BIGINT,
+    eu_demand_t50 BIGINT,
+    ra_load_t95 BIGINT,
+    ra_load_t50 BIGINT,
+    in_out_ratio_t95 FLOAT,
+    in_out_ratio_t50 FLOAT,
+    hits_t95 BIGINT,
+    hits_t50 BIGINT,
+    connections_t95 BIGINT,
+    connections_t50 BIGINT,
+    b2f_ratio_t95 FLOAT,
+    b2f_ratio_t50 FLOAT,
+    m_cpu_t95 FLOAT,
+    m_cpu_t50 FLOAT,
+    disk_t95 BIGINT,
+    disk_t50 BIGINT,
+    case_count INT
+)
+
+partitioned by (datestamp STRING)
+row format delimited
+fields terminated by ' '
+lines terminated by '\n'
+location '/ghostcache/hadoop/data/MRQOS/mrqos_sum_io';
