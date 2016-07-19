@@ -224,7 +224,7 @@ def show_partitions(tablename):
 
 
 # ==============================================================================
-# # show partitions of hive tables
+# # show the last partitions of hive tables
 # ==============================================================================
 
 def get_last_partitions(tablename):
