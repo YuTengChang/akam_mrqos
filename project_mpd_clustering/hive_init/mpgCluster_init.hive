@@ -1,0 +1,33 @@
+USE mrqos;
+
+drop table if exists mpg_cluster;
+
+create external table mpg_cluster (
+    cl_geoname      STRING,
+    cl_avgDistance  FLOAT,
+    cl_lat          FLOAT,
+    cl_lon          FLOAT,
+    cl_por          FLOAT,
+    cl_porsigma     FLOAT,
+    pri_cap_ff_gbps FLOAT,
+    pri_cap_essl_gbps FLOAT,
+    pri_nvips       FLOAT,
+    pri_nReg        INT,
+    pub_cap_ff_gbps FLOAT,
+    pub_cap_essl_gbps FLOAT,
+    pub_nvips       FLOAT,
+    pub_nReg        INT,
+    cl_mpgLoad      FLOAT,
+    cl_nMpg         INT,
+    pri_regList     STRING,
+    pub_regList     STRING,
+    mpgList         STRING,
+    mpgASList       STRING,
+    mpgNSIPList     STRING
+    )
+
+partitioned by (datestamp STRING, uuid STRING)
+row format delimited
+fields terminated by ','
+lines terminated by '\n'
+location '/ghostcache/hadoop/data/MRQOS/mpg_cluster';
