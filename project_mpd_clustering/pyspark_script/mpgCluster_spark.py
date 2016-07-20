@@ -28,6 +28,7 @@ def geodesic_distance(lat1, lon1, lat2, lon2):
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
     return [lat1, lon1, lat2, lon2, R*c]
 
+
 def geo_centroid(lat_array, lon_array, load_array):
     geo_data = pd.DataFrame(columns=['lat', 'lon', 'load'])
     geo_data.lat = lat_array
@@ -53,6 +54,7 @@ def geo_centroid(lat_array, lon_array, load_array):
     lat_centroid = 90 - xi/math.radians(1)
     lon_centroid = theta/math.radians(1)
     return [round(lat_centroid,3), round(lon_centroid,3), round(por,4), round(porsigma,2)]
+
 
 def main():
     # set up the logger
@@ -372,6 +374,7 @@ def main():
         # os.remove(fileDestination)
     except sp.CalledProcessError as e:
         logger.info('upload to HDFS + update Hive table failed.')
+
 
 if __name__ == '__main__':
     sys.exit(main())
