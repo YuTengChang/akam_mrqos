@@ -119,7 +119,11 @@ region_public_list = region_latlon\
     .reduceByKey(lambda a, b: [a[0]+b[0]])\
     .map(lambda x: x[1][0]).collect()
 
-region_public_list = sorted(region_public_list[0])
+region_public_list = [0] + sorted(region_public_list[0])
+
+# dummy region
+rdd2 = sc.parallelize([([0, [0, 0, 0.0, 0.0, 'US', 0, 'W', 1]])])
+region_latlon = region_latlon.union(rdd2)
 
 # perform the join into tuple of (K, (V1, V2):
 # (regionid, ([mpgid, mpg-lat, mpg-lon, mpg-country, mpg-load], [reg-lat, reg-lon, reg-cap, reg-country, reg-numvips, reg-service]))
@@ -262,7 +266,12 @@ reglist_mpgid_avgDistance_capacity_nReg_country = reg_reglist_mpgid_avgDistance_
     .map(lambda x: [x[1][0]]+[x[1][1]]+[geodesic_distance(x[1][0][12][0],
                                                          x[1][0][12][1],
                                                          x[1][1][0],
-                                                         x[1][1][1])] + [x[0]])\
+                                                         x[1][1][1])] + [x[0]] if x[0] > 0\
+         else [x[1][0]]+[x[1][1]]+[[x[1][0][12][0],
+                                   x[1][0][12][1],
+                                   x[1][1][0],
+                                   x[1][1][1],
+                                   0.0]] + [x[0]])\
     .filter(lambda x: x[2][4] < 500)\
     .map(lambda x: (tuple([x[0][0],
                           x[0][1],
@@ -303,11 +312,11 @@ reglist_mpgid_avgDistance_capacity_nReg_country = reg_reglist_mpgid_avgDistance_
                     round(float(x[1][0])/1000.0, 3), # pub.region.cap.ff (gbps)
                     round(float(x[1][1])/1000.0, 3), # pub.region.cap.essl (gbps)
                     x[1][2], # pub.vips
-                    len(x[1][3]), # pub.region.count
+                    len(x[1][3])-1, # pub.region.count
                     x[0][6], # mpg-load
                     round(x[0][7], 6), # mpg-count
                     x[0][8], # [pri reg-list]
-                    ':'.join([str(y) for y in sorted(x[1][3])]) if len(x[1][3])>0 else 'NULL', # [pub reg-list])
+                    ':'.join([str(y) for y in sorted(x[1][3])][1:]) if len(x[1][3])>1 else 'NULL', # [pub reg-list])
                     x[0][9], # [mpg-list]
                     x[0][10], # [mpg-assum]
                     x[0][11] # [mpg-nsip]
