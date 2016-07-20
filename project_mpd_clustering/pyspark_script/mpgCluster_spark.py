@@ -80,6 +80,9 @@ def main():
         logger.error('mapper.barebone data missing for this particular day.')
         return
 
+    logger.info('Processing data in day=%s, uuid=%s' % (day_idx, uuid_idx))
+
+    logger.info('begin spark process.')
     getting_mappoint_data = ''' select b1.mpgid mpgid, b1.lat lat, b1.lon lon, b1.country country, b1.mpgload mpgload, b1.allowed_private_regions allowed_private_regions, b2.asnum asnum, b2.ip ip from (select mpgid, lat, lon, country, mpgload, allowed_private_regions from mapper.mappoints where day=%s and uuid="%s" and lat is not NULL and lon is not NULL and ghostonly=0 ) b1 left outer join (select collect_set(ns_ip) ip, collect_set(asnum) asnum, mpgid from (select ns_ip, mpd_uuid, mpgid, asnum, demand, day from mapper.nsjoin where day=%s and mpd_uuid="%s" and demand>0.01 order by demand desc) a group by mpgid) b2 on b2.mpgid=b1.mpgid ''' % (day_idx, uuid_idx, day_idx, uuid_idx)
     geo_total_cap_query = ''' select * from (select country, network, sum(peak_bitcap_mbps) peak_bitcap_mbps, sum(peak_flitcap_mfps) peak_flitcap_mfps, sum(numvips) numvips from mapper.regioncapday where day=%s and network in ('freeflow', 'essl') and prp='private' group by country, network) a ''' % day_idx
     geo_total_cap_public_query = ''' select * from (select country, network, sum(peak_bitcap_mbps) peak_bitcap_mbps, sum(peak_flitcap_mfps) peak_flitcap_mfps, sum(numvips) numvips from mapper.regioncapday where day=%s and network in ('freeflow', 'essl') and prp='public' group by country, network) a ''' % day_idx
@@ -353,6 +356,7 @@ def main():
 
     geo_cluster_full_info = reglist_mpgid_avgDistance_capacity_nReg_country.collect()
 
+    logger.info('begin write to local disk.')
     for item in range(len(geo_cluster_full_info)):
         temp = geo_cluster_full_info[item]
         country_avgDistance_capacity_nReg_mpgLoad_nMpg_reglist_mpglist.loc[item] = temp # the above should be temp[1][0] for the mpglist
@@ -363,6 +367,7 @@ def main():
     country_avgDistance_capacity_nReg_mpgLoad_nMpg_reglist_mpglist.to_csv(fileDestination,
                                                                           sep=',', index=False, header=False)
 
+    logger.info('begin to upload to hdfs.')
     tablename = 'mrqos.mpg_cluster'
     hdfs_d = os.path.join(config.hdfs_table,
                           'mpg_cluster',
