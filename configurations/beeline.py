@@ -127,7 +127,6 @@ def bln_f(hive_script, outformat='tsv2'):
     #list_used = shlex.split(bln_prepare_hiveql(outformat) + '-f %s' % hive_script)
     sp.check_call(list_used)
     # """ unit test """
-    # import os, sys; sys.path.append('/home/testgrp/MRQOS/'); import configurations.beeline as beeline; beeline.bln_f('/home/testgrp/MRQOS/MRQOS_dummy_test.hive');
 
 
 def bln_f_output(hive_script, output_file, outformat='tsv2'):
