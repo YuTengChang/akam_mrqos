@@ -26,7 +26,7 @@ def main():
     max_retrial = 20
     mapmon_machine = sp.check_output('/home/ychang/bin/bin/mapper-leader mapmon', shell=True)
     mapmon_machine = mapmon_machine.strip()
-    cluster_namenode = "81.52.137.183"
+    cluster_namenode = "81.52.137.195
     mapmon_file = "/home/testgrp/full-table-mrqos-view-by-region"
     local_dir = "/home/ychang/Documents/Projects/18-DDC/MRQOS_local_data"
     # already retry 20 times on mapmon machine
