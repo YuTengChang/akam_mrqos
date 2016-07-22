@@ -57,7 +57,7 @@
 #25 0 * * * /home/testgrp/doasme_YT /home/testgrp/RAAnalysis/ra_shell_scripts/region_info_grab >> /home/testgrp/RAAnalysis/rg_query_process.log 2>&1
 
 # check RA MAPMON updates and save it (per minute)
-*/1 * * * * /home/testgrp/doasme_YT /home/testgrp/RAAnalysis/ra_shell_scripts/ra_save.sh >> /home/testgrp/RAAnalysis/ra_save_process.log 2>&1
+#*/1 * * * * /home/testgrp/doasme_YT /home/testgrp/RAAnalysis/ra_shell_scripts/ra_save.sh >> /home/testgrp/RAAnalysis/ra_save_process.log 2>&1
 
 # concatenate RA-MAPMON message (per hour)
 #55 * * * * /home/testgrp/doasme_YT python /home/testgrp/RAAnalysis/ra_python/ra_concat.py >> /home/testgrp/RAAnalysis/ra_concate_process.log 2>&1
@@ -71,5 +71,5 @@
 # #############   Region Tracker   ###############
 ##################################################
 # region summary (s180m)
-15 * * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_python_script/region_summary_hour.py >> /home/testgrp/logs/cron_region_summary_hour.log 2>&1
+#15 * * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_python_script/region_summary_hour.py >> /home/testgrp/logs/cron_region_summary_hour.log 2>&1
 
