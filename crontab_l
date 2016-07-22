@@ -31,7 +31,7 @@
 #20 0 * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/hive_summarize.py >> /home/testgrp/logs/cron_summary.log 2>&1
 #20 2 * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_python_script/mrqos_summarize_1d3d.py >> /home/testgrp/logs/cron_summary_1d3d.log 2>&1
 
-# region information from mrqos (s195m)
+# region information from mrqos (s180m)
 #9,19,29,39,49,59 * * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_python_script/query_insert_region_for_mrqos.py >> /home/testgrp/logs/cron_query_region.log 2>&1
 
 # lp solution push to HDFS
