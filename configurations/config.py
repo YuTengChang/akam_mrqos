@@ -78,7 +78,7 @@ add_rg_partition = 'use MRQOS; alter table mrqos_region add partition(datestamp=
 #==============================================================================
 # # Local Parameter Settings
 #==============================================================================
-region_view_hour_data_source = '81.52.137.195'
+region_view_hour_data_source = '81.52.137.180'
 mrqos_data_node = '81.52.137.195'
 web_server_machine = '172.25.23.222' #(need to check periodically against: 'dev-platformperf-scidb02.kendall.corp.akamai.com')
 
