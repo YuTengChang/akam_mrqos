@@ -41,31 +41,31 @@
 #40 * * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_python_script/region_view_hour.py >> /home/testgrp/logs/cron_region_view_hour.log 2>&1
 
 # in-out-ratio query
-12,32,52 * * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_python_script/mrqos_ioratio_query.py 2>&1
+#12,32,52 * * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_python_script/mrqos_ioratio_query.py 2>&1
 
 # in-out-ratio join
-8,28,48 * * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_python_script/mrqos_ioratio_join.py 2>&1
+#8,28,48 * * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_python_script/mrqos_ioratio_join.py 2>&1
 
 # in-out-ratio and region tables cleanup
-25 1 * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_python_script/mrqos_table_cleanup_procedure.py 2>&1
+#25 1 * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_python_script/mrqos_table_cleanup_procedure.py 2>&1
 
 
 ##################################################
 # #################   RAANA   ####################
 ##################################################
 # grab region information from mcm_regions (daily)
-25 0 * * * /home/testgrp/doasme_YT /home/testgrp/RAAnalysis/ra_shell_scripts/region_info_grab >> /home/testgrp/RAAnalysis/rg_query_process.log 2>&1
+#25 0 * * * /home/testgrp/doasme_YT /home/testgrp/RAAnalysis/ra_shell_scripts/region_info_grab >> /home/testgrp/RAAnalysis/rg_query_process.log 2>&1
 
 # check RA MAPMON updates and save it (per minute)
 */1 * * * * /home/testgrp/doasme_YT /home/testgrp/RAAnalysis/ra_shell_scripts/ra_save.sh >> /home/testgrp/RAAnalysis/ra_save_process.log 2>&1
 
 # concatenate RA-MAPMON message (per hour)
-55 * * * * /home/testgrp/doasme_YT python /home/testgrp/RAAnalysis/ra_python/ra_concat.py >> /home/testgrp/RAAnalysis/ra_concate_process.log 2>&1
-15 * * * * /home/testgrp/doasme_YT python /home/testgrp/RAAnalysis/ra_python/ra_hadoop_insert.py >> /home/testgrp/RAAnalysis/ra_hadoop_insert.log 2>&1
+#55 * * * * /home/testgrp/doasme_YT python /home/testgrp/RAAnalysis/ra_python/ra_concat.py >> /home/testgrp/RAAnalysis/ra_concate_process.log 2>&1
+#15 * * * * /home/testgrp/doasme_YT python /home/testgrp/RAAnalysis/ra_python/ra_hadoop_insert.py >> /home/testgrp/RAAnalysis/ra_hadoop_insert.log 2>&1
 
 # uploading NS and RG data into Hadoop (per day)
-13 0 * * * /home/testgrp/doasme_YT python /home/testgrp/RAAnalysis/ra_python/ns_hadoop_insert.py >> /home/testgrp/RAAnalysis/hadoop_ns_insert.log 2>&1
-21 0 * * * /home/testgrp/doasme_YT python /home/testgrp/RAAnalysis/ra_python/rg_hadoop_insert.py >> /home/testgrp/RAAnalysis/hadoop_rg_insert.log 2>&1
+#13 0 * * * /home/testgrp/doasme_YT python /home/testgrp/RAAnalysis/ra_python/ns_hadoop_insert.py >> /home/testgrp/RAAnalysis/hadoop_ns_insert.log 2>&1
+#21 0 * * * /home/testgrp/doasme_YT python /home/testgrp/RAAnalysis/ra_python/rg_hadoop_insert.py >> /home/testgrp/RAAnalysis/hadoop_rg_insert.log 2>&1
 
 ##################################################
 # #############   Region Tracker   ###############
