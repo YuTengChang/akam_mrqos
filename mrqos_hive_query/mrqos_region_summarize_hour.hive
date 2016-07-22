@@ -1,5 +1,5 @@
-set mapreduce.map.memory.mb=6000;
-set mapreduce.reduce.memory.mb=6000;
+set mapreduce.map.memory.mb=4000;
+set mapreduce.reduce.memory.mb=4000;
 SET mapred.child.java.opts=-Xmx4G -XX:+UseConcMarkSweepGC;
 set mapreduce.map.java.opts=-Xmx4608m;
 set mapreduce.reduce.java.opts=-Xmx4608m;
