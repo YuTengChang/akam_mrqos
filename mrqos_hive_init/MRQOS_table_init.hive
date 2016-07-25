@@ -3,11 +3,11 @@ add jar /a/libexec/ddr-1.0.jar;
 CREATE DATABASE IF NOT EXISTS mrqos;
 USE mrqos;
 
-drop table score;
-drop table distance;
-drop table in_country;
-drop table in_continent;
-drop table ra_load;
+drop table if exists score;
+drop table if exists distance;
+drop table if exists in_country;
+drop table if exists in_continent;
+drop table if exists ra_load;
 
 create external table score (
     casename STRING,
