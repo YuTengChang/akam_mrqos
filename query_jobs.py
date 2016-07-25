@@ -190,6 +190,7 @@ def mrqos_join_cleanup():
         try:
             # drop the partitions in hive
             beeline.drop_partitions('mrqos.mrqos_join', 'ts<%s' % str(timenow-config.mrqos_join_delete))
+            print " drop partitions successful. "
             # remove the hdfs folders
             for partition_id in hdfs_remove_list:
                 try:
@@ -197,6 +198,7 @@ def mrqos_join_cleanup():
                     hdfsutil.rm(hdfs_d, r=True)
                 except sp.CalledProcessError as e:
                     print ">> failed to remove HDFS folder for mrqos_join at partition folder %s" % str(partition_id)
+            print " remove HDFS successful. "
         except sp.CalledProcessError as e:
             print ">> failed to drop partitions"
     except sp.CalledProcessError as e:
