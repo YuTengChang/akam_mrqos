@@ -182,20 +182,42 @@ def mrqos_join_cleanup():
 
     # check if "partitions" is within the threshold
     timenow = int(time.time())
-    for partition in str_parts_list_int:
-        if partition < timenow - config.mrqos_join_delete:
-            try:
-                print "      ##  handling table: mrqos_join with ts=%s" % str(partition)
-                # drop partitions (ok even if partition does not exist)
-                hiveql_str = 'use mrqos; alter table mrqos_join drop if exists partition(ts=%s)' % str(partition)
-                beeline.bln_e(hiveql_str)
-                # remove data from HDFS (ok even if folder in hdfs does not exist)
-                hdfs_d = os.path.join(config.hdfs_table, 'mrqos_join', 'ts=%s' % str(partition))
-                hdfsutil.rm(hdfs_d, r=True)
-            except sp.CalledProcessError as e:
-                print ">> failed in hive table clean up in table: mrqos_join."
-                print e.message
-                raise GenericHadoopError
+
+    # get the list of retired data in HDFS using hive partitions
+    try:
+        hdfs_remove_list = [x for x in beeline.show_partitions('mrqos.mrqos_join').split('\n')\
+                            if '=' in x and x.split('=')[1] < str(timenow-config.mrqos_join_delete)]
+        try:
+            # drop the partitions in hive
+            beeline.drop_partitions('mrqos.mrqos_join', 'ts<%s' % str(timenow-config.mrqos_join_delete))
+            # remove the hdfs folders
+            for partition_id in hdfs_remove_list:
+                try:
+                    hdfs_d = os.path.join(config.hdfs_table, 'mrqos_join', '%s' % str(partition_id))
+                    hdfsutil.rm(hdfs_d, r=True)
+                except sp.CalledProcessError as e:
+                    print ">> failed to remove HDFS folder for mrqos_join at partition folder %s" % str(partition_id)
+        except sp.CalledProcessError as e:
+            print ">> failed to drop partitions"
+    except sp.CalledProcessError as e:
+        print ">> failed to obtain retire partition list (HIVE)"
+        print e.message
+
+    # obsolete old method for clean up:
+    #for partition in str_parts_list_int:
+    #    if partition < timenow - config.mrqos_join_delete:
+    #        try:
+    #            print "      ##  handling table: mrqos_join with ts=%s" % str(partition)
+    #            # drop partitions (ok even if partition does not exist)
+    #            hiveql_str = 'use mrqos; alter table mrqos_join drop if exists partition(ts=%s)' % str(partition)
+    #            beeline.bln_e(hiveql_str)
+    #            # remove data from HDFS (ok even if folder in hdfs does not exist)
+    #            hdfs_d = os.path.join(config.hdfs_table, 'mrqos_join', 'ts=%s' % str(partition))
+    #            hdfsutil.rm(hdfs_d, r=True)
+    #        except sp.CalledProcessError as e:
+    #            print ">> failed in hive table clean up in table: mrqos_join."
+    #            print e.message
+    #            raise GenericHadoopError
 
 
 # ==============================================================================
