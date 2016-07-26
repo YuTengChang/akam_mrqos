@@ -2,7 +2,7 @@ set mapreduce.map.memory.mb=4000;
 set mapreduce.reduce.memory.mb=2000;
 
 use mrqos;
-INSERT OVERWRITE TABLE MRQOS_sum_io PARTITION (ts=%s)
+INSERT OVERWRITE TABLE MRQOS_sum_io PARTITION (datestamp=%s)
 
 SELECT  maprule,
         geoname,
