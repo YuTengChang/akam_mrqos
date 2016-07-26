@@ -40,7 +40,7 @@ def main():
     strcmd = f.read()
     strcmd_s = strcmd % (str(datestamp), str(datestamp_14d_ago), str(datestamp))
     f.close()
-    print "    ****  perform beeline for ioratio join."
+    logger.info("  ****  perform beeline for ioratio join.")
     try:
         beeline.bln_e(strcmd_s)
         logger.info('perform beeline for ioratio for 2W timeframe succeeded.')
