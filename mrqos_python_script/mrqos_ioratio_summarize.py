@@ -40,8 +40,13 @@ def main():
     strcmd = f.read()
     strcmd_s = strcmd % (str(datestamp), str(datestamp_14d_ago), str(datestamp))
     f.close()
-    print "    ****  perform beeline for join."
-    beeline.bln_e(strcmd_s)
+    print "    ****  perform beeline for ioratio join."
+    try:
+        beeline.bln_e(strcmd_s)
+        logger.info('perform beeline for ioratio for 2W timeframe succeeded.')
+    except sp.CalledProcessError as e:
+        logger.error('perform beeline for ioratio for 2W timeframe failed.')
+        logger.error('error message: %s', e.message)
 
 if __name__ == '__main__':
     sys.exit(main())
