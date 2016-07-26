@@ -169,7 +169,7 @@ def main():
     #    .map(lambda x: (x[0], [[x[1]], x[2][4], [x[3], 0] if x[7]=='W' else [0, x[3]], x[6], 1, x[8], x[9], x[10], x[11], x[12], x[13]]))
 
     # or this one, no-same-country constraint:
-    mpgid_reg_distance = mpgid_reg_geo.filter(lambda x: x[2][4] < 500)\
+    mpgid_reg_distance = mpgid_reg_geo.filter(lambda x: (x[2][4] < 500) or (x[5]==x[8] and x[2][4] < 1000))\
         .filter(lambda x: x[3] > 1)\
         .map(lambda x: (x[0], [[x[1]], x[2][4], [x[3], 0] if x[7]=='W' else [0, x[3]], x[6], 1, x[8], x[9], x[10], x[11], x[12], x[13]]))
 
