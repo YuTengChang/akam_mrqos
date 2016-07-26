@@ -49,6 +49,8 @@
 # in-out-ratio and region tables cleanup
 #25 1 * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_python_script/mrqos_table_cleanup_procedure.py 2>&1
 
+# in-out-ratio summary 14d
+#20 1 * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_python_script/mrqos_ioratio_summarize.py 2>&1
 
 ##################################################
 # #################   RAANA   ####################
