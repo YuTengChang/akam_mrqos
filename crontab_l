@@ -52,6 +52,14 @@
 # in-out-ratio summary 14d
 #20 1 * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_python_script/mrqos_ioratio_summarize.py 2>&1
 
+
+##################################################
+# ##############   MPG-CLUSTER   #################
+##################################################
+# mpg cluster
+#40 1 * * * /home/testgrp/doasme_YT spark-submit --master yarn --num-executors 10 --executor-memory 4G  ~/MRQOS/project_mpd_clustering/pyspark_script/mpgCluster_spark.py 2>&1
+
+
 ##################################################
 # #################   RAANA   ####################
 ##################################################

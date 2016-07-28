@@ -27,7 +27,7 @@ def main():
     # ##############################
     # start the script
     # parameter setting
-
+    max_retrial = 10
     ts = int(time.time())
     datestamp = time.strftime('%Y%m%d', time.gmtime(float(ts)))
     window_length = config.mrqos_join_delete + 1*24*60*60
@@ -41,12 +41,16 @@ def main():
     strcmd_s = strcmd % (str(datestamp), str(datestamp_14d_ago), str(datestamp))
     f.close()
     logger.info("  ****  perform beeline for ioratio join.")
-    try:
-        beeline.bln_e(strcmd_s)
-        logger.info('perform beeline for ioratio for 2W timeframe succeeded.')
-    except sp.CalledProcessError as e:
-        logger.error('perform beeline for ioratio for 2W timeframe failed.')
-        logger.error('error message: %s', e.message)
+    retrial = 0
+    while retrial < max_retrial:
+        try:
+            tic = time.time()
+            beeline.bln_e(strcmd_s)
+            logger.info('perform beeline for ioratio for 2W timeframe succeeded with time cost = %s second' % str(time.time()-tic))
+        except sp.CalledProcessError as e:
+            retrial += 1
+            logger.error('perform beeline for ioratio for 2W timeframe failed.')
+            logger.error('error message: %s', e.message)
 
 if __name__ == '__main__':
     sys.exit(main())
