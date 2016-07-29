@@ -47,7 +47,7 @@ mrqos_logging = '/home/testgrp/logs'
 # # Constant Configurations
 #==============================================================================
 query_retrial = 15 # 15 times
-query_timeout = 20 # 20 sec
+query_timeout = 30 # 20 sec
 
 mrqos_table_delete = 60 * 60 # 1800 sec = 60 minutes
 mrqos_join_delete = 60 * 60 * 24 * 15 # 15 days

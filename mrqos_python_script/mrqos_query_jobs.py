@@ -25,7 +25,7 @@ def main():
 
     # different queries (various types)
     # logging set-up
-    logging.basicConfig(filename=os.path.join(config.mrqos_logging, 'io_ratio_join.log'),
+    logging.basicConfig(filename=os.path.join(config.mrqos_logging, 'mrqos_query.log'),
                         level=logging.INFO,
                         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                         datefmt='%m/%d/%Y %H:%M:%S')
@@ -184,7 +184,6 @@ def main():
             .join(dfra, rsuffix='_ra', how='inner')
 
     dropped_columns = [x for x in df2.columns if '_dis' in x or '_icy' in x or '_ict' in x or '_ra' in x]
-    print dropped_columns
     df2.drop(dropped_columns, axis=1, inplace=True)
     df2.drop(['casename'], axis=1, inplace=True)
     df2.reset_index(drop=True, inplace=True)
@@ -194,7 +193,12 @@ def main():
     df2.to_csv(output_name,
                sep='\t', index=False, header=False)
 
-    # TODO: clean up backups
+    # clean up backups
+    if len(backups) > 0:
+        for backup in backup_folders:
+            shutil.rmtree(backup)
+            logger.info('remove old backup folders: %s' % backup)
+
     # TODO: upload the joined to HDFS
     # TODO: clean up the joined
 
