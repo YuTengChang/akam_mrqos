@@ -19,6 +19,13 @@ import configurations.beeline as beeline
 import glob
 import logging
 
+def calDef(row, col1, col2):
+    if row[col1] >= row[col2]:
+        val = row[col1] - row[col2]
+    else:
+        val
+
+
 def main():
     """  this function will do the query on 5 different measurement and upload
     the data to hdfs accordingly, this also join tables at single time point """
@@ -123,7 +130,11 @@ def main():
               'starget',
               'ispeak']
 
-    dfscore = pd.DataFrame(data,columns=header)
+    dfscore = pd.DataFrame(data, columns=header)
+    dfscore['sp99d'] = [z*(z>0) for z in [int(x)-int(y) for (x,y) in zip(dfscore.sp99, dfscore.starget)]]
+    dfscore['sp95d'] = [z*(z>0) for z in [int(x)-int(y) for (x,y) in zip(dfscore.sp95, dfscore.starget)]]
+    dfscore['sp90d'] = [z*(z>0) for z in [int(x)-int(y) for (x,y) in zip(dfscore.sp90, dfscore.starget)]]
+    dfscore['sp75d'] = [z*(z>0) for z in [int(x)-int(y) for (x,y) in zip(dfscore.sp75, dfscore.starget)]]
     dfscore.index = dfscore.casename
 
     file_source = os.path.join(filedir, filelist[1])
@@ -138,7 +149,11 @@ def main():
               'dp75',
               'dtarget']
 
-    dfdistance = pd.DataFrame(data,columns=header)
+    dfdistance = pd.DataFrame(data, columns=header)
+    dfdistance['dp99d'] = [z*(z>0) for z in [int(x)-int(y) for (x,y) in zip(dfdistance.dp99, dfdistance.dtarget)]]
+    dfdistance['dp95d'] = [z*(z>0) for z in [int(x)-int(y) for (x,y) in zip(dfdistance.dp95, dfdistance.dtarget)]]
+    dfdistance['dp90d'] = [z*(z>0) for z in [int(x)-int(y) for (x,y) in zip(dfdistance.dp90, dfdistance.dtarget)]]
+    dfdistance['dp75d'] = [z*(z>0) for z in [int(x)-int(y) for (x,y) in zip(dfdistance.dp75, dfdistance.dtarget)]]
     dfdistance.index = dfdistance.casename
 
     file_source = os.path.join(filedir, filelist[2])
@@ -150,7 +165,8 @@ def main():
               'icy',
               'icytarget']
 
-    dficy = pd.DataFrame(data,columns=header)
+    dficy = pd.DataFrame(data, columns=header)
+    dficy['icyd'] = [z*(z>0) for z in [int(y)-int(x) for (x,y) in zip(dficy.icy, dficy.icytarget)]]
     dficy.index = dficy.casename
 
     file_source = os.path.join(filedir, filelist[3])
@@ -162,7 +178,8 @@ def main():
               'ict',
               'icttarget']
 
-    dfict = pd.DataFrame(data,columns=header)
+    dfict = pd.DataFrame(data, columns=header)
+    dfict['ictd'] = [z*(z>0) for z in [int(y)-int(x) for (x,y) in zip(dfict.ict, dfict.icttarget)]]
     dfict.index = dfict.casename
 
     file_source = os.path.join(filedir, filelist[4])
@@ -175,7 +192,7 @@ def main():
               'ra_pingbased',
               'ping_ratio']
 
-    dfra = pd.DataFrame(data,columns=header)
+    dfra = pd.DataFrame(data, columns=header)
     dfra.index = dfra.casename
 
     df2 = dfscore.join(dfdistance, rsuffix='_dis', how='inner')\
