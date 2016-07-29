@@ -212,7 +212,7 @@ def main():
 
     # clean up backups
     if len(backups) > 0:
-        for backup in backup_folders:
+        for backup in backups:
             shutil.rmtree(backup)
             logger.info('remove old backup folders: %s' % backup)
 
