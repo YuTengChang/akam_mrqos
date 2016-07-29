@@ -186,7 +186,7 @@ def main():
     dropped_columns = [x for x in df2.columns if '_dis' in x or '_icy' in x or '_ict' in x or '_ra' in x]
     print dropped_columns
     df2.drop(dropped_columns, axis=1, inplace=True)
-    df2.drop(['ispeak'], axis=1, inplace=True)
+    df2.drop(['casename'], axis=1, inplace=True)
     df2.reset_index(drop=True, inplace=True)
 
     output_name = os.path.join('/home/testgrp/MRQOS/mrqos_data/backup/joined',
