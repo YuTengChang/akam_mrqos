@@ -83,7 +83,7 @@ def main():
         while (flag == 0) and (count < n_retrial):
             try:
                 with ytt.Timeout(t_timeout):
-                    sp.call(cmd, shell=True)
+                    sp.check_call(cmd, shell=True)
                     # in case return empty result.
                     if (int(sp.check_output('wc -l %s' % os.path.join(config.mrqos_data,
                                                                       '%s.tmp' % item),
