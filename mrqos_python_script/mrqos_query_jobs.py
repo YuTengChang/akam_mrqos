@@ -190,7 +190,7 @@ def main():
               'netname',
               'ra_load',
               'ra_pingbased',
-              'ping_ratio']
+              'ping_rtio']
 
     dfra = pd.DataFrame(data, columns=header)
     dfra.index = dfra.casename
