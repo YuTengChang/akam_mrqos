@@ -12,7 +12,21 @@ def test_request(arg=None):
     """Your http request."""
     time.sleep(2)
     return arg
- 
+
+def test_function():
+    flag = 0
+    count = 0
+    n_retrial = 10
+    while (flag == 0) and (count < n_retrial):
+        try:
+            with Timeout(1):
+                time.sleep(4-count)
+                flag = 1
+        except:
+            count += 1
+            print "count = %s" % str(count)
+
+
 class Timeout():
     """Timeout class using ALARM signal."""
     class Timeout(Exception):

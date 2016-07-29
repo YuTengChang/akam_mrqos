@@ -84,11 +84,27 @@ def main():
             try:
                 with ytt.Timeout(t_timeout):
                     sp.call(cmd, shell=True)
-                    flag = 1
+                    # in case return empty result.
+                    if (int(sp.check_output('wc -l %s' % os.path.join(config.mrqos_data,
+                                                                      '%s.tmp' % item),
+                                            shell=True).split()[0]) > 0):
+                        flag = 1
+                    else:
+                        count += 1
             except:
                 count += 1
                 print "count = %s" % str(count)
+#####
+while (flag == 0) and (count < n_retrial):
+    try:
+        with ytt.Timeout(t_timeout):
+            time.sleep(4-count)
+            flag = 1
+    except:
+        count += 1
+        print "count = %s" % str(count)
 
+#####
         # if any of the query not fetched successfully, break all and stop running
         if count >= n_retrial:
             logger.info('data query fetch failed for table %s.' % item)
