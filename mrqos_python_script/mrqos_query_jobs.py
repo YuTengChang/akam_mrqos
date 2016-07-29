@@ -16,13 +16,26 @@ import YT_Timeout as ytt
 import configurations.config as config
 import configurations.hdfsutil as hdfsutil
 import configurations.beeline as beeline
-
+import glob
+import logging
 
 def main():
     """  this function will do the query on 5 different measurement and upload
     the data to hdfs accordingly, this also join tables at single time point """
 
     # different queries (various types)
+    # logging set-up
+    logging.basicConfig(filename=os.path.join(config.mrqos_logging, 'io_ratio_join.log'),
+                        level=logging.INFO,
+                        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                        datefmt='%m/%d/%Y %H:%M:%S')
+    logger = logging.getLogger(__name__)
+
+    # ##############################
+    # start the script
+    # parameter setting
+    # ##############################
+
     mtype = ['score', 'distance', 'in_country', 'in_continent', 'ra_load']
 
     sql = """sql2 -q map.mapnoccthree.query.akadns.net --csv "`cat """
@@ -30,14 +43,22 @@ def main():
 
     # current time
     timenow = int(time.time())
+    logger.info('###################')
+    logger.info('Start processing the data back in for 10 minute joins')
+    logger.info('starting processing time is %s' % str(timenow))
+    logger.info('###################')
 
-    print "###################"
-    print "Start processing the data back in for 10 minute joins"
-    print "starting processing time is " + str(timenow)
-    print "###################"
+    # fetch the last backup'ed folder
+    backups = sorted(glob.glob(os.path.join(config.mrqos_data_backup, '1*')))
+    if len(backups) > 0:
+        backup_folders = backups[-1]
+        logger.info('backup files in folder: %s' % backup_folders)
+    else:
+        backup_folders = ''
+        logger.warning('no backup files')
 
     # fetch the data through query with retrials
-    print "    ****  querying mrqos data."
+    logger.info('query data from agg...')
     for item in mtype:
         flag = 0
         count = 0
@@ -53,12 +74,24 @@ def main():
                 with ytt.Timeout(t_timeout):
                     sp.call(cmd, shell=True)
                     flag = 1
-            except:
+            except sp.CalledProcessError as e:
                 count += 1
         # if any of the query not fetched successfully, break all and stop running
         if count >= n_retrial:
-            print ">> data fetch failed in querying table %s" % item
-            return
+            logger.info('data query fetch failed for table %s.' % item)
+            # copy from the past
+            if backup_folders:
+                logger.info('copy from the backup folder, which labels ts=%s' % backup_folders.split('/')[-1])
+                if item == 'score':
+                    shutil.copy(os.path.join(backup_folders, 'score1.tmp'),
+                                os.path.join(config.mrqos_data, 'score.tmp'))
+                else:
+                    shutil.copy(os.path.join(backup_folders, item+'.tmp'),
+                                os.path.join(config.mrqos_data, item+'.tmp'))
+            # if no backup to copy from, quit.
+            else:
+                logger.error('no backup. Stop the query.')
+                return
 
     # provide SCORE table with peak/off-peak attribute
     print "    ****  provide PEAK in score."
@@ -120,7 +153,7 @@ def main():
     dficy = pd.DataFrame(data,columns=header)
     dficy.index = dficy.casename
 
-    file_source =  os.path.join(filedir, filelist[3])
+    file_source = os.path.join(filedir, filelist[3])
     data = numpy.genfromtxt(file_source, delimiter=',', skip_header=0, dtype='str')
     header = ['casename',
               'maprule',
@@ -132,7 +165,7 @@ def main():
     dfict = pd.DataFrame(data,columns=header)
     dfict.index = dfict.casename
 
-    file_source =  os.path.join(filedir, filelist[4])
+    file_source = os.path.join(filedir, filelist[4])
     data = numpy.genfromtxt(file_source, delimiter=',', skip_header=0, dtype='str')
     header = ['casename',
               'maprule',
@@ -153,12 +186,17 @@ def main():
     dropped_columns = [x for x in df2.columns if '_dis' in x or '_icy' in x or '_ict' in x or '_ra' in x]
     print dropped_columns
     df2.drop(dropped_columns, axis=1, inplace=True)
+    df2.drop(['ispeak'], axis=1, inplace=True)
     df2.reset_index(drop=True, inplace=True)
 
-    output_name = os.path.join('/home/testgrp/MRQOS/mrqos_data/backup/%s' % str(timenow),
+    output_name = os.path.join('/home/testgrp/MRQOS/mrqos_data/backup/joined',
                                'mrqos_join.%s.csv' % str(timenow))
     df2.to_csv(output_name,
                sep='\t', index=False, header=False)
+
+    # TODO: clean up backups
+    # TODO: upload the joined to HDFS
+    # TODO: clean up the joined
 
 if __name__ == '__main__':
     sys.exit(main())
