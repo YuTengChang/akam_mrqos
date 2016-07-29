@@ -91,8 +91,10 @@ def main():
                         flag = 1
                     else:
                         count += 1
+                        logger.info('empty table %s at re-try count = %s' % (item, str(count)))
             except:
                 count += 1
+                logger.info('timeout table %s at re-try count = %s' % (item, str(count)))
                 print "count = %s" % str(count)
 
         # if any of the query not fetched successfully, break all and stop running
