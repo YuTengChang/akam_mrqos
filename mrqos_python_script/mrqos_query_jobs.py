@@ -81,7 +81,7 @@ def main():
                 with ytt.Timeout(t_timeout):
                     sp.call(cmd, shell=True)
                     flag = 1
-            except sp.CalledProcessError as e:
+            except:
                 count += 1
         # if any of the query not fetched successfully, break all and stop running
         if count >= n_retrial:
@@ -101,11 +101,11 @@ def main():
                 return
 
     # provide SCORE table with peak/off-peak attribute
-    print "    ****  provide PEAK in score."
+    logger.info('provide PEAK in table "score".')
     sp.call([config.provide_peak], shell=True)
 
     # backup the individual query file by copying to backup folder
-    print "    ****  backing up queried results."
+    logger.info('backing up individual queried results.')
     if not os.path.exists('/home/testgrp/MRQOS/mrqos_data/backup/%s' % str(timenow)):
         os.makedirs('/home/testgrp/MRQOS/mrqos_data/backup/%s' % str(timenow))
         for item in mtype:
