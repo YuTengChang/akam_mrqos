@@ -235,6 +235,8 @@ def main():
     df2.reset_index(drop=True, inplace=True)
     df3.drop(['casename','casename_ioratio'], axis=1, inplace=True)
     df3.reset_index(drop=True, inplace=True)
+    # deal with NaNs: the in-out-ratio set to -1 if data not exists
+    df3.fillna(-1)
 
     output_name = os.path.join('/home/testgrp/MRQOS/mrqos_data/backup/joined',
                                'mrqos_join.%s.csv' % str(timenow))
