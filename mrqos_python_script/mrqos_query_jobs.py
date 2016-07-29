@@ -43,7 +43,7 @@ def main():
     # parameter setting
     # ##############################
 
-    mtype = ['score', 'distance', 'in_country', 'in_continent', 'ra_load']
+    mtype = ['score', 'distance', 'in_country', 'in_continent', 'ra_load', 'in_out_ratio']
 
     sql = """sql2 -q map.mapnoccthree.query.akadns.net --csv "`cat """
     post = """`" | tail -n+3 | awk -F"," 'BEGIN{OFS=","}{$1=""; print $0}' | sed 's/^,//g' > """
@@ -66,6 +66,8 @@ def main():
 
     # fetch the data through query with retrials
     logger.info('query data from agg...')
+    n_retrial = config.query_retrial
+    t_timeout = config.query_timeout
     for item in mtype:
         flag = 0
         count = 0
@@ -73,8 +75,10 @@ def main():
         aggs = os.path.join(config.mrqos_query, item + '.qr')
 
         cmd = sql + aggs + post + dest
-        n_retrial = config.query_retrial
-        t_timeout = config.query_timeout
+        # for in_out_ratio allow larger query time
+        if item == 'in_out_ratio':
+            t_timeout = t_timeout*2-1
+
         # multiple times with timeout scheme
         while (flag == 0) and (count < n_retrial):
             try:
@@ -83,6 +87,8 @@ def main():
                     flag = 1
             except:
                 count += 1
+                print "count = %s" % str(count)
+
         # if any of the query not fetched successfully, break all and stop running
         if count >= n_retrial:
             logger.info('data query fetch failed for table %s.' % item)
@@ -97,8 +103,9 @@ def main():
                                 os.path.join(config.mrqos_data, item+'.tmp'))
             # if no backup to copy from, quit.
             else:
-                logger.error('no backup. Stop the query.')
-                return
+                logger.error('no backup this time. Stop the query.')
+                if item != 'in_out_ratio':
+                    return
 
     # provide SCORE table with peak/off-peak attribute
     logger.info('provide PEAK in table "score".')
@@ -115,7 +122,7 @@ def main():
 
     # load the result to python pandas
     filedir = config.mrqos_data
-    filelist = ['score.tmp','distance.tmp','in_country.tmp','in_continent.tmp','ra_load.tmp']
+    filelist = ['score.tmp','distance.tmp','in_country.tmp','in_continent.tmp','ra_load.tmp','in_out_ratio.tmp']
 
     file_source = os.path.join(filedir, filelist[0])
     data = numpy.genfromtxt(file_source, delimiter=',', skip_header=0, dtype='str')
@@ -195,19 +202,39 @@ def main():
     dfra = pd.DataFrame(data, columns=header)
     dfra.index = dfra.casename
 
+    file_source = os.path.join(filedir, filelist[5])
+    data = numpy.genfromtxt(file_source, delimiter=',', skip_header=0, dtype='str')
+    header = ['casename',
+              'ioratio',
+              'iotarget',
+              'coverage']
+
+    dfio = pd.DataFrame(data, columns=header)
+    dfio.index = dfio.casename
+
     df2 = dfscore.join(dfdistance, rsuffix='_dis', how='inner')\
             .join(dficy, rsuffix='_icy', how='inner')\
             .join(dfict, rsuffix='_ict', how='inner')\
             .join(dfra, rsuffix='_ra', how='inner')
 
+    # drop redundant columns in df2
     dropped_columns = [x for x in df2.columns if '_dis' in x or '_icy' in x or '_ict' in x or '_ra' in x]
     df2.drop(dropped_columns, axis=1, inplace=True)
+
+    df3 = df2.join(dfio, rsuffix='_ioratio')
+
     df2.drop(['casename'], axis=1, inplace=True)
     df2.reset_index(drop=True, inplace=True)
+    df3.drop(['casename','casename_ioratio'], axis=1, inplace=True)
+    df3.reset_index(drop=True, inplace=True)
 
     output_name = os.path.join('/home/testgrp/MRQOS/mrqos_data/backup/joined',
                                'mrqos_join.%s.csv' % str(timenow))
     df2.to_csv(output_name,
+               sep='\t', index=False, header=False)
+    output_name = os.path.join('/home/testgrp/MRQOS/mrqos_data/backup/joined',
+                               'mrqos_joinv2.%s.csv' % str(timenow))
+    df3.to_csv(output_name,
                sep='\t', index=False, header=False)
 
     # clean up backups
