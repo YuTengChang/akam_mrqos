@@ -94,17 +94,7 @@ def main():
             except:
                 count += 1
                 print "count = %s" % str(count)
-#####
-while (flag == 0) and (count < n_retrial):
-    try:
-        with ytt.Timeout(t_timeout):
-            time.sleep(4-count)
-            flag = 1
-    except:
-        count += 1
-        print "count = %s" % str(count)
 
-#####
         # if any of the query not fetched successfully, break all and stop running
         if count >= n_retrial:
             logger.info('data query fetch failed for table %s.' % item)
