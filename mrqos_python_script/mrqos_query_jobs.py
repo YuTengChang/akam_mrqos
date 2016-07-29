@@ -115,7 +115,7 @@ def main():
     logger.info('backing up individual queried results.')
     if not os.path.exists('/home/testgrp/MRQOS/mrqos_data/backup/%s' % str(timenow)):
         os.makedirs('/home/testgrp/MRQOS/mrqos_data/backup/%s' % str(timenow))
-        for item in mtype:
+        for item in mtype+['score1.tmp']:
             filesrc = os.path.join(config.mrqos_data, item + '.tmp')
             filedst = '/home/testgrp/MRQOS/mrqos_data/backup/%s/' % str(timenow)
             shutil.copy(filesrc, filedst)
