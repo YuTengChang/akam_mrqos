@@ -19,12 +19,6 @@ import configurations.beeline as beeline
 import glob
 import logging
 
-def calDef(row, col1, col2):
-    if row[col1] >= row[col2]:
-        val = row[col1] - row[col2]
-    else:
-        val
-
 
 def main():
     """  this function will do the query on 5 different measurement and upload
@@ -92,10 +86,11 @@ def main():
                     else:
                         count += 1
                         logger.info('empty table %s at re-try count = %s' % (item, str(count)))
+                        print "empty at count=%s" % str(count)
             except:
                 count += 1
                 logger.info('timeout table %s at re-try count = %s' % (item, str(count)))
-                print "count = %s" % str(count)
+                print "timeout at count = %s" % str(count)
 
         # if any of the query not fetched successfully, break all and stop running
         if count >= n_retrial:
