@@ -37,7 +37,6 @@ def main():
     # parameter setting
     # ##############################
 
-    # TODO: upload the joined to HDFS
     # check what to upload:
     filelist = sorted(glob.glob(os.path.join(config.mrqos_data_backup,
                                              'joined',
