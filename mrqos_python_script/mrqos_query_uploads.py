@@ -42,10 +42,12 @@ def main():
 
     for fileitem in filelist:
         this_ts = fileitem.split('.')[-2]
+        filename = fileitem.split('/')[-1]
         hdfs_d = os.path.join(config.hdfs_table,
                               'mrqos_join',
                               'ts=%s' % this_ts)
         try:
+            logger.info('trying upload and alter for file: %s' % filename)
             beeline.upload_to_hive(fileitem,
                                    hdfs_d,
                                    'ts=%s' % this_ts,
@@ -53,6 +55,7 @@ def main():
                                    logger)
             # remove local file
             os.remove(fileitem)
+            logger.info('remove local: %s' % filename)
         except sp.CalledProcessError as e:
             logger.error('upload to hdfs & alter hive table failed for file: %s' % fileitem)
             logger.error('error message: %s', e.message)
