@@ -72,7 +72,7 @@ def my_retrial(content, id, n_retrial, logger):
         try:
             tic = time.time()
             codes = compile(content, '<string>', 'exec')
-            exec codes
+            exec codes in globals(), locals()
             #exec(content)
             flag = 1
             logger.info('%s success with time cost=%s sec' % (id, str(time.time()-tic)))
