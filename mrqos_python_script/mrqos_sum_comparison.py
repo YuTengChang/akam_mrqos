@@ -71,7 +71,9 @@ def my_retrial(content, id, n_retrial, logger):
     while (flag == 0) and (count < n_retrial):
         try:
             tic = time.time()
-            exec(content)
+            codes = compile(content, '<string>', 'exec')
+            exec codes
+            #exec(content)
             flag = 1
             logger.info('%s success with time cost=%s sec' % (id, str(time.time()-tic)))
         except:
