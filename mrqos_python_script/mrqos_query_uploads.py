@@ -62,13 +62,14 @@ def main():
 
 
     # DONE: clean up the joined
-    mrqos_join_cleanup()
+    logger.info('cleaning retired mrqos_join data.')
+    mrqos_join_cleanup(logger)
 
 # ==============================================================================
 # # remove partitions from hive table
 # ==============================================================================
 
-def mrqos_join_cleanup():
+def mrqos_join_cleanup(logger):
     """ when called, this function will delete all partitions
         the clnspp table as long as it is older than the threshold """
 
@@ -87,20 +88,20 @@ def mrqos_join_cleanup():
         try:
             # drop the partitions in hive
             beeline.drop_partitions('mrqos.mrqos_join', 'ts<%s' % str(timenow-config.mrqos_join_delete))
-            print " drop partitions successful. "
+            logger.info("drop hive partitions successful. ")
             # remove the hdfs folders
             for partition_id in hdfs_remove_list:
                 try:
                     hdfs_d = os.path.join(config.hdfs_table, 'mrqos_join', '%s' % str(partition_id))
                     hdfsutil.rm(hdfs_d, r=True)
                 except sp.CalledProcessError as e:
-                    print ">> failed to remove HDFS folder for mrqos_join at partition folder %s" % str(partition_id)
-            print " remove HDFS successful. "
+                    logger.info('failed to remove HDFS folder for mrqos_join at partition folder %s' % str(partition_id))
+            logger.info('remove HDFS successful. ')
         except sp.CalledProcessError as e:
-            print ">> failed to drop partitions"
+            logger.error('failed to drop partitions. ')
     except sp.CalledProcessError as e:
-        print ">> failed to obtain retire partition list (HIVE)"
-        print e.message
+        logger.error('failed to obtain retire partition list (HIVE)')
+        logger.error('error message: %s' % e.message)
 
 
 if __name__ == '__main__':
