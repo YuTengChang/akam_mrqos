@@ -40,6 +40,7 @@ def main():
     mtype = ['score', 'distance', 'in_country', 'in_continent', 'ra_load', 'in_out_ratio']
 
     sql = """sql2 -q map.mapnoccthree.query.akadns.net --csv "`cat """
+    sql5 = """sql2 -q mega.mapnoccfive.query.akadns.net --csv "`cat  """
     post = """`" | tail -n+3 | awk -F"," 'BEGIN{OFS=","}{$1=""; print $0}' | sed 's/^,//g' > """
 
     # current time
@@ -72,6 +73,7 @@ def main():
         # for in_out_ratio allow larger query time
         if item == 'in_out_ratio':
             t_timeout = t_timeout*2-1
+            cmd = sql5 + aggs + post + dest
 
         # multiple times with timeout scheme
         while (flag == 0) and (count < n_retrial):
