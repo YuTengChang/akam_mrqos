@@ -46,10 +46,10 @@ def main():
     my_retrial(content, id='2W summary (no load)', n_retrial=n_retrial, logger=logger)
     content = '''beeline.bln_e_output(qry % (ts_now, ts_14d), os.path.join(config.mrqos_data, 'processed_2wjoin_full_wloads.tmp')) '''
     my_retrial(content, id='2W summary', n_retrial=n_retrial, logger=logger)
-    content = '''beeline.bln_e_output(qry % (ts_now, ts_28d), os.path.join(config.mrqos_data, 'processed_4wjoin_full_wloads.tmp')) '''
-    my_retrial(content, id='4W summary', n_retrial=n_retrial, logger=logger)
-    content = '''beeline.bln_e_output(qry % (ts_now, ts_3d), os.path.join(config.mrqos_data, 'processed_3djoin_full_wloads.tmp')) '''
-    my_retrial(content, id='3D summary', n_retrial=n_retrial, logger=logger)
+    #content = '''beeline.bln_e_output(qry % (ts_now, ts_28d), os.path.join(config.mrqos_data, 'processed_4wjoin_full_wloads.tmp')) '''
+    #my_retrial(content, id='4W summary', n_retrial=n_retrial, logger=logger)
+    #content = '''beeline.bln_e_output(qry % (ts_now, ts_3d), os.path.join(config.mrqos_data, 'processed_3djoin_full_wloads.tmp')) '''
+    #my_retrial(content, id='3D summary', n_retrial=n_retrial, logger=logger)
 
 #    try:
 #        beeline.bln_e_output(qry % (ts_now, ts_14d),
