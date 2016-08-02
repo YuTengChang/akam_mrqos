@@ -79,8 +79,11 @@ def main():
                                    'mrqos_join2',
                                    logger)
             # remove local file
-            os.remove(fileitem)
-            logger.info('remove local: %s' % filename)
+            try:
+                os.remove(fileitem)
+                logger.info('remove local: %s' % filename)
+            except Exception as e:
+                logger.exception()
         except sp.CalledProcessError as e:
             logger.error('upload to hdfs & alter hive table failed for file: %s' % fileitem)
             logger.error('error message: %s', e.message)
