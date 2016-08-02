@@ -22,6 +22,7 @@ hdfs_table_in_country = '/ghostcache/hadoop/data/MRQOS/in_country'
 hdfs_table_in_continent = '/ghostcache/hadoop/data/MRQOS/in_continent'
 hdfs_table_ra_load = '/ghostcache/hadoop/data/MRQOS/ra_load'
 hdfs_table_join = '/ghostcache/hadoop/data/MRQOS/mrqos_join'
+hdfs_table_join2 = '/ghostcache/hadoop/data/MRQOS/mrqos_join2'
 
 hdfs_qos_rg_info = '/ghostcache/hadoop/data/MRQOS/mrqos_region/datestamp=%s/hour=%s/ts=%s'
 hdfs_qos_rg_hour = '/ghostcache/hadoop/data/MRQOS/mrqos_region_hour/datestamp=%s/hour=%s'
