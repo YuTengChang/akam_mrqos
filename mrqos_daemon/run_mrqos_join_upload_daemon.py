@@ -17,7 +17,7 @@ if __name__=='__main__':
              'log': 'MRQOS_Join_Upload_Log',
              'sleep_interval': 10*60}
 
-    dmn = ed.exampleDaemon(args)
+    dmn = ed.joinUploadDaemon(args)
     proc = bs.backgroundStarter(args,'/home/testgrp/pid/mrqos_query_uploads_pid.st',dmn)
 
     proc.run()
