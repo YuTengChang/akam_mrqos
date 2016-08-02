@@ -40,17 +40,17 @@ def main():
     ts_ex_14d = time.strftime('%Y%m%d',
                               time.gmtime(time.mktime(time.strptime(ts_now,
                                                                     '%Y%m%d')) - 14 * day_in_seconds))
-    ts_14d = [x for x in list_of_partitions if x <= ts_ex_14d].split('=')[-1]
+    ts_14d = [x for x in list_of_partitions if x <= ts_ex_14d][-1].split('=')[-1]
 
     ts_ex_28d = time.strftime('%Y%m%d',
                               time.gmtime(time.mktime(time.strptime(ts_now,
                                                                     '%Y%m%d')) - 28 * day_in_seconds))
-    ts_28d = [x for x in list_of_partitions if x <= ts_ex_28d].split('=')[-1]
+    ts_28d = [x for x in list_of_partitions if x <= ts_ex_28d][-1].split('=')[-1]
 
     ts_ex_3d = time.strftime('%Y%m%d',
                              time.gmtime(time.mktime(time.strptime(ts_now,
                                                                    '%Y%m%d')) - 3 * day_in_seconds))
-    ts_3d = [x for x in list_of_partitions if x <= ts_ex_3d].split('=')[-1]
+    ts_3d = [x for x in list_of_partitions if x <= ts_ex_3d][-1].split('=')[-1]
 
     #content = '''beeline.bln_e_output(qry0 % (ts_now, ts_14d), os.path.join(config.mrqos_data, 'processed_2wjoin_full.tmp')) '''
     my_retrial(id='2W summary (no load)', n_retrial=n_retrial, logger=logger, ts1=ts_now, ts2=ts_14d)
