@@ -32,12 +32,25 @@ def main():
     # parameter setting
     # ##############################
     n_retrial = config.query_retrial
+    day_in_seconds = 86400
 
     list_of_partitions = [x for x in beeline.show_partitions('mrqos.mrqos_sum').split('\n') if '=' in x]
     ts_now = list_of_partitions[-1].split('=')[-1]
-    ts_14d = list_of_partitions[-15].split('=')[-1]
-    ts_28d = list_of_partitions[-29].split('=')[-1]
-    ts_3d = list_of_partitions[-4].split('=')[-1]
+
+    ts_ex_14d = time.strftime('%Y%m%d',
+                              time.gmtime(time.mktime(time.strptime(ts_now,
+                                                                    '%Y%m%d')) - 14 * day_in_seconds))
+    ts_14d = [x for x in list_of_partitions if x <= ts_ex_14d].split('=')[-1]
+
+    ts_ex_28d = time.strftime('%Y%m%d',
+                              time.gmtime(time.mktime(time.strptime(ts_now,
+                                                                    '%Y%m%d')) - 28 * day_in_seconds))
+    ts_28d = [x for x in list_of_partitions if x <= ts_ex_28d].split('=')[-1]
+
+    ts_ex_3d = time.strftime('%Y%m%d',
+                             time.gmtime(time.mktime(time.strptime(ts_now,
+                                                                   '%Y%m%d')) - 3 * day_in_seconds))
+    ts_3d = [x for x in list_of_partitions if x <= ts_ex_3d].split('=')[-1]
 
     #content = '''beeline.bln_e_output(qry0 % (ts_now, ts_14d), os.path.join(config.mrqos_data, 'processed_2wjoin_full.tmp')) '''
     my_retrial(id='2W summary (no load)', n_retrial=n_retrial, logger=logger, ts1=ts_now, ts2=ts_14d)
