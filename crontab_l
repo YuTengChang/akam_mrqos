@@ -28,7 +28,10 @@
 ##################################################
 # run the query every 10 minutes and upload the data to HIVE (s195m)
 #5,15,25,35,45,55 * * * * /home/testgrp/doasme_YT /home/testgrp/MRQOS/cron_query >> /home/testgrp/logs/cron_query.log 2>&1
+# new cron-query
 #5,15,25,35,45,55 * * * * /home/testgrp/doasme_YT /a/bin/python2.7 /home/testgrp/MRQOS/mrqos_python_script/mrqos_query_jobs.py
+# new cron-uploads (crondaemon)
+# 0,10,20,30,40,50 * * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_daemon/run_mrqos_join_upload_daemon.py
 #20 0 * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/hive_summarize.py >> /home/testgrp/logs/cron_summary.log 2>&1
 #20 2 * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_python_script/mrqos_summarize_1d3d.py >> /home/testgrp/logs/cron_summary_1d3d.log 2>&1
 
