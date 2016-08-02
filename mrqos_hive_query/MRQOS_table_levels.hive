@@ -73,13 +73,10 @@ FROM
 ) standard
 JOIN
 (
-  select b.maprule, b.geoname, b.netname, b.avg_sp95d, b.avg_dp95d, b.avg_icyd, b.avg_ictd, b.star, b.dtar, b.icy_tar, b.ict_tar from
-  (select regexp_replace(date_sub(to_date(from_unixtime(unix_timestamp())),1),"-","") tsng1 from mrqos_sum limit 1) a
-  JOIN
-  (select * from mrqos_sum) b
-  ON (a.tsng1=b.ts)
+  select * from mrqos_sum
   WHERE
-    ( b.avg_sp95d>0 OR b.avg_dp95d>0 OR b.avg_icyd>0 OR b.avg_ictd>0 )
+    ts=%s and
+    ( avg_sp95d>0 OR avg_dp95d>0 OR avg_icyd>0 OR avg_ictd>0 )
 ) baseline
 ON ( baseline.geoname=standard.geoname AND baseline.netname=standard.netname )
 ORDER BY maprule, geoname, netname;

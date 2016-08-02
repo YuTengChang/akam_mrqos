@@ -19,6 +19,7 @@ def main():
     past two weeks (X-1 day : X-15 days) """
     timenow = int(time.time())
     datenow = str(datetime.date.today()-datetime.timedelta(1))
+    datestamp = time.strftime('%Y%m%d', time.gmtime(float(timenow-86400)))
     datenow = datenow[0:4]+datenow[5:7]+datenow[8:10]
     print "###################"
     print "# Start processing the data back in " + datenow + " for two-week window"
@@ -62,7 +63,14 @@ def main():
     while retrial < max_retrial:
         try:
             tic = time.time()
+            f = open(os.path.join(config.mrqos_hive_query, 'MRQOS_table_levels.hive'), 'r')
+            strcmd = f.read()
+            strcmd_s = strcmd % (datestamp, datestamp, datestamp, datestamp)
+            f.close()
+
             f = open('/home/testgrp/MRQOS/mrqos_data/compound_metric.tmp','w')
+            beeline.bln_e_output(strcmd_s, '/home/testgrp/MRQOS/mrqos_data/compound_metric.tmp')
+
             sp.check_call(['hive','-f','/home/testgrp/MRQOS/MRQOS_table_levels.hive'],stdout=f)
             print "    # success with time cost = %s" % str(time.time()-tic)
             break
