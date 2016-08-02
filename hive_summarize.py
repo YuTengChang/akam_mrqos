@@ -70,8 +70,8 @@ def main():
 
             f = open('/home/testgrp/MRQOS/mrqos_data/compound_metric.tmp','w')
             beeline.bln_e_output(strcmd_s, '/home/testgrp/MRQOS/mrqos_data/compound_metric.tmp')
-
-            sp.check_call(['hive','-f','/home/testgrp/MRQOS/MRQOS_table_levels.hive'],stdout=f)
+            # replaced code:
+            #sp.check_call(['hive','-f','/home/testgrp/MRQOS/MRQOS_table_levels.hive'],stdout=f)
             print "    # success with time cost = %s" % str(time.time()-tic)
             break
         except:
@@ -81,18 +81,8 @@ def main():
 
     # obtain the summarized statistics that spanned [-28d, -14d]
     print "    ****  running hive queries for 2w comparisons."
-    retrial = 0
-    while retrial < max_retrial:
-        try:
-            tic = time.time()
-            sp.check_call( [config.obtain_14d], shell=True )
-            print "    # success with time cost = %s" % str(time.time()-tic)
-            break
-        except:
-            retrial += 1
-            print "    # failed retrial #%s with time cost = %s" % (str(retrial), str(time.time()-tic))
-
-
+    cmdstr = '''/usr/bin/python /home/testgrp/MRQOS/mrqos_python_script/mrqos_sum_comparison.py'''
+    sp.check_call(cmdstr, shell=True)
 
 
 def upload_to_hive(listname, hdfs_d, ts, tablename):
