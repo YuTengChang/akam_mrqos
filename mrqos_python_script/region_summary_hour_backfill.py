@@ -64,7 +64,7 @@ def main():
                     # delete the folder if summarization failed.
                     logger.info("BLN region summary hour failed @ cost = %s sec in retrial #%s" % (str(time.time()-tic),
                                                                                                    str(count_retrial)))
-                    logger.exception()
+                    logger.exception("message")
                     hdfsutil.rm(config.hdfs_qos_rg_hour % (datestamp, hourstamp), r=True)
                     count_retrial += 1
         else:
@@ -102,13 +102,13 @@ def main():
                             beeline.bln_e_output(strcmd_g, query_result_file)
                         except sp.CalledProcessError as e:
                             logger.error("copy to local failed again, abort.")
-                            logger.exception()
+                            logger.exception("message")
                     break
                 except sp.CalledProcessError as e:
                     # delete the folder if summarization failed.
                     logger.info("BLN case view hour failed @ cost = %s sec in retrial #%s" % (str(time.time()-tic),
                                                                                               str(count_retrial)))
-                    logger.exception()
+                    logger.exception("message")
                     hdfsutil.rm(config.hdfs_qos_case_view_hour % (datestamp, hourstamp), r=True)
                     count_retrial += 1
 
@@ -147,13 +147,13 @@ def main():
                             beeline.bln_e_output(strcmd_g, query_result_file)
                         except sp.CalledProcessError as e:
                             logger.error("copy to local failed again, abort.")
-                            logger.exception()
+                            logger.exception("message")
                     break
                 except sp.CalledProcessError as e:
                     # delete the folder if summarization failed.
                     logger.info("BLN region view hour failed @ cost = %s sec in retrial #%s" % (str(time.time()-tic),
                                                                                                 str(count_retrial)))
-                    logger.exception()
+                    logger.exception("message")
                     hdfsutil.rm(config.hdfs_qos_rg_view_hour % (datestamp, hourstamp), r=True)
                     count_retrial += 1
 
