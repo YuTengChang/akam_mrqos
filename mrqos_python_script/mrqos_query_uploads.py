@@ -83,7 +83,7 @@ def main():
                 os.remove(fileitem)
                 logger.info('remove local: %s' % filename)
             except Exception as e:
-                logger.exception()
+                logger.exception("message")
         except sp.CalledProcessError as e:
             logger.error('upload to hdfs & alter hive table failed for file: %s' % fileitem)
             logger.error('error message: %s', e.message)
