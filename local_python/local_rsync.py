@@ -15,7 +15,7 @@ import configurations.config as config
 
 def main():
     remote_machines = ['81.52.137.195','81.52.137.180','81.52.137.182','81.52.137.183','81.52.137.188']
-    down_machines = ['81.52.137.195','81.52.137.182']
+    down_machines = ['81.52.137.195']
 
     cmd = 'cd ~/Documents/Projects/18-DDC/MRQOS/; git pull;'
     sp.check_call(cmd, shell=True)
