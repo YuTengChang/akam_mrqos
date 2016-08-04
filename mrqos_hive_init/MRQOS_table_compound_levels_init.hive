@@ -1,0 +1,65 @@
+add jar /a/libexec/ddr-1.0.jar;
+
+USE mrqos;
+
+drop table if exists mrqos_levels;
+
+create external table mrqos_levels (
+        maprule INT,
+        geoname STRING,
+        vsp95d DOUBLE,
+        bsp95d DOUBLE,
+        gsp95d DOUBLE,
+        dsp95d DOUBLE,
+        w3sp95d DOUBLE,
+        w5sp95d DOUBLE,
+        w10sp95d DOUBLE,
+        w23sp95d DOUBLE,
+        s_bsp95d DOUBLE,
+        s_gsp95d DOUBLE,
+        s_dsp95d DOUBLE,
+        star INT,
+        vdp95d DOUBLE,
+        bdp95d DOUBLE,
+        gdp95d DOUBLE,
+        ddp95d DOUBLE,
+        w3dp95d DOUBLE,
+        w5dp95d DOUBLE,
+        w10dp95d DOUBLE,
+        w23dp95d DOUBLE,
+        s_bdp95d DOUBLE,
+        s_gdp95d DOUBLE,
+        s_ddp95d DOUBLE,
+        dtar INT,
+        vicyd DOUBLE,
+        bicyd DOUBLE,
+        gicyd DOUBLE,
+        dicyd DOUBLE,
+        w3icyd DOUBLE,
+        w5icyd DOUBLE,
+        w10icyd DOUBLE,
+        w23icyd DOUBLE,
+        s_bicyd DOUBLE,
+        s_gicyd DOUBLE,
+        s_dicyd DOUBLE,
+        icy_tar INT,
+        victd DOUBLE,
+        bictd DOUBLE,
+        gictd DOUBLE,
+        dictd DOUBLE,
+        w3ictd DOUBLE,
+        w5ictd DOUBLE,
+        w10ictd DOUBLE,
+        w23ictd DOUBLE,
+        s_bictd DOUBLE,
+        s_gictd DOUBLE,
+        s_dictd DOUBLE,
+        ict_tar INT,
+        netname STRING
+)
+
+partitioned by (ts STRING)
+row format delimited
+fields terminated by ' '
+lines terminated by '\n'
+location '/ghostcache/hadoop/data/MRQOS/mrqos_levels';
