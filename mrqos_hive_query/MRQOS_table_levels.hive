@@ -9,24 +9,52 @@ SELECT  baseline.maprule,
         standard.bsp95d,
         standard.gsp95d,
         standard.dsp95d,
+        standard.w3sp95d,
+        standard.w5sp95d,
+        standard.w10sp95d,
+        standard.w23sp95d,
+        standard.s_bsp95d,
+        standard.s_gsp95d,
+        standard.s_dsp95d,
         baseline.star,
 
         baseline.avg_dp95d vdp95d,
         standard.bdp95d,
         standard.gdp95d,
         standard.ddp95d,
+        standard.w3dp95d,
+        standard.w5dp95d,
+        standard.w10dp95d,
+        standard.w23dp95d,
+        standard.s_bdp95d,
+        standard.s_gdp95d,
+        standard.s_ddp95d,
         baseline.dtar,
 
         baseline.avg_icyd vicyd,
         standard.bicyd,
         standard.gicyd,
         standard.dicyd,
+        standard.w3icyd,
+        standard.w5icyd,
+        standard.w10icyd,
+        standard.w23icyd,
+        standard.s_bicyd,
+        standard.s_gicyd,
+        standard.s_dicyd,
         baseline.icy_tar,
 
         baseline.avg_ictd victd,
         standard.bictd,
         standard.gictd,
         standard.dictd,
+        standard.w3ictd,
+        standard.w5ictd,
+        standard.w10ictd,
+        standard.w23ictd,
+        standard.s_bictd,
+        standard.s_gictd,
+        standard.s_dictd,
         baseline.ict_tar,
 
         baseline.netname
@@ -37,15 +65,46 @@ SELECT  gmap.geoname,
         bmap.avg_sp95d bsp95d,
         gmap.avg_sp95d gsp95d,
         dmap.avg_sp95d dsp95d,
+        w3map.avg_sp95d w3sp95d,
+        w5map.avg_sp95d w5sp95d,
+        w10map.avg_sp95d w10sp95d,
+        w23map.avg_sp95d w23sp95d,
+        s_bmap.avg_sp95d s_bsp95d,
+        s_gmap.avg_sp95d s_gsp95d,
+        s_dmap.avg_sp95d s_dsp95d,
+        
         bmap.avg_dp95d bdp95d,
         gmap.avg_dp95d gdp95d,
         dmap.avg_dp95d ddp95d,
+        w3map.avg_dp95d w3dp95d,
+        w5map.avg_dp95d w5dp95d,
+        w10map.avg_dp95d w10dp95d,
+        w23map.avg_dp95d w23dp95d,
+        s_bmap.avg_dp95d s_bdp95d,
+        s_gmap.avg_dp95d s_gdp95d,
+        s_dmap.avg_dp95d s_ddp95d,
+        
         bmap.avg_icyd bicyd,
         gmap.avg_icyd gicyd,
         dmap.avg_icyd dicyd,
+        w3map.avg_icyd w3icyd,
+        w5map.avg_icyd w5icyd,
+        w10map.avg_icyd w10icyd,
+        w23map.avg_icyd w23icyd,
+        s_bmap.avg_icyd s_bicyd,
+        s_gmap.avg_icyd s_gicyd,
+        s_dmap.avg_icyd s_dicyd,
+        
         gmap.avg_ictd gictd,
         dmap.avg_ictd dictd,
-        bmap.avg_ictd bictd
+        bmap.avg_ictd bictd,
+        w3map.avg_ictd w3ictd,
+        w5map.avg_ictd w5ictd,
+        w10map.avg_ictd w10ictd,
+        w23map.avg_ictd w23ictd,
+        s_bmap.avg_ictd s_bictd,
+        s_gmap.avg_ictd s_gictd,
+        s_dmap.avg_ictd s_dictd
 FROM
 
   (
@@ -70,6 +129,62 @@ FROM
         mrqos_sum where maprule=332 and ts=%s
   ) bmap
   ON (gmap.geoname=bmap.geoname AND gmap.netname=bmap.netname)
+  JOIN
+  (
+    select
+        geoname, netname, avg_sp95d, avg_dp95d, avg_icyd, avg_ictd
+    from
+        mrqos_sum where maprule=2903 and ts=%s
+  ) w3map
+  ON (gmap.geoname=w3map.geoname AND gmap.netname=w3map.netname)
+  JOIN
+  (
+    select
+        geoname, netname, avg_sp95d, avg_dp95d, avg_icyd, avg_ictd
+    from
+        mrqos_sum where maprule=2905 and ts=%s
+  ) w5map
+  ON (gmap.geoname=w5map.geoname AND gmap.netname=w5map.netname)
+  JOIN
+  (
+    select
+        geoname, netname, avg_sp95d, avg_dp95d, avg_icyd, avg_ictd
+    from
+        mrqos_sum where maprule=2910 and ts=%s
+  ) w10map
+  ON (gmap.geoname=w10map.geoname AND gmap.netname=w10map.netname)
+  JOIN
+  (
+    select
+        geoname, netname, avg_sp95d, avg_dp95d, avg_icyd, avg_ictd
+    from
+        mrqos_sum where maprule=2923 and ts=%s
+  ) w23map
+  ON (gmap.geoname=w23map.geoname AND gmap.netname=w23map.netname)
+  JOIN
+  (
+    select
+        geoname, netname, avg_sp95d, avg_dp95d, avg_icyd, avg_ictd
+    from
+        mrqos_sum where maprule=9644 and ts=%s
+  ) s_gmap
+  ON (gmap.geoname=s_gmap.geoname AND gmap.netname=s_gmap.netname)
+  JOIN
+  (
+    select
+        geoname, netname, avg_sp95d, avg_dp95d, avg_icyd, avg_ictd
+    from
+        mrqos_sum where maprule=9634 and ts=%s
+  ) s_bmap
+  ON (gmap.geoname=s_bmap.geoname AND gmap.netname=s_bmap.netname)
+  JOIN
+  (
+    select
+        geoname, netname, avg_sp95d, avg_dp95d, avg_icyd, avg_ictd
+    from
+        mrqos_sum where maprule=9690 and ts=%s
+  ) s_dmap
+  ON (gmap.geoname=s_dmap.geoname AND gmap.netname=s_dmap.netname)
 ) standard
 JOIN
 (

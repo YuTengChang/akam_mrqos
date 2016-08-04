@@ -65,14 +65,20 @@ def main():
             tic = time.time()
             f = open(os.path.join(config.mrqos_hive_query, 'MRQOS_table_levels.hive'), 'r')
             strcmd = f.read()
-            strcmd_s = strcmd % (datestamp, datestamp, datestamp, datestamp)
+            strcmd_s = strcmd % (datestamp, datestamp, datestamp, datestamp, datestamp,
+                                 datestamp, datestamp, datestamp, datestamp, datestamp,
+                                 datestamp)
             f.close()
 
-            f = open('/home/testgrp/MRQOS/mrqos_data/compound_metric.tmp','w')
-            beeline.bln_e_output(strcmd_s, '/home/testgrp/MRQOS/mrqos_data/compound_metric.tmp')
+            f = open('/home/testgrp/MRQOS/mrqos_data/compound_metric_full.tmp','w')
+            beeline.bln_e_output(strcmd_s, '/home/testgrp/MRQOS/mrqos_data/compound_metric_full.tmp')
+            print "    # success with time cost = %s" % str(time.time()-tic)
             # replaced code:
             #sp.check_call(['hive','-f','/home/testgrp/MRQOS/MRQOS_table_levels.hive'],stdout=f)
-            print "    # success with time cost = %s" % str(time.time()-tic)
+            f1 = '/home/testgrp/MRQOS/mrqos_data/compound_metric_full.tmp'
+            f2 = '/home/testgrp/MRQOS/mrqos_data/compound_metric.tmp'
+            cmd_str = ''' cat %s | awk '{print $1, $2, $3, $4, $5, $6, $14, $15, $16, $17, $18, $26, $27, $28, $29, $30, $38, $39, $40, $41, $42, $50, $51}' > %s ''' % (f1, f2)
+            sp.check_call(cmd_str, shell=True)
             break
         except:
             retrial += 1
