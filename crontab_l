@@ -86,4 +86,6 @@
 ##################################################
 # region summary (s180m)
 #15 * * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_python_script/region_summary_hour.py >> /home/testgrp/logs/cron_region_summary_hour.log 2>&1
+# new region summary (s180m)
+#15 * * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_daemon/run_region_summary_daemon.py
 
