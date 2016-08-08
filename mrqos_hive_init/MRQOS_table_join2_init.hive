@@ -38,7 +38,8 @@ create external table mrqos_join2 (
     p2t_bps_pct INT,
     ioratio INT,
     ioratio_tar INT,
-    load_coverage INT)
+    load_coverage INT,
+    iod INT)
 
 partitioned by (ts INT)
 row format delimited

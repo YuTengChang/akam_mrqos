@@ -215,6 +215,7 @@ def main():
               'coverage']
 
     dfio = pd.DataFrame(data, columns=header)
+    dfio['iod'] = [z*(z>0) for z in [int(x)-int(y) for (x,y) in zip(dficy.ioratio, dficy.iotarget)]]
     dfio.index = dfio.casename
 
     df2 = dfscore.join(dfdistance, rsuffix='_dis', how='inner')\
