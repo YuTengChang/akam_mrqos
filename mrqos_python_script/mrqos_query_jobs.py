@@ -68,13 +68,11 @@ def main():
         count = 0
         dest = os.path.join(config.mrqos_data, item + '.tmp')
         aggs = os.path.join(config.mrqos_query, item + '.qr')
-
         cmd = sql + aggs + post + dest
         # for in_out_ratio allow larger query time
         if item == 'in_out_ratio':
             t_timeout = t_timeout*2-1
             cmd = sql5 + aggs + post + dest
-
         # multiple times with timeout scheme
         while (flag == 0) and (count < n_retrial):
             try:
@@ -93,7 +91,6 @@ def main():
                 count += 1
                 logger.info('timeout table %s at re-try count = %s' % (item, str(count)))
                 print "timeout at count = %s" % str(count)
-
         # if any of the query not fetched successfully, break all and stop running
         if count >= n_retrial:
             logger.info('data query fetch failed for table %s.' % item)
@@ -215,7 +212,7 @@ def main():
               'coverage']
 
     dfio = pd.DataFrame(data, columns=header)
-    dfio['iod'] = [z*(z>0) for z in [int(x)-int(y) for (x,y) in zip(dficy.ioratio, dficy.iotarget)]]
+    dfio['iod'] = [z*(z>0) for z in [int(x)-int(y) for (x,y) in zip(dfio.ioratio, dfio.iotarget)]]
     dfio.index = dfio.casename
 
     df2 = dfscore.join(dfdistance, rsuffix='_dis', how='inner')\
