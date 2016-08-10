@@ -32,8 +32,8 @@
 #5,15,25,35,45,55 * * * * /home/testgrp/doasme_YT /a/bin/python2.7 /home/testgrp/MRQOS/mrqos_python_script/mrqos_query_jobs.py
 # new cron-uploads (crondaemon)
 # 0,10,20,30,40,50 * * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_daemon/run_mrqos_join_upload_daemon.py
-#20 0 * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/hive_summarize.py >> /home/testgrp/logs/cron_summary.log 2>&1
-#20 2 * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_python_script/mrqos_summarize_1d3d.py >> /home/testgrp/logs/cron_summary_1d3d.log 2>&1
+#20 1 * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/hive_summarize.py >> /home/testgrp/logs/cron_summary.log 2>&1
+#20 3 * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_python_script/mrqos_summarize_1d3d.py >> /home/testgrp/logs/cron_summary_1d3d.log 2>&1
 
 # region information from mrqos (s180m)
 #9,19,29,39,49,59 * * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_python_script/query_insert_region_for_mrqos.py >> /home/testgrp/logs/cron_query_region.log 2>&1
