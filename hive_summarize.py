@@ -31,6 +31,7 @@ def main():
     print "    ****  create new mrqos_ts table."
     sp.call([config.create_ts_table], shell=True)
 
+    # summarize script old version
     # open the file for writing the results
     print "    ****  running hive summarizing script."
     retrial = 0
@@ -56,6 +57,35 @@ def main():
     listname = os.path.join(config.mrqos_data, 'summarized_processed.tmp')
     hdfs_d = os.path.join(config.hdfs_table,'mrqos_sum','ts=%s' % str(datenow))
     upload_to_hive(listname, hdfs_d, str(datenow), 'mrqos_sum')
+
+
+    # summarize script new version
+    # open the file for writing the results
+    print "    ****  running hive summarizing script (new)."
+    retrial = 0
+    while retrial < max_retrial:
+        try:
+            tic = time.time()
+            f = open('/home/testgrp/MRQOS/mrqos_data/summarized_table2.tmp','w')
+            sp.check_call(['hive','-f','/home/testgrp/MRQOS/mrqos_hive_query/MRQOS_table_summarize2.hive'],stdout=f)
+            print "    # success with time cost = %s" % str(time.time()-tic)
+            break
+        except:
+            retrial += 1
+            print "    # failed retrial #%s with time cost = %s" % (str(retrial), str(time.time()-tic))
+        f.close()
+
+
+    # process the file, take country only
+    cmd = """cat /home/testgrp/MRQOS/mrqos_data/summarized_table2.tmp | sed s:NULL:0:g | sed 's/\t/,/g' | awk -F',' '{x=length($4); if(x==2){print $0;}}' | awk -F',' '{if($3>0){$1=""; $2=""; print $0;}}' | sed 's/^\s\+//g' > /home/testgrp/MRQOS/mrqos_data/summarized_processed2.tmp""";
+    sp.check_call( cmd, shell=True )
+
+    # upload the summarized table in hive
+    print "    ****  upload the summarized table to HDFS."
+    listname = os.path.join(config.mrqos_data, 'summarized_processed2.tmp')
+    hdfs_d = os.path.join(config.hdfs_table,'mrqos_sum2','ts=%s' % str(datenow))
+    upload_to_hive(listname, hdfs_d, str(datenow), 'mrqos_sum2')
+
 
     # compute COMPOUND-ERROR-METRIC
     print "    ****  running hive script for compound error metrics."
