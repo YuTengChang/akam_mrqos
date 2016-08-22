@@ -362,8 +362,8 @@ def main():
         country_avgDistance_capacity_nReg_mpgLoad_nMpg_reglist_mpglist.loc[item] = temp # the above should be temp[1][0] for the mpglist
 
     data_folder = '/home/testgrp/MRQOS/project_mpd_clustering/data'
-    fileDestination = os.path.join(data_folder, 'geo_full_cluster_info.%s.%s.csv' % (day_idx,
-                                                                                     uuid_idx))
+    filename = 'geo_full_cluster_info.%s.%s.csv' % (day_idx, uuid_idx)
+    fileDestination = os.path.join(data_folder, filename)
     country_avgDistance_capacity_nReg_mpgLoad_nMpg_reglist_mpglist.to_csv(fileDestination,
                                                                           sep=',', index=False, header=False)
 
@@ -374,6 +374,10 @@ def main():
                           'datestamp=%s' % day_idx,
                           'uuid=%s' % uuid_idx)
     partition = '''datestamp=%s, uuid='%s' ''' % (day_idx, uuid_idx)
+    processed_filename = '.'.join(filename.split('.')[0:-1])+'.processed.csv'
+    cmd_str = ''' cat %s | awk -F, '{n=split($21,a,":"); if(n>5){$21=a[1]":"a[2]":"a[3]":"a[4]":"a[5];} m=split($20,b,":"); if(m>5){$20=b[1]":"b[2]":"b[3]":"b[4]":"b[5];}print $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$20,$21;}' > %s ''' % (os.path.join(data_folder, filename),
+                                                                                                                                                                                                                                                              os.path.join(data_folder, processed_filename))
+    sp.check_call(cmd_str, shell=True)
     try:
         beeline.upload_to_hive(fileDestination, hdfs_d, partition, tablename, logger)
         # os.remove(fileDestination)

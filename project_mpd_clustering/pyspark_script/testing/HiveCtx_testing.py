@@ -1,8 +1,19 @@
+import sys, os
+
+sys.path.append('/home/testgrp/MRQOS/')
+import subprocess as sp
+import time
+import YT_Timeout as ytt
+import configurations.config as config
+import configurations.hdfsutil as hdfsutil
+import configurations.beeline as beeline
+import logging
+from pyspark import SparkContext
 from pyspark.sql import HiveContext
+
 import math
 import pandas as pd
 import numpy as np
-import os
 
 
 def geodesic_distance(lat1, lon1, lat2, lon2):
@@ -16,6 +27,7 @@ def geodesic_distance(lat1, lon1, lat2, lon2):
     a = math.pow(math.sin(dlat), 2) + math.cos(lat2r) * math.cos(lat1r) * math.pow(math.sin(dlon), 2)
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
     return [lat1, lon1, lat2, lon2, R*c]
+
 
 def geo_centroid(lat_array, lon_array, load_array):
     geo_data = pd.DataFrame(columns=['lat', 'lon', 'load'])
@@ -44,14 +56,23 @@ def geo_centroid(lat_array, lon_array, load_array):
     return [round(lat_centroid,3), round(lon_centroid,3), round(por,4), round(porsigma,2)]
 
 
-day_idx = '20160718'
-uuid_idx = 'c57240a4-4cd6-11e6-a415-300ed5cc4e6c'
+# NSJOIN dayidx # only partitioned by DAY
+#day_idx = beeline.get_last_partitions('mapper.nsjoin').split('=')[1]
+# BAREBONES dayidx # only partitioned by DAY
+#day_bb = [x for x in beeline.show_partitions('mapper.barebones').split('\n') if '=%s' % (day_idx) in x]
+# MAPPOINTS dayidx # partitioned by DAY and UUID (pick the last uuid)
+#mappoints_data = sorted([x for x in beeline.show_partitions('mapper.mappoints').split('\n') if '=%s' % (day_idx) in x])[-1].split('/')
+#[day_mps, uuid_idx] = [x.split('=')[1] for x in mappoints_data]
 
-getting_mappoint_data = ''' select b1.mpgid mpgid, b1.lat lat, b1.lon lon, b1.country country, b1.mpgload mpgload, b1.allowed_private_regions allowed_private_regions, b2.asnum asnum, b2.ip ip from (select mpgid, lat, lon, country, mpgload, allowed_private_regions from mapper.mappoints where day=%s and uuid="%s" and lat is not NULL and lon is not NULL and ghostonly=0 ) b1 left outer join (select collect_set(ip) ip, collect_set(asnum) asnum, mpgid from (select ip, mpd_uuid, mpgid, asnum, day from mapper.nsassoc where day=%s and mpd_uuid="%s") a group by mpgid) b2 on b2.mpgid=b1.mpgid ''' % (day_idx, uuid_idx, day_idx, uuid_idx)
+
+day_idx = '20160819'
+uuid_idx = '14863360-65fc-11e6-a709-300ed5c5f881'
+
+getting_mappoint_data = ''' select b1.mpgid mpgid, b1.lat lat, b1.lon lon, b1.country country, b1.mpgload mpgload, b1.allowed_private_regions allowed_private_regions, b2.asnum asnum, b2.ip ip from (select mpgid, lat, lon, country, mpgload, allowed_private_regions from mapper.mappoints where day=%s and uuid="%s" and lat is not NULL and lon is not NULL and ghostonly=0 ) b1 left outer join (select collect_set(ns_ip) ip, collect_set(asnum) asnum, mpgid from (select ns_ip, mpd_uuid, mpgid, asnum, demand, day from mapper.nsjoin where day=%s and mpd_uuid="%s" and demand>0.01 order by demand desc) a group by mpgid) b2 on b2.mpgid=b1.mpgid ''' % (day_idx, uuid_idx, day_idx, uuid_idx)
 geo_total_cap_query = ''' select * from (select country, network, sum(peak_bitcap_mbps) peak_bitcap_mbps, sum(peak_flitcap_mfps) peak_flitcap_mfps, sum(numvips) numvips from mapper.regioncapday where day=%s and network in ('freeflow', 'essl') and prp='private' group by country, network) a ''' % day_idx
 geo_total_cap_public_query = ''' select * from (select country, network, sum(peak_bitcap_mbps) peak_bitcap_mbps, sum(peak_flitcap_mfps) peak_flitcap_mfps, sum(numvips) numvips from mapper.regioncapday where day=%s and network in ('freeflow', 'essl') and prp='public' group by country, network) a ''' % day_idx
 
-
+sc = SparkContext()
 hiveCtx = HiveContext(sc)
 
 rows = hiveCtx.sql(getting_mappoint_data)
@@ -92,7 +113,11 @@ region_public_list = region_latlon\
     .reduceByKey(lambda a, b: [a[0]+b[0]])\
     .map(lambda x: x[1][0]).collect()
 
-region_public_list = sorted(region_public_list[0])
+region_public_list = [0] + sorted(region_public_list[0])
+
+# dummy region
+rdd2 = sc.parallelize([([0, [0, 0, 0.0, 0.0, 'US', 0, 'W', 1]])])
+region_latlon = region_latlon.union(rdd2)
 
 # perform the join into tuple of (K, (V1, V2):
 # (regionid, ([mpgid, mpg-lat, mpg-lon, mpg-country, mpg-load], [reg-lat, reg-lon, reg-cap, reg-country, reg-numvips, reg-service]))
@@ -162,7 +187,8 @@ mpgid_reglist_avgDistance_capacity_nReg = mpgid_reg_distance\
                            x[1][9], # mpg lat
                            x[1][10]])) # mpg lon
 
-total_mpg_with_region = mpgid_reglist_avgDistance_capacity_nReg.count()
+# disable the count
+#total_mpg_with_region = mpgid_reglist_avgDistance_capacity_nReg.count()
 
 # rdd format = (reg, [(reg-list), [[mpg-list], avg_distance, total_cap_w, total_cap_s, total_numvips
 #                           reg-count, cluster_country, mpg-load, mpg-count, mpg-lat, mpg-lon]])
@@ -234,7 +260,12 @@ reglist_mpgid_avgDistance_capacity_nReg_country = reg_reglist_mpgid_avgDistance_
     .map(lambda x: [x[1][0]]+[x[1][1]]+[geodesic_distance(x[1][0][12][0],
                                                          x[1][0][12][1],
                                                          x[1][1][0],
-                                                         x[1][1][1])] + [x[0]])\
+                                                         x[1][1][1])] + [x[0]] if x[0] > 0\
+         else [x[1][0]]+[x[1][1]]+[[x[1][0][12][0],
+                                   x[1][0][12][1],
+                                   x[1][1][0],
+                                   x[1][1][1],
+                                   0.0]] + [x[0]])\
     .filter(lambda x: x[2][4] < 500)\
     .map(lambda x: (tuple([x[0][0],
                           x[0][1],
@@ -275,31 +306,60 @@ reglist_mpgid_avgDistance_capacity_nReg_country = reg_reglist_mpgid_avgDistance_
                     round(float(x[1][0])/1000.0, 3), # pub.region.cap.ff (gbps)
                     round(float(x[1][1])/1000.0, 3), # pub.region.cap.essl (gbps)
                     x[1][2], # pub.vips
-                    len(x[1][3]), # pub.region.count
+                    len(x[1][3])-1, # pub.region.count
                     x[0][6], # mpg-load
                     round(x[0][7], 6), # mpg-count
                     x[0][8], # [pri reg-list]
-                    ':'.join([str(y) for y in sorted(x[1][3])]) if len(x[1][3])>0 else 'NULL', # [pub reg-list])
+                    ':'.join([str(y) for y in sorted(x[1][3])][1:]) if len(x[1][3])>1 else 'NULL', # [pub reg-list])
                     x[0][9], # [mpg-list]
                     x[0][10], # [mpg-assum]
                     x[0][11] # [mpg-nsip]
                     ])
 
-# ================ NOT USED ===================
-# (mpg-country-list, [cluster-count, mpg-load])
-geo_clusterN_totalMpgLoad = reglist_mpgid_avgDistance_capacity_nReg_country\
-    .map(lambda x: (x[0], [1, x[6]]))\
+total_mpg_load = reglist_mpgid_avgDistance_capacity_nReg_country\
+    .map(lambda x: ('a', [1, x[14]]))\
     .reduceByKey(lambda a, b: [a[0]+b[0],
-                              a[1]+b[1]])
+                               a[1]+b[1]])\
+    .first()
 
-geo_clusterN_totalMpgLoad.take(5)
+print "Total mpg load: %s and total mpg count: %s" % (str(total_mpg_load[1][1]),
+                                                      str(total_mpg_load[1][0]))
 
-geo_cluster_info = geo_clusterN_totalMpgLoad.collect()
+thr_on_mpgload = 2
+thr_pub_ff_cap = 5
+thr_pub_essl_cap = 5
+thr_pub_vip = 8200*0
+thr_ff_cap = thr_pub_ff_cap+5
+thr_essl_cap = thr_pub_essl_cap+5
+thr_vip = 8200*0
 
-total_n_cluster = reglist_mpgid_avgDistance_capacity_nReg_country.count()
+thr_on_mpgload_list = [float(x)/100 for x in range(1, 200, 2)]
+mpg_count_list = [0]*len(thr_on_mpgload_list)
+mpg_load_coverage = [0.0]*len(thr_on_mpgload_list)
 
-print "total computed mpg: %s" % str(total_mpg_with_region)
-print "total number of cluster of mpgs: %s" % str(total_n_cluster)
+for item in range(len(thr_on_mpgload_list)):
+    thr_on_mpgload = thr_on_mpgload_list[item]
+    temp = reglist_mpgid_avgDistance_capacity_nReg_country\
+        .filter(lambda x: (x[14] >= thr_on_mpgload))\
+        .map(lambda x: ('a', [1, x[14]]))\
+        .reduceByKey(lambda a, b: [a[0]+b[0],
+                                   a[1]+b[1]])\
+        .first()
+    mpg_count_list[item] = temp[1][0]
+    mpg_load_coverage[item] = temp[1][1]/total_mpg_load[1][1]
+
+
+
+
+reglist_mpgid_avgDistance_capacity_nReg_country\
+    .filter(lambda x: (x[14] >= thr_on_mpgload) or
+                      (((x[10] < thr_pub_ff_cap) or (x[11] < thr_pub_essl_cap) or (x[12] < thr_pub_vip)) and
+                      ((x[10]+x[6] < thr_ff_cap) or (x[11]+x[7] < thr_essl_cap) or (x[12]+x[8] or thr_vip))) )\
+    .map(lambda x: ('a', [1, x[14]]))\
+    .reduceByKey(lambda a, b: [a[0]+b[0],
+                               a[1]+b[1]])\
+    .first()
+
 
 # ============ Testing Adjacency/Distance Matrix ==============
 #mpgidx_capw_caps_rgs = reglist_mpgid_avgDistance_capacity_nReg_country.zipWithIndex().map(lambda x: (x[1], x[0][2], x[0][3], x[0][8]))
