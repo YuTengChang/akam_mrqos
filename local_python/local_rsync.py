@@ -26,5 +26,8 @@ def main():
         cmd = 'rsync -r -v --exclude="*.tmp" --exclude="*.log" -e gwsh ~/Documents/Projects/18-DDC/MRQOS/ %s:~/MRQOS/;' % machine
         sp.check_call(cmd, shell=True)
 
+    print "updated (synced) machines:",
+    print update_machines
+
 if __name__ == '__main__':
     sys.exit(main())
