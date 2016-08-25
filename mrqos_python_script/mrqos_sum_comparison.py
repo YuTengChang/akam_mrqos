@@ -61,6 +61,11 @@ def main():
     #content = '''beeline.bln_e_output(qry % (ts_now, ts_3d), os.path.join(config.mrqos_data, 'processed_3djoin_full_wloads.tmp')) '''
     my_retrial(id='3D summary', n_retrial=n_retrial, logger=logger, ts1=ts_now, ts2=ts_3d)
 
+    # new summary (with in-out-ratio)
+    my_retrial(id='2Wn summary', n_retrial=n_retrial, logger=logger, ts1=ts_now, ts2=ts_3d)
+    my_retrial(id='4Wn summary', n_retrial=n_retrial, logger=logger, ts1=ts_now, ts2=ts_3d)
+    my_retrial(id='3Dn summary', n_retrial=n_retrial, logger=logger, ts1=ts_now, ts2=ts_3d)
+
 #    try:
 #        beeline.bln_e_output(qry % (ts_now, ts_14d),
 #                             os.path.join(config.mrqos_data,
@@ -80,18 +85,25 @@ def my_retrial(id, n_retrial, logger, ts1, ts2):
     count = 0
     qry0 = "set mapred.child.java.opts=-Xmx2000m; use mrqos; set hive.cli.print.header=true; SELECT b.ts_2w, a.*, b.sp95_t95_2w, b.sp95_t90_2w, b.sp75_t95_2w, b.sp75_t90_2w, b.dp95_t95_2w, b.dp95_t90_2w, b.dp75_t95_2w, b.dp75_t90_2w, b.ocy_t95_2w, b.ocy_t90_2w, b.oct_t95_2w, b.oct_t90_2w FROM (SELECT ts ts_now, maprule, geoname, netname, sp95_t95, sp95_t90, sp75_t95, sp75_t90, dp95_t95, dp95_t90, dp75_t95, dp75_t90, 100-icy_t95 ocy_t95, 100-icy_t90 ocy_t90, 100-ict_t95 oct_t95, 100-ict_t90 oct_t90, total_mbps from mrqos_sum where ts='%s' ) a JOIN ( select maprule, geoname, netname, sp95_t95 sp95_t95_2w, sp95_t90 sp95_t90_2w, sp75_t95 sp75_t95_2w, sp75_t90 sp75_t90_2w, dp95_t95 dp95_t95_2w, dp95_t90 dp95_t90_2w, dp75_t95 dp75_t95_2w, dp75_t90 dp75_t90_2w, 100-icy_t95 ocy_t95_2w, 100-icy_t90 ocy_t90_2w, 100-ict_t95 oct_t95_2w, 100-ict_t90 oct_t90_2w, ts ts_2w, total_mbps total_mbps_2w from mrqos_sum where ts='%s' ) b ON ( a.maprule = b.maprule AND a.geoname = b.geoname AND a.netname = b.netname ) "
     qry = " set mapred.child.java.opts=-Xmx2000m; use mrqos; set hive.cli.print.header=true; SELECT b.ts_2w, a.*, b.sp95_t95_2w, b.sp95_t90_2w, b.sp75_t95_2w, b.sp75_t90_2w, b.dp95_t95_2w, b.dp95_t90_2w, b.dp75_t95_2w, b.dp75_t90_2w, b.ocy_t95_2w, b.ocy_t90_2w, b.oct_t95_2w, b.oct_t90_2w, b.total_mbps_2w FROM (SELECT ts ts_now, maprule, geoname, netname, sp95_t95, sp95_t90, sp75_t95, sp75_t90, dp95_t95, dp95_t90, dp75_t95, dp75_t90, 100-icy_t95 ocy_t95, 100-icy_t90 ocy_t90, 100-ict_t95 oct_t95, 100-ict_t90 oct_t90, total_mbps from mrqos_sum where ts='%s' ) a JOIN ( select maprule, geoname, netname, sp95_t95 sp95_t95_2w, sp95_t90 sp95_t90_2w, sp75_t95 sp75_t95_2w, sp75_t90 sp75_t90_2w, dp95_t95 dp95_t95_2w, dp95_t90 dp95_t90_2w, dp75_t95 dp75_t95_2w, dp75_t90 dp75_t90_2w, 100-icy_t95 ocy_t95_2w, 100-icy_t90 ocy_t90_2w, 100-ict_t95 oct_t95_2w, 100-ict_t90 oct_t90_2w, ts ts_2w, total_mbps total_mbps_2w from mrqos_sum where ts='%s' ) b ON ( a.maprule = b.maprule AND a.geoname = b.geoname AND a.netname = b.netname ) "
+    qry1 = " set mapred.child.java.opts=-Xmx2000m; use mrqos; set hive.cli.print.header=true; SELECT b.ts_2w, a.*, b.sp95_t95_2w, b.sp95_t90_2w, b.sp75_t95_2w, b.sp75_t90_2w, b.dp95_t95_2w, b.dp95_t90_2w, b.dp75_t95_2w, b.dp75_t90_2w, b.ocy_t95_2w, b.ocy_t90_2w, b.oct_t95_2w, b.oct_t90_2w, b.io_t95_2w, b.io_t90_2w, b.peak95_kbps_2w FROM (SELECT ts ts_now, maprule, geoname, netname, sp95_t95, sp95_t90, sp75_t95, sp75_t90, dp95_t95, dp95_t90, dp75_t95, dp75_t90, 100-icy_t95 ocy_t95, 100-icy_t90 ocy_t90, 100-ict_t95 oct_t95, 100-ict_t90 oct_t90, io_t95, io_t90, peak95_kbps from mrqos_sum2 where ts='%s' ) a JOIN ( select maprule, geoname, netname, sp95_t95 sp95_t95_2w, sp95_t90 sp95_t90_2w, sp75_t95 sp75_t95_2w, sp75_t90 sp75_t90_2w, dp95_t95 dp95_t95_2w, dp95_t90 dp95_t90_2w, dp75_t95 dp75_t95_2w, dp75_t90 dp75_t90_2w, 100-icy_t95 ocy_t95_2w, 100-icy_t90 ocy_t90_2w, 100-ict_t95 oct_t95_2w, 100-ict_t90 oct_t90_2w, io_t95 io_t95_2w, io_t90 io_t90_2w, ts ts_2w, peak95_kbps peak95_kbps_2w from mrqos_sum2 where ts='%s' ) b ON ( a.maprule = b.maprule AND a.geoname = b.geoname AND a.netname = b.netname ) "
     while (flag == 0) and (count < n_retrial):
         try:
             tic = time.time()
 
             if 'no load' in id:
                 fqry0(qry0, ts1, ts2, 'processed_2wjoin_full.tmp')
-            elif '2W' in id:
+            elif '2W summary' in id:
                 fqry(qry, ts1, ts2, 'processed_2wjoin_full_wloads.tmp')
-            elif '4W' in id:
+            elif '4W summary' in id:
                 fqry(qry, ts1, ts2, 'processed_4wjoin_full_wloads.tmp')
-            elif '3D' in id:
+            elif '3D summary' in id:
                 fqry(qry, ts1, ts2, 'processed_3djoin_full_wloads.tmp')
+            elif '2Wn' in id:
+                fqry(qry1, ts1, ts2, 'processed_2wjoin_full_wloads_wio.tmp')
+            elif '4Wn' in id:
+                fqry(qry1, ts1, ts2, 'processed_4wjoin_full_wloads_wio.tmp')
+            elif '3Dn' in id:
+                fqry(qry1, ts1, ts2, 'processed_3djoin_full_wloads_wio.tmp')
 
             flag = 1
             logger.info('%s success with time cost=%s sec' % (id, str(time.time()-tic)))
