@@ -62,8 +62,8 @@ def main():
     my_retrial(id='3D summary', n_retrial=n_retrial, logger=logger, ts1=ts_now, ts2=ts_3d)
 
     # new summary (with in-out-ratio)
-    my_retrial(id='2Wn summary', n_retrial=n_retrial, logger=logger, ts1=ts_now, ts2=ts_3d)
-    my_retrial(id='4Wn summary', n_retrial=n_retrial, logger=logger, ts1=ts_now, ts2=ts_3d)
+    my_retrial(id='2Wn summary', n_retrial=n_retrial, logger=logger, ts1=ts_now, ts2=ts_14d)
+    my_retrial(id='4Wn summary', n_retrial=n_retrial, logger=logger, ts1=ts_now, ts2=ts_28d)
     my_retrial(id='3Dn summary', n_retrial=n_retrial, logger=logger, ts1=ts_now, ts2=ts_3d)
 
 #    try:
