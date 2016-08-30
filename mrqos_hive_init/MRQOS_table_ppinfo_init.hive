@@ -1,0 +1,22 @@
+add jar /a/libexec/ddr-1.0.jar;
+
+USE mrqos;
+
+drop table if exists ppinfo;
+
+create external table ppinfo (
+    ppip STRING,
+    asnum INT,
+    latitude DOUBLE,
+    longitude DOUBLE,
+    city STRING,
+    state STRING,
+    country STRING,
+    continent STRING)
+
+partitioned by (datestamp STRING, hour STRING)
+row format delimited
+fields terminated by ' '
+lines terminated by '\n'
+location '/ghostcache/hadoop/data/MRQOS/ppinfo';
+
