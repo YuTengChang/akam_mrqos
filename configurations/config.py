@@ -43,6 +43,7 @@ mrqos_query_result = '/home/testgrp/query_results'
 #mrqos_data_join_backup = '/home/testgrp/MRQOS/mrqos_data/backup/000000_0.deflate'
 lp_solution_depot = '/home/testgrp/MRQOS/mrqos_data/lp'
 mrqos_logging = '/home/testgrp/logs'
+mako_local = mrqos_data_backup + '/mako_local'
 
 #==============================================================================
 # # Constant Configurations
