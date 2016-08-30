@@ -46,7 +46,7 @@ def main():
         try:
             hdfs_d = os.path.join(config.hdfs_table,
                                     'ppinfo',
-                                    'datestamp=%s/hour=%s' % str(datestamp), str(hourstamp))
+                                    'datestamp=%s/hour=%s' % (str(datestamp), str(hourstamp)))
 
             beeline.upload_to_hive(os.path.join(config.mako_local, filename),
                                    hdfs_d,
@@ -54,6 +54,7 @@ def main():
                                    'mrqos.ppinfo',
                                    logger)
             logger.info('successfully upload to HDFS and add partition: mrqos.%s' % item)
+            os.remove(item)
 
         except sp.CalledProcessError as e:
             logger.error('upload to hive and add partition failed: mrqos.%s' % item)
