@@ -48,7 +48,7 @@ mako_local = mrqos_data_backup + '/mako_local'
 #==============================================================================
 # # Constant Configurations
 #==============================================================================
-query_retrial = 15 # 15 times
+query_retrial = 10 # 10 times
 query_timeout = 30 # 20 sec
 
 mrqos_table_delete = 60 * 60 # 1800 sec = 60 minutes

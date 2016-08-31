@@ -14,6 +14,7 @@ from pyspark.sql import HiveContext
 import math
 import pandas as pd
 import numpy as np
+import scipy
 
 
 def geodesic_distance(lat1, lon1, lat2, lon2):
@@ -28,11 +29,29 @@ def geodesic_distance(lat1, lon1, lat2, lon2):
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
     return [lat1, lon1, lat2, lon2, R*c]
 
+def metric_relationship(list1, list2):
+    '''
+    We are evaluating the relationship between list1 and list2
+    :param list1: input of list1 (x)
+    :param list2: input of list2 (y)
+    :return:
+    pearsonr: correlation-coefficient(x,y)
+    ar, br: linear regression where y = ar * x + br
+    err: the mean squared error of y: y - y_estimate
+    err1_max: the max error of abs(y - y_estimate)
+    '''
+    pearsonr = np.corrcoef(list1, list2)[0][1]
+    (ar,br) = scipy.polyfit(list1, list2, 1)
+    yr = scipy.polyval([ar,br],list1)
+    err = math.sqrt(sum((yr-list2)**2)/len(yr))
+    err1_max = max(abs(yr-list2))
+    return [pearsonr, round(ar,3), round(br,3), err, round(err1_max,3)]
+
 datestamp = "20160830"
 hourstamp = "14"
 
 timenow = int(time.time())
-timestart = timenow - 10800
+timestart = timenow - 3600*6
 
 ppinfo = ''' select ppip, asnum ppas, latitude pp_lat, longitude pp_lon, city pp_city, state pp_state, country pp_country, continent pp_cont from mrqos.ppinfo where datestamp=%s and hour=%s ''' % (str(datestamp), str(hourstamp))
 
@@ -99,8 +118,26 @@ pp_raw = ppinfo1.join(ppreply1).map(lambda x: (x[0], # ppip
                                a[8]+b[8], # [pp_latency]
                                a[9]+b[9], # [pp_loss]
                                a[10]+b[10] # ppreply_count
-                              ])
+                              ])\
+    .map(lambda x: [x[0], # ppip
+                    x[1][0], # ppas
+                    x[1][1], # pp_city
+                    x[1][2], # pp_state
+                    x[1][3], # pp_country
+                    x[1][4], # pp_continent
+                    x[1][5], # pp_lat
+                    x[1][6], # pp_lon
+                    x[1][10], # pp_num_record
+                    round(sum(x[1][8])/float(len(x[1][8])), 3), # mean(latency)
+                    round(sum(x[1][9])/float(len(x[1][9])), 3), # mean(lost)
+                    round(np.percentile([int(x) for x in x[1][8]], 95), 3), # p95(latency)
+                    round(np.percentile([int(x) for x in x[1][9]], 95), 3), # p95(loss)
+                    metric_relationship(x[1][7], x[1][8]), # [pearson_r, ar, br, err, err1_max]
+                    x[1][7], # [pp_rg_distance]
+                    x[1][8], # [pp_latency]
+                    x[1][9] # [pp_lost]
+                    ])
 
 
-pp_raw.first()
+pp_raw.take(5)
 
