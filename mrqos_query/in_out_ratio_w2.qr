@@ -54,9 +54,10 @@ FROM   (SELECT a.maprule     maprule, 
                mcm_machines e 
         WHERE  ghostip = ip 
         GROUP  BY 1, 2) c 
-WHERE  ab.maprule = c.maprule_id 
-       AND ab.regionid = c.region )abc,
-(SELECT casename, SUM(percentage) coverage_pct
+    WHERE  ab.maprule = c.maprule_id 
+    AND ab.regionid = c.region
+    ) abc,
+        (SELECT casename, SUM(percentage) coverage_pct
 		 FROM
         	(SELECT MAX(casename) casename,
                  	mapruleid,
