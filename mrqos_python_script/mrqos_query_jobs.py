@@ -37,7 +37,7 @@ def main():
     # parameter setting
     # ##############################
     # change the ioratio to new version
-    mtype = ['score', 'distance', 'in_country', 'in_continent', 'ra_load', 'in_out_ratio_w2']
+    mtype = ['score', 'distance', 'in_country', 'in_continent', 'ra_load', 'in_out_ratio']
 
     sql = """sql2 -q map.mapnoccthree.query.akadns.net --csv "`cat """
     sql5 = """sql2 -q mega.mapnoccfive.query.akadns.net --csv "`cat  """
@@ -72,6 +72,7 @@ def main():
         # for in_out_ratio allow larger query time
         if item == 'in_out_ratio':
             t_timeout = t_timeout*2-1
+            aggs = os.path.join(config.mrqos_query, 'in_out_ratio_w2.qr')
             cmd = sql5 + aggs + post + dest
         # multiple times with timeout scheme
         while (flag == 0) and (count < n_retrial):
