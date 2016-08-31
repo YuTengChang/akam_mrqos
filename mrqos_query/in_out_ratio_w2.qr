@@ -1,62 +1,64 @@
-SELECT CURRENT_TIMESTAMP, 
-       abc.casename     casename, 
-       SUM(CASE 
-         WHEN bytes > 0 
-         THEN 100 * bytes_in / bytes * percentage / d.coverage_pct 
-         ELSE 0.0 
-       END)             in_out_ratio, 
-       Max(targetvalue) targetvalue, 
-       Cast(d.coverage_pct AS INTEGER)) coverage_pct 
+SELECT CURRENT_TIMESTAMP,
+        abc.casename casename,
+        SUM(CASE
+         WHEN bytes > 0
+         THEN 100 * bytes_in / bytes * percentage / d.coverage_pct
+		 ELSE 0.0
+        END) in_out_ratio,
+        MAX(targetvalue) targetvalue,
+        CAST(d.coverage_pct as integer) coverage_pct
 FROM (
-   SELECT ab.casename casename,
-          bytes_in,
-          bytes,
-          percentage,
-          targetvalue
-FROM   (SELECT a.maprule     maprule, 
-               a.geoname     geoname, 
-               a.netname     netname, 
-               a.targetvalue targetvalue, 
-               b.casename    casename, 
-               b.geo         geo, 
-               b.aslist      aslist, 
-               b.regionid    regionid, 
-               b.percentage  percentage 
-        FROM  (SELECT maprule, 
-                      geoname, 
-                      netname, 
-                      Min(targetvalue) targetvalue 
-               FROM   mrpm_maprule_qos_objectives 
-               WHERE  attrname = 'IN-OUT-RATIO' 
-               GROUP  BY 1, 
-                         2, 
-                         3) a, 
-              (SELECT Max(casename)   casename, 
-                      mapruleid, 
-                      geo, 
-                      aslist, 
-                      regionid, 
-                      Max(percentage) percentage 
-               FROM   a_maprule_qos_view_by_region 
-               GROUP  BY 2, 3, 4, 5) b 
-        WHERE  a.maprule = b.mapruleid 
-               AND ( a.geoname = b.geo 
-                      OR a.geoname = 'GLOBAL' 
-                         AND b.geo = '' ) 
-               AND ( a.netname = b.aslist 
-                      OR a.netname = 'ANY' 
-                         AND b.aslist = '' )) ab, 
-       (SELECT region, 
-               maprule_id, 
-               Sum(bytes)    bytes, 
-               Sum(bytes_in) bytes_in 
-        FROM   maprule_info d, 
-               mcm_machines e 
-        WHERE  ghostip = ip 
-        GROUP  BY 1, 2) c 
-    WHERE  ab.maprule = c.maprule_id 
-    AND ab.regionid = c.region
-    ) abc,
+  SELECT ab.casename casename,
+         bytes_in,
+		 bytes,
+		 percentage,
+         targetvalue
+   FROM (SELECT a.maprule maprule,
+   	 	  a.geoname geoname,
+		  a.netname netname,
+		  a.targetvalue targetvalue,
+		  b.casename casename,
+		  b.geo geo,
+		  b.aslist aslist,
+		  b.regionid regionid,
+		  b.percentage percentage
+	   FROM(SELECT maprule,
+                      geoname,
+                      netname,
+                      MIN(targetvalue) targetvalue
+           	FROM mrpm_maprule_qos_objectives
+           	WHERE attrname = 'IN-OUT-RATIO'
+             	AND maprule in (290)
+           	GROUP BY 1, 2, 3
+        	) a,
+        	(SELECT MAX(casename) casename,
+                 	mapruleid,
+                 	geo,
+                 	aslist,
+                 	regionid,
+                 	MAX(percentage) percentage
+           	FROM a_maprule_qos_view_by_region
+            WHERE mapruleid in (290)
+           	GROUP BY 2, 3, 4, 5
+        	) b
+  	WHERE a.maprule = b.mapruleid
+        AND (a.geoname = b.geo OR a.geoname = 'GLOBAL' AND b.geo = '')
+        AND (a.netname = b.aslist OR a.netname = 'ANY' AND b.aslist = '')
+	 ) ab,
+        (
+          SELECT region,
+                 maprule_id,
+                 SUM(bytes) bytes,
+                 SUM(bytes_in) bytes_in
+            FROM maprule_info d,
+                 mcm_machines e
+           WHERE ghostip = ip
+             AND maprule_id in (290)
+           GROUP BY 1, 2
+        ) c
+  WHERE ab.maprule = c.maprule_id
+        AND ab.regionid = c.region
+) abc,
         (SELECT casename, SUM(percentage) coverage_pct
 		 FROM
         	(SELECT MAX(casename) casename,
@@ -66,9 +68,10 @@ FROM   (SELECT a.maprule     maprule, 
                  	regionid,
                  	MAX(percentage) percentage
            	FROM a_maprule_qos_view_by_region
+            WHERE mapruleid in (290)
            	GROUP BY 2, 3, 4, 5
         	)
 			GROUP BY 1
 		) d
 		WHERE abc.casename = d.casename
-GROUP  BY 2; 
+  GROUP BY 2
