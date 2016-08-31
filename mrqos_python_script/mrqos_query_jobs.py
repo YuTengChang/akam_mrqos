@@ -36,8 +36,8 @@ def main():
     # start the script
     # parameter setting
     # ##############################
-
-    mtype = ['score', 'distance', 'in_country', 'in_continent', 'ra_load', 'in_out_ratio']
+    # change the ioratio to new version
+    mtype = ['score', 'distance', 'in_country', 'in_continent', 'ra_load', 'in_out_ratio_w2']
 
     sql = """sql2 -q map.mapnoccthree.query.akadns.net --csv "`cat """
     sql5 = """sql2 -q mega.mapnoccfive.query.akadns.net --csv "`cat  """
@@ -212,6 +212,8 @@ def main():
               'coverage']
 
     dfio = pd.DataFrame(data, columns=header)
+    # make in-out-ratio a rounded integer
+    dfio['ioratio'] = [int(round(float(x))) for x in dfio.ioratio]
     dfio['iod'] = [z*(z>0) for z in [int(x)-int(y) for (x,y) in zip(dfio.ioratio, dfio.iotarget)]]
     dfio.index = dfio.casename
 
