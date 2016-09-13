@@ -4,7 +4,7 @@ import subprocess as sp
 import time
 from pyspark import SparkContext
 from pyspark.sql import HiveContext
-
+import configurations.config as config
 import math
 import pandas as pd
 import numpy as np
