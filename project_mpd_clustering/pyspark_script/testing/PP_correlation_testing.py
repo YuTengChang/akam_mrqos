@@ -175,8 +175,9 @@ def main():
                             ':'.join([str(y) for y in x[15]]) # [latency]
                             ])
 
+    logger.info('now the final collect begins.')
     pp_char_all = pp_char.collect()
-
+    logger.info('now the final collect ends.')
 
     pp_charateristics = pd.DataFrame(columns=['ppip',
                                                'ppas',
