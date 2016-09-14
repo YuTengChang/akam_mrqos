@@ -26,24 +26,38 @@ def geodesic_distance(lat1, lon1, lat2, lon2):
     return [lat1, lon1, lat2, lon2, R*c]
 
 
-def metric_relationship(list1, list2):
+def metric_relationship(list1, list2, list3):
     '''
     We are evaluating the relationship between list1 and list2
-    :param list1: input of list1 (x)
-    :param list2: input of list2 (y)
+    :param list1: input of list1 (x): distance
+    :param list2: input of list2 (y): latency
+    :param list3: input of list3 (z): loss
     :return:
-    pearsonr: correlation-coefficient(x,y)
+    n_valid_pp: # of valid pp (pingable pp)
+    valid_ratio: ratio of valid pp / all pp records
+    pr, prp: correlation-coefficient(x,y)
     ar, br: linear regression where y = ar * x + br
     err: the mean squared error of y: y - y_estimate
     err1_max: the max error of abs(y - y_estimate)
+    list1r: output of valid list1 (x): distance
+    list2r: output of valid list2 (y): latency
+    list3m: output of valid list3 (z): loss
     '''
     #pearsonr = np.corrcoef(list1, list2)[0][1]
-    (pr, prp) = pearsonr(list1,list2)
-    (ar, br) = scipy.polyfit(list1, list2, 1)
-    yr = scipy.polyval([ar,br],list1)
-    err = math.sqrt(sum((yr-list2)**2)/len(yr))
-    err1_max = max(abs(yr-list2))
-    return [pr, prp, round(ar,3), round(br,3), err, round(err1_max,3)]
+    in_list = (list2 < 10000)
+    list2m = list2[in_list]
+    list1m = list1[in_list]
+    list3m = list3[in_list]
+    n_valid_pp = len(list1m)
+    valid_ratio = round(100.0*n_valid_pp/len(list1), 2)
+    (pr, prp) = pearsonr(list1m, list2m)
+    (ar, br) = scipy.polyfit(list1m, list2m, 1)
+    yr = scipy.polyval([ar,br],list1m)
+    err = math.sqrt(sum((yr-list2m)**2)/len(yr))
+    err1_max = max(abs(yr-list2m))
+    list1r = [round(x,3) for x in list1m]
+    list2r = [round(x,3) for x in list2m]
+    return [n_valid_pp, valid_ratio, pr, prp, round(ar, 3), round(br, 3), err, round(err1_max, 3), list1r, list2r, list3m]
 
 
 def toCSVLine(data):
@@ -133,8 +147,13 @@ def main():
                                    a[10]+b[10] # ppreply_count
                                   ])
 
-    pp_raw.take(5)
+    #pp_raw.take(5)
 
+    # remove raw distance and latency and loss records, replaced by valid (filtered) ones
+    # x[1][7], # [pp_rg_distance]
+    # x[1][8], # [pp_latency]
+    # x[1][9], # [pp_lost]
+    # metric_relationship returns: [n_valid_pp, valid_ratio, pr, prp, round(ar, 3), round(br, 3), err, round(err1_max, 3), list1r, list2r, list3m]
     pp_char = pp_raw.map(lambda x: [x[0], # ppip
                                     x[1][4], # pp_asn
                                     x[1][5], # pp_city
@@ -144,16 +163,7 @@ def main():
                                     x[1][2], # pp_lat
                                     x[1][3], # pp_lon
                                     x[1][10], # pp_num_record
-                                    round(sum(x[1][8])/float(len(x[1][8])), 3), # mean(latency)
-                                    round(sum(x[1][9])/float(len(x[1][9])), 3), # mean(lost)
-                                    round(np.percentile([int(y) for y in x[1][8]], 95), 3), # p95(latency)
-                                    round(np.percentile([int(y) for y in x[1][9]], 95), 3), # p95(loss)
-                                    metric_relationship(x[1][7], x[1][8]), # [pearson_r, pearson_r_p_value, ar, br, err, err1_max]
-                                    x[1][7], # [pp_rg_distance]
-                                    x[1][8], # [pp_latency]
-                                    x[1][9], # [pp_lost]
-                                    round(np.percentile([int(y) for y in x[1][8]], 50), 3), # p50(latency)
-                                    round(np.percentile([int(y) for y in x[1][9]], 50), 3), # p50(loss)
+                                    metric_relationship(x[1][7], x[1][8], x[1][9])
                                     ])\
             .map(lambda x: [x[0], # ppip
                             x[1], # ppas
@@ -163,22 +173,28 @@ def main():
                             x[5], # continent
                             x[6], # lat
                             x[7], # lon
-                            x[8], # ppreply_count
-                            x[17], # p50(latency)
-                            x[9], # mean(latency)
-                            x[11], # p95(latency)
-                            x[18], # p50 (loss)
-                            x[10], # mean(loss)
-                            x[12], # p95 (loss)
-                            x[13][0], # pearsonr
-                            x[13][1], # pearsonr pv
-                            x[13][2], # ar
-                            x[13][3], # br
-                            x[13][4], # err
-                            x[13][5], # err_max
-                            ':'.join([str(y) for y in x[14]]), # [distance]
-                            ':'.join([str(y) for y in x[15]]) # [latency]
+                            x[8], # n_record_pp
+                            x[9][0], # n_valid_pp
+                            x[9][1], # valid_ratio (100%)
+                            x[9][2], # pearson r
+                            x[9][3], # pearson r pv
+                            x[9][4], # round(ar,3)
+                            x[9][5], # round(br,3)
+                            x[9][6], # err
+                            x[9][7], # round(err1_max,3)
+                            round(sum(x[9][8])/float(x[9][0]), 3), # mean(distance)
+                            round(sum(x[9][9])/float(x[9][0]), 3), # mean(latency)
+                            round(sum(x[9][10])/float(x[9][0]), 3), # mean(lost)
+                            round(np.percentile([int(y) for y in x[9][8]], 95), 3), # p95(distance)
+                            round(np.percentile([int(y) for y in x[9][9]], 95), 3), # p95(latency)
+                            round(np.percentile([int(y) for y in x[9][10]], 95), 3), # p95(loss)
+                            round(np.percentile([int(y) for y in x[9][8]], 50), 3), # p50(distance)
+                            round(np.percentile([int(y) for y in x[9][9]], 50), 3), # p50(latency)
+                            round(np.percentile([int(y) for y in x[9][10]], 50), 3), # p50(loss)
+                            ':'.join([str(y) for y in x[9][8]]), # [distance]
+                            ':'.join([str(y) for y in x[9][9]]) # [latency]
                             ])
+
 
     logger.info('now the final collect begins.')
     #pp_char_all = pp_char.collect()
