@@ -177,7 +177,7 @@ def main():
 
     logger.info('now the final collect begins.')
     #pp_char_all = pp_char.collect()
-    pp_char_all.saveAsTextFile('/ghostcache/hadoop/data/MRQOS/sandbox/pp_test',
+    pp_char.saveAsTextFile('/ghostcache/hadoop/data/MRQOS/sandbox/pp_test',
                                compressionCodecClass="org.apache.hadoop.io.compress.SnappyCodec")
     logger.info('now the final collect ends.')
 
