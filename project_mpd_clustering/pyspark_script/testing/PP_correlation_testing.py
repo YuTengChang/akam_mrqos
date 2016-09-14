@@ -46,9 +46,9 @@ def metric_relationship(list1, list2, list3):
     #pearsonr = np.corrcoef(list1, list2)[0][1]
 
     in_list = [i for i,x in enumerate(list2) if x < 10000]
-    list2m = list2[in_list]
-    list1m = list1[in_list]
-    list3m = list3[in_list]
+    list2m = [list2[i] for i in in_list]
+    list1m = [list1[i] for i in in_list]
+    list3m = [list3[i] for i in in_list]
     n_valid_pp = len(list1m)
     valid_ratio = round(100.0*n_valid_pp/len(list1), 2)
     (pr, prp) = pearsonr(list1m, list2m)
