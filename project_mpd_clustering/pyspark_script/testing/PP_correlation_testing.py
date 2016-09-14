@@ -177,8 +177,8 @@ def main():
 
     logger.info('now the final collect begins.')
     #pp_char_all = pp_char.collect()
-    pp_char.saveAsTextFile('/ghostcache/hadoop/data/MRQOS/sandbox/pp_test',
-                               compressionCodecClass="org.apache.hadoop.io.compress.SnappyCodec")
+    pp_char.saveAsTextFile('/ghostcache/hadoop/data/MRQOS/sandbox/pp_test0') #,
+    #                           compressionCodecClass="org.apache.hadoop.io.compress.SnappyCodec")
     logger.info('now the final collect ends.')
 
     pp_charateristics = pd.DataFrame(columns=['ppip',
