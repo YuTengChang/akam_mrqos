@@ -51,11 +51,19 @@ def metric_relationship(list1, list2, list3):
     list3m = [list3[i] for i in in_list]
     n_valid_pp = len(list1m)
     valid_ratio = round(100.0*n_valid_pp/len(list1), 2)
-    (pr, prp) = pearsonr(list1m, list2m)
-    (ar, br) = scipy.polyfit(list1m, list2m, 1)
-    yr = scipy.polyval([ar,br],list1m)
-    err = math.sqrt(sum((yr-list2m)**2)/len(yr))
-    err1_max = max(abs(yr-list2m))
+    if n_valid_pp > 10:
+        (pr, prp) = pearsonr(list1m, list2m)
+        (ar, br) = scipy.polyfit(list1m, list2m, 1)
+        yr = scipy.polyval([ar,br],list1m)
+        err = math.sqrt(sum((yr-list2m)**2)/len(yr))
+        err1_max = max(abs(yr-list2m))
+    else:
+        pr = 0
+        prp = 1
+        ar = 0
+        br = 0
+        err = 0
+        err1_max = 0
     list1r = [round(x,3) for x in list1m]
     list2r = [round(x,3) for x in list2m]
     return [n_valid_pp, valid_ratio, pr, prp, round(ar, 3), round(br, 3), err, round(err1_max, 3), list1r, list2r, list3m]
