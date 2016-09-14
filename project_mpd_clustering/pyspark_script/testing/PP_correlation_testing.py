@@ -44,7 +44,8 @@ def metric_relationship(list1, list2, list3):
     list3m: output of valid list3 (z): loss
     '''
     #pearsonr = np.corrcoef(list1, list2)[0][1]
-    in_list = [x < 10000 for x in list2]
+
+    in_list = [i for i,x in enumerate(list2) if x < 10000]
     list2m = list2[in_list]
     list1m = list1[in_list]
     list3m = list3[in_list]
