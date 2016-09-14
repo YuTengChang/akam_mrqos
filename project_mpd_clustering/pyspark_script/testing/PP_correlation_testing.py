@@ -58,7 +58,7 @@ def main():
                             datefmt='%m/%d/%Y %H:%M:%S')
     logger = logging.getLogger(__name__)
 
-    datestamp = "20160912"
+    datestamp = "20160913"
     hourstamp = "12"
 
     logger.info('processing the date of data: %s at hour instance: %s' % (datestamp, hourstamp))
