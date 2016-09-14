@@ -47,7 +47,7 @@ def metric_relationship(list1, list2):
 
 
 def toCSVLine(data):
-  return ','.join(str(d) for d in data)
+  return '\t'.join(str(d) for d in data)
 
 
 def main():
