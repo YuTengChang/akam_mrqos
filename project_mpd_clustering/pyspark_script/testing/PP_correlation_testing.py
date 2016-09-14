@@ -176,7 +176,9 @@ def main():
                             ])
 
     logger.info('now the final collect begins.')
-    pp_char_all = pp_char.collect()
+    #pp_char_all = pp_char.collect()
+    pp_char_all.saveAsTextFile('/ghostcache/hadoop/data/MRQOS/sandbox/pp_test',
+                               compressionCodecClass="org.apache.hadoop.io.compress.SnappyCodec")
     logger.info('now the final collect ends.')
 
     pp_charateristics = pd.DataFrame(columns=['ppip',
@@ -204,14 +206,14 @@ def main():
                                                'latency',
                                                'loss'])
 
-    for item in range(len(pp_char_all)):
-        temp = pp_char_all[item]
-        pp_charateristics.loc[item] = temp # the above should be temp[1][0] for the mpglist
+    #for item in range(len(pp_char_all)):
+    #    temp = pp_char_all[item]
+    #    pp_charateristics.loc[item] = temp # the above should be temp[1][0] for the mpglist
 
     data_folder = '/home/testgrp/'
     filename = 'ppchar.%s.%s.csv' % (datestamp, hourstamp)
     fileDestination = os.path.join(data_folder, filename)
-    pp_charateristics.to_csv(fileDestination,sep=',', index=False, header=False)
+    #pp_charateristics.to_csv(fileDestination,sep=',', index=False, header=False)
 
 if __name__ == '__main__':
     sys.exit(main())
