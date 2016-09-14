@@ -25,6 +25,7 @@ def geodesic_distance(lat1, lon1, lat2, lon2):
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
     return [lat1, lon1, lat2, lon2, R*c]
 
+
 def metric_relationship(list1, list2):
     '''
     We are evaluating the relationship between list1 and list2
@@ -43,6 +44,10 @@ def metric_relationship(list1, list2):
     err = math.sqrt(sum((yr-list2)**2)/len(yr))
     err1_max = max(abs(yr-list2))
     return [pr, prp, round(ar,3), round(br,3), err, round(err1_max,3)]
+
+
+def toCSVLine(data):
+  return ','.join(str(d) for d in data)
 
 
 def main():
@@ -177,7 +182,8 @@ def main():
 
     logger.info('now the final collect begins.')
     #pp_char_all = pp_char.collect()
-    pp_char.saveAsTextFile('/ghostcache/hadoop/data/MRQOS/sandbox/pp_test0') #,
+    pp_char_all = pp_char.map(toCSVLine)
+    pp_char.saveAsTextFile('/ghostcache/hadoop/data/MRQOS/sandbox/pp_test00') #,
     #                           compressionCodecClass="org.apache.hadoop.io.compress.SnappyCodec")
     logger.info('now the final collect ends.')
 
