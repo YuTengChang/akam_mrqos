@@ -51,12 +51,27 @@ def metric_relationship(list1, list2, list3):
     list3m = [list3[i] for i in in_list]
     n_valid_pp = len(list1m)
     valid_ratio = round(100.0*n_valid_pp/len(list1), 2)
+
+
+
+
     if n_valid_pp > 10:
         (pr, prp) = pearsonr(list1m, list2m)
         (ar, br) = scipy.polyfit(list1m, list2m, 1)
         yr = scipy.polyval([ar,br],list1m)
         err = math.sqrt(sum((yr-list2m)**2)/len(yr))
         err1_max = max(abs(yr-list2m))
+
+        mean_dist = round(sum(list1m)/float(n_valid_pp), 3) # mean(distance)
+        mean_lat = round(sum(list2m)/float(n_valid_pp), 3) # mean(latency)
+        mean_loss = round(sum(list3m)/float(n_valid_pp), 3) # mean(loss)
+
+        p95_dist = round(np.percentile([int(y) for y in list1m], 95), 3) # p95(distance)
+        p95_lat = round(np.percentile([int(y) for y in list2m], 95), 3) # p95(latency)
+        p95_loss = round(np.percentile([int(y) for y in list3m], 95), 3) # p95(loss)
+        p50_dist = round(np.percentile([int(y) for y in list1m], 50), 3) # p50(distance)
+        p50_lat = round(np.percentile([int(y) for y in list2m], 50), 3) # p50(latency)
+        p50_loss = round(np.percentile([int(y) for y in list3m], 50), 3) # p50(loss)
     else:
         pr = 0
         prp = 1
@@ -64,9 +79,20 @@ def metric_relationship(list1, list2, list3):
         br = 0
         err = 0
         err1_max = 0
+        mean_dist = -1
+        mean_lat = -1
+        mean_loss = -1
+        p95_dist = -1
+        p95_lat = -1
+        p95_loss = -1
+        p50_dist = -1
+        p50_lat = -1
+        p50_loss = -1
+
     list1r = [round(x,3) for x in list1m]
     list2r = [round(x,3) for x in list2m]
-    return [n_valid_pp, valid_ratio, pr, prp, round(ar, 3), round(br, 3), err, round(err1_max, 3), list1r, list2r, list3m]
+    return [n_valid_pp, valid_ratio, pr, prp, round(ar, 3), round(br, 3), err, round(err1_max, 3),
+            mean_dist, mean_lat, mean_loss, p95_dist, p95_lat, p95_loss, p50_dist, p50_lat, p50_loss, list1r, list2r]
 
 
 def toCSVLine(data):
@@ -191,17 +217,17 @@ def main():
                             x[9][5], # round(br,3)
                             x[9][6], # err
                             x[9][7], # round(err1_max,3)
-                            round(sum(x[9][8])/float(x[9][0]), 3), # mean(distance)
-                            round(sum(x[9][9])/float(x[9][0]), 3), # mean(latency)
-                            round(sum(x[9][10])/float(x[9][0]), 3), # mean(lost)
-                            round(np.percentile([int(y) for y in x[9][8]], 95), 3), # p95(distance)
-                            round(np.percentile([int(y) for y in x[9][9]], 95), 3), # p95(latency)
-                            round(np.percentile([int(y) for y in x[9][10]], 95), 3), # p95(loss)
-                            round(np.percentile([int(y) for y in x[9][8]], 50), 3), # p50(distance)
-                            round(np.percentile([int(y) for y in x[9][9]], 50), 3), # p50(latency)
-                            round(np.percentile([int(y) for y in x[9][10]], 50), 3), # p50(loss)
-                            ':'.join([str(y) for y in x[9][8]]), # [distance]
-                            ':'.join([str(y) for y in x[9][9]]) # [latency]
+                            x[9][8], # mean(distance)
+                            x[9][9], # mean(latency)
+                            x[9][10], # mean(loss)
+                            x[9][11], # p95(distance)
+                            x[9][12], # p95(latency)
+                            x[9][13], # p95(loss)
+                            x[9][14], # p50(distance)
+                            x[9][15], # p50(latency)
+                            x[9][16], # p50(loss)
+                            ':'.join([str(y) for y in x[9][17]]), # [distance]
+                            ':'.join([str(y) for y in x[9][18]]) # [latency]
                             ])
 
 
