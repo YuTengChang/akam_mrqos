@@ -53,8 +53,6 @@ def metric_relationship(list1, list2, list3):
     valid_ratio = round(100.0*n_valid_pp/len(list1), 2)
 
 
-
-
     if n_valid_pp > 10:
         (pr, prp) = pearsonr(list1m, list2m)
         (ar, br) = scipy.polyfit(list1m, list2m, 1)
