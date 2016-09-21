@@ -52,7 +52,6 @@ def metric_relationship(list1, list2, list3):
     n_valid_pp = len(list1m)
     valid_ratio = round(100.0*n_valid_pp/len(list1), 2)
 
-
     if n_valid_pp > 10:
         (pr, prp) = pearsonr(list1m, list2m)
         (ar, br) = scipy.polyfit(list1m, list2m, 1)
@@ -105,7 +104,7 @@ def main():
                             datefmt='%m/%d/%Y %H:%M:%S')
     logger = logging.getLogger(__name__)
 
-    datestamp = "20160915"
+    datestamp = "20160920"
     hourstamp = "12"
 
     logger.info('processing the date of data: %s at hour instance: %s' % (datestamp, hourstamp))
@@ -115,9 +114,9 @@ def main():
 
     ppinfo = ''' select ppip, asnum ppas, latitude pp_lat, longitude pp_lon, city pp_city, state pp_state, country pp_country, continent pp_cont from mrqos.ppinfo where datestamp=%s and hour=%s ''' % (str(datestamp), str(hourstamp))
 
-    ppreply = ''' select a.ppip, a.region, a.ecor, a.latency, a.loss, b.rg_lat, b.rg_lon from (select ppip, region, ecor, latency, loss from perftmi.ppreply where ts>%s) a left outer join (select region, round(latitude, 4) rg_lat, round(longitude, 4) rg_lon from mapper.barebones where day=%s) b on a.region=b.region ''' % (str(timestart),
-                                                                                                                                                                                                                                                                                            str(datestamp))
+    ppreply = ''' select a.ppip, a.region, a.ecor, a.latency, a.loss, b.rg_lat, b.rg_lon from (select ppip, region, ecor, latency, loss from perftmi.ppreply where ts>%s) a left outer join (select region, round(latitude, 4) rg_lat, round(longitude, 4) rg_lon from mapper.barebones where day=%s) b on a.region=b.region ''' % (str(timestart), str(datestamp))
 
+    # define sc only needed when using spark-submit
     sc = SparkContext()
     hiveCtx = HiveContext(sc)
 
@@ -231,7 +230,7 @@ def main():
 
     logger.info('now the final collect begins.')
     #pp_char_all = pp_char.collect()
-    pp_char_all = pp_char.map(toCSVLine)
+    pp_char_all = pp_char.map(lambda x: toCSVLine(x))
     pp_char_all.saveAsTextFile('/ghostcache/hadoop/data/MRQOS/sandbox/pp_test00') #,
     #                           compressionCodecClass="org.apache.hadoop.io.compress.SnappyCodec")
     logger.info('now the final collect ends.')
