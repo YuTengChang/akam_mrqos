@@ -181,7 +181,7 @@ def main():
     dficy.index = dficy.casename
 
     file_source = os.path.join(filedir, filelist[3])
-    data = numpy.genfromtxt(file_source, delimiter=',', skip_header=0, dtype='str')
+    #data = numpy.genfromtxt(file_source, delimiter=',', skip_header=0, dtype='str')
     header = ['casename',
               'maprule',
               'geoname',
@@ -189,7 +189,9 @@ def main():
               'ict',
               'icttarget']
 
-    dfict = pd.DataFrame(data, columns=header)
+    #dfict = pd.DataFrame(data, columns=header)
+    dfict = pd.read_csv(file_source, header=None, names=header, error_bad_lines=True)
+    dfict.dropna(inplace=True)
     dfict['ictd'] = [z*(z>0) for z in [int(y)-int(x) for (x,y) in zip(dfict.ict, dfict.icttarget)]]
     dfict.index = dfict.casename
 
