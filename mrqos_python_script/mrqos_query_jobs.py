@@ -124,6 +124,7 @@ def main():
             shutil.copy(filesrc, filedst)
 
     # load the result to python pandas
+    logger.info('utilizing pandas for joining tables')
     filedir = config.mrqos_data
     filelist = ['score.tmp','distance.tmp','in_country.tmp','in_continent.tmp','ra_load.tmp','in_out_ratio.tmp']
 
@@ -236,16 +237,24 @@ def main():
     # deal with NaNs: the in-out-ratio set to -1 if data not exists
     df3.fillna(-1, inplace=True)
 
-    output_name = os.path.join('/home/testgrp/MRQOS/mrqos_data/backup/joined',
-                               'mrqos_join.%s.csv' % str(timenow))
-    df2.to_csv(output_name,
-               sep='\t', index=False, header=False)
-    output_name = os.path.join('/home/testgrp/MRQOS/mrqos_data/backup/joined',
-                               'mrqos_joinv2.%s.csv' % str(timenow))
-    df3.to_csv(output_name,
-               sep='\t', index=False, header=False)
+    logger.info('writing to joined folder:')
+    if len(df2)>0:
+        output_name = os.path.join('/home/testgrp/MRQOS/mrqos_data/backup/joined',
+                                   'mrqos_join.%s.csv' % str(timenow))
+        df2.to_csv(output_name,
+                   sep='\t', index=False, header=False)
+    else:
+        logger.warning('DF2 with zero length (no data)')
+    if len(df3)>0:
+        output_name = os.path.join('/home/testgrp/MRQOS/mrqos_data/backup/joined',
+                                   'mrqos_joinv2.%s.csv' % str(timenow))
+        df3.to_csv(output_name,
+                   sep='\t', index=False, header=False)
+    else:
+        logger.warning('DF3 with zero length (no data)')
 
     # clean up backups
+    logger.info('now cleaning the backups')
     if len(backups) > 0:
         for backup in backups:
             shutil.rmtree(backup)

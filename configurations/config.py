@@ -10,11 +10,6 @@ Created on Wed Apr 22 10:57:38 2015
 #==============================================================================
 # # HDFS Locations
 #==============================================================================
-#hdfs_score = '/ghostcache/hadoop/data/MRQOS/score/ts=%s'
-#hdfs_distance = '/ghostcache/hadoop/data/MRQOS/distance/ts=%s'
-#hdfs_in_country = '/ghostcache/hadoop/data/MRQOS/in_country/ts=%s'
-#hdfs_in_continent = '/ghostcache/hadoop/data/MRQOS/in_continent/ts=%s'
-#hdfs_ra_load = '/ghostcache/hadoop/data/MRQOS/ra_load/ts=%s'
 hdfs_table = '/ghostcache/hadoop/data/MRQOS'
 hdfs_table_score = '/ghostcache/hadoop/data/MRQOS/score'
 hdfs_table_distance = '/ghostcache/hadoop/data/MRQOS/distance'
@@ -101,3 +96,4 @@ aslist_file = '/home/ychang/Documents/Projects/18-DDC/MRQOS_local_data/mrqos_asl
 region_view_hour_data_VM = '/opt/MRQOS_local_data/region_view_hour/'
 case_view_hour_data_VM = '/opt/MRQOS_local_data/case_view_hour/'
 
+local_logging = '/home/ychang/logs'
