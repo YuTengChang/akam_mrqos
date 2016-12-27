@@ -79,4 +79,4 @@ FROM   (SELECT ab.casename casename,
                           5)
         GROUP  BY 1) d
 WHERE  abc.casename = d.casename
-GROUP  BY 1
+GROUP  BY 2
