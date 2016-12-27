@@ -59,6 +59,7 @@ def main():
         backup_folders = ''
         logger.warning('no backup files')
 
+    minimum_return_lines = 50000
     # fetch the data through query with retrials
     logger.info('query data from agg...')
     n_retrial = config.query_retrial
@@ -72,7 +73,8 @@ def main():
         # for in_out_ratio allow larger query time
         if item == 'in_out_ratio':
             t_timeout = t_timeout*2-1
-            aggs = os.path.join(config.mrqos_query, 'in_out_ratio_w2.qr')
+            #aggs = os.path.join(config.mrqos_query, 'in_out_ratio_w2.qr')
+            aggs = os.path.join(config.mrqos_query, 'in_out_ratio_mrlist.qr')
             cmd = sql5 + aggs + post + dest
         # multiple times with timeout scheme
         while (flag == 0) and (count < n_retrial):
@@ -82,8 +84,14 @@ def main():
                     # in case return empty result.
                     if (int(sp.check_output('wc -l %s' % os.path.join(config.mrqos_data,
                                                                       '%s.tmp' % item),
-                                            shell=True).split()[0]) > 0):
+                                            shell=True).split()[0]) > minimum_return_lines):
                         flag = 1
+                    elif (int(sp.check_output('wc -l %s' % os.path.join(config.mrqos_data,
+                                                                      '%s.tmp' % item),
+                                              shell=True).split()[0]) > 0):
+                        count += 1
+                        logger.info('partially-returned table %s at re-try count = %s' % (item, str(count)))
+                        print "partially returned at count=%s" % str(count)
                     else:
                         count += 1
                         logger.info('empty table %s at re-try count = %s' % (item, str(count)))
@@ -129,7 +137,7 @@ def main():
     filelist = ['score.tmp','distance.tmp','in_country.tmp','in_continent.tmp','ra_load.tmp','in_out_ratio.tmp']
 
     file_source = os.path.join(filedir, filelist[0])
-    data = numpy.genfromtxt(file_source, delimiter=',', skip_header=0, dtype='str')
+    #data = numpy.genfromtxt(file_source, delimiter=',', skip_header=0, dtype='str')
     header = ['casename',
               'maprule',
               'geoname',
@@ -141,7 +149,9 @@ def main():
               'starget',
               'ispeak']
 
-    dfscore = pd.DataFrame(data, columns=header)
+    #dfscore = pd.DataFrame(data, columns=header)
+    dfscore = pd.read_csv(file_source, header=None, names=header, error_bad_lines=True)
+    dfscore.dropna(inplace=True)
     dfscore['sp99d'] = [z*(z>0) for z in [int(x)-int(y) for (x,y) in zip(dfscore.sp99, dfscore.starget)]]
     dfscore['sp95d'] = [z*(z>0) for z in [int(x)-int(y) for (x,y) in zip(dfscore.sp95, dfscore.starget)]]
     dfscore['sp90d'] = [z*(z>0) for z in [int(x)-int(y) for (x,y) in zip(dfscore.sp90, dfscore.starget)]]
@@ -149,7 +159,7 @@ def main():
     dfscore.index = dfscore.casename
 
     file_source = os.path.join(filedir, filelist[1])
-    data = numpy.genfromtxt(file_source, delimiter=',', skip_header=0, dtype='str')
+    #data = numpy.genfromtxt(file_source, delimiter=',', skip_header=0, dtype='str')
     header = ['casename',
               'maprule',
               'geoname',
@@ -160,7 +170,9 @@ def main():
               'dp75',
               'dtarget']
 
-    dfdistance = pd.DataFrame(data, columns=header)
+    #dfdistance = pd.DataFrame(data, columns=header)
+    dfdistance = pd.read_csv(file_source, header=None, names=header, error_bad_lines=True)
+    dfdistance.dropna(inplace=True)
     dfdistance['dp99d'] = [z*(z>0) for z in [int(x)-int(y) for (x,y) in zip(dfdistance.dp99, dfdistance.dtarget)]]
     dfdistance['dp95d'] = [z*(z>0) for z in [int(x)-int(y) for (x,y) in zip(dfdistance.dp95, dfdistance.dtarget)]]
     dfdistance['dp90d'] = [z*(z>0) for z in [int(x)-int(y) for (x,y) in zip(dfdistance.dp90, dfdistance.dtarget)]]
@@ -168,7 +180,7 @@ def main():
     dfdistance.index = dfdistance.casename
 
     file_source = os.path.join(filedir, filelist[2])
-    data = numpy.genfromtxt(file_source, delimiter=',', skip_header=0, dtype='str')
+    #data = numpy.genfromtxt(file_source, delimiter=',', skip_header=0, dtype='str')
     header = ['casename',
               'maprule',
               'geoname',
@@ -176,7 +188,9 @@ def main():
               'icy',
               'icytarget']
 
-    dficy = pd.DataFrame(data, columns=header)
+    #dficy = pd.DataFrame(data, columns=header)
+    dficy = pd.read_csv(file_source, header=None, names=header, error_bad_lines=True)
+    dficy.dropna(inplace=True)
     dficy['icyd'] = [z*(z>0) for z in [int(y)-int(x) for (x,y) in zip(dficy.icy, dficy.icytarget)]]
     dficy.index = dficy.casename
 
@@ -196,7 +210,7 @@ def main():
     dfict.index = dfict.casename
 
     file_source = os.path.join(filedir, filelist[4])
-    data = numpy.genfromtxt(file_source, delimiter=',', skip_header=0, dtype='str')
+    #data = numpy.genfromtxt(file_source, delimiter=',', skip_header=0, dtype='str')
     header = ['casename',
               'maprule',
               'geoname',
@@ -205,17 +219,21 @@ def main():
               'ra_pingbased',
               'ping_rtio']
 
-    dfra = pd.DataFrame(data, columns=header)
+    #dfra = pd.DataFrame(data, columns=header)
+    dfra = pd.read_csv(file_source, header=None, names=header, error_bad_lines=True)
+    dfra.dropna(inplace=True)
     dfra.index = dfra.casename
 
     file_source = os.path.join(filedir, filelist[5])
-    data = numpy.genfromtxt(file_source, delimiter=',', skip_header=0, dtype='str')
+    #data = numpy.genfromtxt(file_source, delimiter=',', skip_header=0, dtype='str')
     header = ['casename',
               'ioratio',
               'iotarget',
               'coverage']
 
-    dfio = pd.DataFrame(data, columns=header)
+    #dfio = pd.DataFrame(data, columns=header)
+    dfio = pd.read_csv(file_source, header=None, names=header, error_bad_lines=True)
+    dfio.dropna(inplace=True)
     # make in-out-ratio a rounded integer
     dfio['ioratio'] = [int(round(float(x))) for x in dfio.ioratio]
     dfio['iod'] = [z*(z>0) for z in [int(x)-int(y) for (x,y) in zip(dfio.ioratio, dfio.iotarget)]]
