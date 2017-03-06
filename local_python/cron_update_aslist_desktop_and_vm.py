@@ -28,11 +28,13 @@ def main():
 
     if os.path.isfile(config.aslist_file) and os.stat(config.aslist_file).st_size > 0:
         try:
-            cmd_str = 'scp %s ychang@dev-platformperf-scidb02:/u0/ychang/%s' % (config.aslist_file,
-                                                                                config.aslist_file.split('/')[-1])
+            cmd_str = 'scp %s ychang@%s:/u0/ychang/%s' % (config.web_server_machine,
+                                                          config.aslist_file,
+                                                          config.aslist_file.split('/')[-1])
             sp.check_call(cmd_str, shell=True)
             try:
-                cmd_str = ''' ssh ychang@dev-platformperf-scidb02 '/opt/anaconda/bin/sqlite3 %s < /u0/ychang/aslist_init_and_import.sql' ''' % (config.case_view_hour_db)
+                cmd_str = ''' ssh ychang@%s '/opt/anaconda/bin/sqlite3 %s < /u0/ychang/aslist_init_and_import.sql' ''' % (config.web_server_machine,
+                                                                                                                          config.case_view_hour_db)
                 sp.check_call(cmd_str, shell=True)
             except:
                 logger.error('error when inserting to DB on VM')

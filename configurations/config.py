@@ -78,7 +78,8 @@ add_rg_partition = 'use MRQOS; alter table mrqos_region add partition(datestamp=
 #==============================================================================
 region_view_hour_data_source = '81.52.137.180'
 mrqos_data_node = '81.52.137.195'
-web_server_machine = '172.25.23.222' #(need to check periodically against: 'dev-platformperf-scidb02.kendall.corp.akamai.com')
+#web_server_machine = '172.25.23.222' #(need to check periodically against: 'dev-platformperf-scidb02.kendall.corp.akamai.com')
+web_server_machine = '172.25.9.147'
 
 region_view_hour_db = '/opt/web-data/SQLite3/ra_mrqos.db'
 #region_view_hour_init = '/u4/ychang/Projects/18-MRQOS/SQLite3/region_view_hour_init.sql'
