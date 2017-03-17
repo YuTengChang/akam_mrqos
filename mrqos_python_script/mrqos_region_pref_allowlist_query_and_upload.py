@@ -9,9 +9,7 @@ import shutil
 
 sys.path.append('/home/testgrp/MRQOS/')
 import subprocess as sp
-import pandas as pd
-import numpy
-import time
+import datetime
 import YT_Timeout as ytt
 import configurations.config as config
 import configurations.hdfsutil as hdfsutil
