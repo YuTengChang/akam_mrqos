@@ -92,7 +92,6 @@ def main():
 
     rows = hiveCtx.sql(getting_mappoint_data)
 
-    #regInfoRows = hiveCtx.sql('select a.*, b.region_capacity, b.ecor_capacity, b.prp, case b.peak_bitcap_mbps when null then 0 else b.peak_bitcap_mbps end peak_bitcap_mbps, case b.peak_flitcap_mfps when null then 0 else b.peak_flitcap_mfps end peak_flitcap_mfps from (select * from mapper.barebones where day=%s and latitude is not NULL and longitude is not NULL and ghost_services in ("W","S","KS","JW")) a join (select * from mapper.regioncapday where day=%s) b on a.region=b.region' % (day_idx, day_idx))
     regInfoRows = hiveCtx.sql('select * from mapper.regioncapday where day=%s and peak_bitcap_mbps is not null and peak_flitcap_mfps is not null' % (day_idx))
     geo_total_cap = hiveCtx.sql(geo_total_cap_query)
     geo_total_cap_p = hiveCtx.sql(geo_total_cap_public_query)

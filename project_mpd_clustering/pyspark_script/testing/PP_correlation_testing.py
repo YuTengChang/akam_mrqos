@@ -23,7 +23,7 @@ def geodesic_distance(lat1, lon1, lat2, lon2):
     dlon = abs(lon2r - lon1r)/2
     a = math.pow(math.sin(dlat), 2) + math.cos(lat2r) * math.cos(lat1r) * math.pow(math.sin(dlon), 2)
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
-    return [lat1, lon1, lat2, lon2, R*c]
+    return [lat1, lon1, lat2, lon2, float(R*c)]
 
 
 def metric_relationship(list1, list2, list3):
@@ -43,26 +43,28 @@ def metric_relationship(list1, list2, list3):
     list2r: output of valid list2 (y): latency
     list3m: output of valid list3 (z): loss
     '''
-    #pearsonr = np.corrcoef(list1, list2)[0][1]
-
     in_list = [i for i,x in enumerate(list2) if x < 10000]
     list2m = [list2[i] for i in in_list]
     list1m = [list1[i] for i in in_list]
     list3m = [list3[i] for i in in_list]
     n_valid_pp = len(list1m)
     valid_ratio = round(100.0*n_valid_pp/len(list1), 2)
-
+#
     if n_valid_pp > 10:
         (pr, prp) = pearsonr(list1m, list2m)
+        pr = float(pr)
+        prp = float(prp)
         (ar, br) = scipy.polyfit(list1m, list2m, 1)
+        ar = float(ar)
+        br = float(br)
         yr = scipy.polyval([ar,br],list1m)
-        err = math.sqrt(sum((yr-list2m)**2)/len(yr))
-        err1_max = max(abs(yr-list2m))
-
+        err = float(math.sqrt(sum((yr-list2m)**2)/len(yr)))
+        err1_max = float(max(abs(yr-list2m)))
+#
         mean_dist = round(sum(list1m)/float(n_valid_pp), 3) # mean(distance)
         mean_lat = round(sum(list2m)/float(n_valid_pp), 3) # mean(latency)
         mean_loss = round(sum(list3m)/float(n_valid_pp), 3) # mean(loss)
-
+#
         p95_dist = round(np.percentile([int(y) for y in list1m], 95), 3) # p95(distance)
         p95_lat = round(np.percentile([int(y) for y in list2m], 95), 3) # p95(latency)
         p95_loss = round(np.percentile([int(y) for y in list3m], 95), 3) # p95(loss)
@@ -85,7 +87,7 @@ def metric_relationship(list1, list2, list3):
         p50_dist = -1
         p50_lat = -1
         p50_loss = -1
-
+#
     list1r = [round(x,3) for x in list1m]
     list2r = [round(x,3) for x in list2m]
     return [n_valid_pp, valid_ratio, pr, prp, round(ar, 3), round(br, 3), err, round(err1_max, 3),
@@ -104,17 +106,18 @@ def main():
                             datefmt='%m/%d/%Y %H:%M:%S')
     logger = logging.getLogger(__name__)
 
-    datestamp = "20160920"
+    datestamp = "20161004"
     hourstamp = "12"
 
     logger.info('processing the date of data: %s at hour instance: %s' % (datestamp, hourstamp))
 
-    timenow = int(time.time())
-    timestart = timenow - 10800
+timenow = int(time.time())
+timestart = timenow - 14400
+timeEnd = timestart + 10800
 
     ppinfo = ''' select ppip, asnum ppas, latitude pp_lat, longitude pp_lon, city pp_city, state pp_state, country pp_country, continent pp_cont from mrqos.ppinfo where datestamp=%s and hour=%s ''' % (str(datestamp), str(hourstamp))
 
-    ppreply = ''' select a.ppip, a.region, a.ecor, a.latency, a.loss, b.rg_lat, b.rg_lon from (select ppip, region, ecor, latency, loss from perftmi.ppreply where ts>%s) a left outer join (select region, round(latitude, 4) rg_lat, round(longitude, 4) rg_lon from mapper.barebones where day=%s) b on a.region=b.region ''' % (str(timestart), str(datestamp))
+    ppreply = ''' select a.ppip, a.region, a.ecor, a.latency, a.loss, b.rg_lat, b.rg_lon from (select ppip, region, ecor, latency, loss from perftmi.ppreply where ts>%s and ts<%s) a left outer join (select region, round(latitude, 4) rg_lat, round(longitude, 4) rg_lon from mapper.barebones where day=%s) b on a.region=b.region ''' % (str(timestart), str(timeEnd), str(datestamp))
 
     # define sc only needed when using spark-submit
     sc = SparkContext()
@@ -227,6 +230,12 @@ def main():
                             ':'.join([str(y) for y in x[9][18]]) # [latency]
                             ])
 
+    col_names = ['ppip','ppas','city','state','country','continent','lat','lon','n_record_pp',
+                 'n_valid_pp','valid_ratio','r','rpv','ar','br','err','err_max','avg_dist',
+                 'avg_lat','avg_loss','p95_dist','p95_lat','p95_loss','p50_dist','p50_lat','p50_loss',
+                 'dist','latency']
+
+    pp_char.toDF(col_names).persist()
 
     logger.info('now the final collect begins.')
     #pp_char_all = pp_char.collect()

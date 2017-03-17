@@ -1,0 +1,16 @@
+USE mrqos;
+
+drop table if exists mcm_region_pref;
+
+create external table mcm_region_pref (
+    maprule       INT,
+    region        INT,
+    preference    INT,
+    tier          INT
+    )
+
+partitioned by (datestamp STRING)
+row format delimited
+fields terminated by ','
+lines terminated by '\n'
+location '/ghostcache/hadoop/data/MRQOS/mcm_region_pref';
