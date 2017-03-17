@@ -38,7 +38,7 @@ def main():
     mtype = ['mcm_regionPreferences']
 
     datenow = str(datetime.date.today())
-    datenow = datenow[:4] + datenow[6:8] + datenow[9:]
+    datenow = datenow[:4] + datenow[5:7] + datenow[8:]
 
     sql = """sql2 -q map.devbl.query.akadns.net --csv "`cat """
     post = """`" | tail -n+3 > """
