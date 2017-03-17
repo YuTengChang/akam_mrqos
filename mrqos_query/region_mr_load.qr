@@ -1,0 +1,25 @@
+SELECT
+maprule_id mr,
+georegion,
+sum(hits) hits,
+sum(connections) connections,
+sum(flytes) flytes,
+sum(bytes) bytes,
+sum(bytes_in) bytes_in,
+sum(cpu) cpu,
+sum(disk) disk,
+region
+
+FROM
+mcm_machines b,
+maprule_geo_info a
+
+WHERE
+a.ghostip = b.ip
+AND
+maprule_id!=-1
+
+GROUP BY
+maprule_id, region, georegion
+ORDER BY
+region, maprule_id, georegion

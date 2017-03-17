@@ -1,0 +1,7 @@
+SELECT  mapruleid,
+        region,
+        preferencelevel,
+        tier
+FROM mcm_regionpreferences
+WHERE timestamp=(select max(timestamp) from mcm_regionpreferences)
+AND mapruleid in (1,332,2903,290,2905,2910,2923,121,122,4662,2948,4667,4668,4669,9631,9632,9633,9634,9636,9637,9638,9639,9644,9645,9646,9690,9691)
