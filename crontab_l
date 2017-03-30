@@ -96,3 +96,5 @@
 ##################################################
 # weekly summary and clustering from s182m
 19 18 * * 0 /home/testgrp/doasme_YT /a/bin/spark-submit --master yarn --num-executors 10 --executor-memory 4G /home/testgrp/MRQOS/project_mpd_clustering/pyspark_script/mpgCluster_spark.py
+# daily update allowlist / mcm_region_prefereces from s182m
+5 0 * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_python_script/mrqos_region_pref_allowlist_query_and_upload.py
