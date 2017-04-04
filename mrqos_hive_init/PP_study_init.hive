@@ -4,10 +4,37 @@ drop table if exists pp_test;
 
 create external table pp_test (
     ppip STRING,
-
+    ppas bigint,
+    pp_lat double,
+    pp_lon double,
+    pp_city STRING,
+    pp_state STRING,
+    pp_country STRING,
+    pp_cont STRING,
+    n_all bigint,
+    n_valid bigint,
+    valid_percent double,
+    corr double,
+    corr_p double,
+    ar double,
+    br double,
+    err double,
+    err_max double,
+    avg_dist double,
+    avg_latn double,
+    avg_loss double,
+    p95_dist double,
+    p95_latn double,
+    p95_loss double,
+    p50_dist double,
+    p50_latn double,
+    p50_loss double,
+    distance STRING,
+    latency STRING
     )
 
+partitioned by (datestamp STRING, hour STRING)
 row format delimited
 fields terminated by '\t'
 lines terminated by '\n'
-location '/ghostcache/hadoop/data/MRQOS/sandbox/pp_test00';
+location '/ghostcache/hadoop/data/MRQOS/sandbox/';

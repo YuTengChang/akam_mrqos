@@ -88,6 +88,7 @@ case_view_hour_db = '/opt/web-data/SQLite3/case_view_hour.db'
 #alist_init_import = '/u4/ychang/Projects/18-MRQOS/SQLite3/aslist_init_and_import.sql'
 region_view_hour_init = '/home/ychang/Documents/Projects/18-DDC/MRQOS/local_other_script/region_view_hour_init.sql'
 case_view_hour_init = '/home/ychang/Documents/Projects/18-DDC/MRQOS/local_other_script/case_view_hour_init.sql'
+pp_coverage_init = '/u0/ychang/Projects/18-DDC/MRQOS/akam_mrqos/local_other_script/pp_coverage_init.sql'
 alist_init_import = '/home/ychang/Documents/Projects/18-DDC/MRQOS/local_other_script/aslist_init_and_import.sql'
 
 region_view_hour_data_local = '/home/ychang/Documents/Projects/18-DDC/MRQOS_local_data/region_view_hour/'
