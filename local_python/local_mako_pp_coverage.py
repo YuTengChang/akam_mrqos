@@ -38,7 +38,7 @@ def main():
         sp.check_call(cmd, shell=True)
         df = pd.read_csv(os.path.join(csv_dir, query+".csv"), header=0)
         df['DATESTAMP'] = datestamp
-        if "COUNTRY" not in df.columns():
+        if "COUNTRY" not in df.columns:
             df["COUNTRY"] = df["CODE"]
         df = df[header_list[query]]
 
