@@ -18,7 +18,7 @@ import configurations.config as config
 
 def main():
 
-    logging.basicConfig(filename=os.path.join(config.pp_coverage_VM, 'pp_coverage.log'),
+    logging.basicConfig(filename=os.path.join('/home/ychang/logs/', 'pp_coverage.log'),
                         level=logging.INFO,
                         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                         datefmt='%m/%d/%Y %H:%M:%S')
