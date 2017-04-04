@@ -72,7 +72,7 @@ def main():
         sp.check_call(cmd_str, shell=True)
         # VM data import
         cmd_str = "ssh %s '/opt/anaconda/bin/sqlite3 %s < %s' " % (config.web_server_machine,
-                                                                   config.pp_coverage_dbl,
+                                                                   config.pp_coverage_db,
                                                                    os.path.join(config.pp_coverage_VM, 'input_query.sql'))
         sp.check_call(cmd_str, shell=True)
 
