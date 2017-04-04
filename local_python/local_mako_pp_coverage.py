@@ -7,13 +7,16 @@ Created on Thu Apr 16 16:47:15 2015
 import sys, os
 import shutil
 
-sys.path.append('/home/testgrp/MRQOS/')
 import subprocess as sp
 import pandas as pd
 import numpy
 import time
 import glob
 import logging
+
+root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(root)
+import configurations.config as config
 
 
 def main():
@@ -36,6 +39,7 @@ def main():
     csv_dir = "/home/ychang/Documents/Projects/18-DDC/MRQOS_local_data/ns_pp_coverage"
 
     for query in query_list:
+        # fetch the data from MAKO
         cmd = mako_cmd.format(os.path.join(query_dir, query + ".sql"),
                               os.path.join(csv_dir, query + ".csv"))
         sp.check_call(cmd, shell=True)
@@ -45,11 +49,32 @@ def main():
             df["COUNTRY"] = df["CODE"]
         df = df[header_list[query]]
 
-        df.to_csv(os.path.join(csv_dir, query+"_result.csv"),
+        local_file = os.path.join(csv_dir, query+"_result.csv")
+        target_file = query+"_result.csv"
+
+        df.to_csv(local_file,
                   header=False,
                   index=False)
 
-
+        # move to VM
+        cmd_str = 'scp %s ychang@%s:%s' % (local_file,
+                                           config.web_server_machine,
+                                           os.path.join(config.pp_coverage_VM, target_file))
+        sp.check_call(cmd_str, shell=True)
+        # VM import sql
+        cmd_str = "ssh %s 'echo .separator , > %s' " % (config.web_server_machine,
+                                                        os.path.join(config.pp_coverage_VM, 'input_query.sql'))
+        sp.check_call(cmd_str, shell=True)
+        cmd_str = "ssh %s 'echo .import %s %s >> %s' " % (config.web_server_machine,
+                                                          os.path.join(config.pp_coverage_VM, target_file),
+                                                          query,
+                                                          os.path.join(config.pp_coverage_VM, 'input_query.sql'))
+        sp.check_call(cmd_str, shell=True)
+        # VM data import
+        cmd_str = "ssh %s '/opt/anaconda/bin/sqlite3 %s < %s' " % (config.web_server_machine,
+                                                                   config.pp_coverage_dbl,
+                                                                   os.path.join(config.pp_coverage_VM, 'input_query.sql'))
+        sp.check_call(cmd_str, shell=True)
 
 if __name__ == '__main__':
     sys.exit(main())

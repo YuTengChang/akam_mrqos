@@ -82,8 +82,8 @@ mrqos_data_node = '81.52.137.195'
 web_server_machine = '172.25.9.147'
 
 region_view_hour_db = '/opt/web-data/SQLite3/ra_mrqos.db'
-#region_view_hour_init = '/u4/ychang/Projects/18-MRQOS/SQLite3/region_view_hour_init.sql'
 case_view_hour_db = '/opt/web-data/SQLite3/case_view_hour.db'
+pp_coverage_db = '/opt/web-data/SQLite3/pp_coverage.db'
 #case_view_hour_init = '/u4/ychang/Projects/18-MRQOS/SQLite3/case_view_hour_init.sql'
 #alist_init_import = '/u4/ychang/Projects/18-MRQOS/SQLite3/aslist_init_and_import.sql'
 region_view_hour_init = '/home/ychang/Documents/Projects/18-DDC/MRQOS/local_other_script/region_view_hour_init.sql'
@@ -97,5 +97,6 @@ aslist_file = '/home/ychang/Documents/Projects/18-DDC/MRQOS_local_data/mrqos_asl
 
 region_view_hour_data_VM = '/opt/MRQOS_local_data/region_view_hour/'
 case_view_hour_data_VM = '/opt/MRQOS_local_data/case_view_hour/'
+pp_coverage_VM = '/opt/MRQOS_local_data/pp_coverage/'
 
 local_logging = '/home/ychang/logs'
