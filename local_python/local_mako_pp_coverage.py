@@ -5,14 +5,11 @@ Created on Thu Apr 16 16:47:15 2015
 @author: ychang
 """
 import sys, os
-import shutil
-
 import subprocess as sp
 import pandas as pd
-import numpy
 import time
-import glob
 import logging
+import calendar
 
 root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(root)
@@ -20,10 +17,19 @@ import configurations.config as config
 
 
 def main():
+
+    logging.basicConfig(filename=os.path.join(config.pp_coverage_VM, 'pp_coverage.log'),
+                        level=logging.INFO,
+                        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                        datefmt='%m/%d/%Y %H:%M:%S')
+    logger = logging.getLogger(__name__)
+
     mako_cmd = """/home/ychang/bin/mako --csv -s "`cat {}`" -o {} """
     query_list = ["geo_pp_coverage",
                   "geo_as_pp_coverage",
                   "pp_coverage"]
+
+    ts = calendar.timegm(time.gmtime())
 
     datestamp = int(time.strftime("%Y%m%d", time.gmtime()))
 
@@ -39,6 +45,8 @@ def main():
     csv_dir = "/home/ychang/Documents/Projects/18-DDC/MRQOS_local_data/ns_pp_coverage"
 
     for query in query_list:
+        logger.info("start processing {}".format(query))
+        logger.info("fetch data from MAKO")
         # fetch the data from MAKO
         cmd = mako_cmd.format(os.path.join(query_dir, query + ".sql"),
                               os.path.join(csv_dir, query + ".csv"))
@@ -57,6 +65,7 @@ def main():
                   index=False)
 
         # move to VM
+        logger.info("move data to VM and update to sqlite db")
         cmd_str = 'scp %s ychang@%s:%s' % (local_file,
                                            config.web_server_machine,
                                            os.path.join(config.pp_coverage_VM, target_file))
@@ -74,6 +83,16 @@ def main():
         cmd_str = "ssh %s '/opt/anaconda/bin/sqlite3 %s < %s' " % (config.web_server_machine,
                                                                    config.pp_coverage_db,
                                                                    os.path.join(config.pp_coverage_VM, 'input_query.sql'))
+        sp.check_call(cmd_str, shell=True)
+
+
+        # retire data from VM
+        expire_pp_coverage_vm = 60*60*24*30 # 30 days expiration (~ 1-month)
+        expire_date = time.strftime('%Y%m%d', time.gmtime(float(ts - expire_pp_coverage_vm)))
+        sql_str = '''PRAGMA temp_store_directory='/opt/web-data/temp'; delete from %s where DATESTAMP<%s; vacuum;''' % (query, str(expire_date))
+        cmd_str = '''ssh %s "/opt/anaconda/bin/sqlite3 %s \\\"%s\\\" " ''' % (config.web_server_machine,
+                                                                              config.pp_coverage_db,
+                                                                              sql_str)
         sp.check_call(cmd_str, shell=True)
 
 if __name__ == '__main__':
