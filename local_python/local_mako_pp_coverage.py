@@ -19,14 +19,17 @@ import logging
 def main():
     mako_cmd = """/home/ychang/bin/mako --csv -s "`cat {}`" -o {} """
     query_list = ["geo_pp_coverage",
-                  "geo_as_pp_coverage"]
+                  "geo_as_pp_coverage",
+                  "pp_coverage"]
 
     datestamp = int(time.strftime("%Y%m%d", time.gmtime()))
 
     header_list = {"geo_pp_coverage": ["COUNTRY", "ASNS", "TOT_DEMANDS", "IN_ASN_PCT", "IN_COUNTRY_PCT",
                                        "HAS_PP_PCT", "AVG_DISTANCE", "DATESTAMP"],
                    "geo_as_pp_coverage": ["COUNTRY", "ASNUM", "SUM_DEMAND", "IN_ASN_PCT", "IN_PROVIDER_PCT",
-                                          "IN_COUNTRY_PCT", "HAS_PP_PCT", "WEIGHTED_DISTANCE", "DATESTAMP"]
+                                          "IN_COUNTRY_PCT", "HAS_PP_PCT", "WEIGHTED_DISTANCE", "DATESTAMP"],
+                   "pp_coverage": ["TOT_DEMANDS", "IN_COUNTRY_PCT", "IN_ASN_PCT", "HAS_PP_PCT", "AVG_DISTANCE",
+                                   "DATESTAMP"]
                    }
 
     query_dir = "/home/ychang/Documents/Projects/18-DDC/MRQOS/mrqos_query"
@@ -38,7 +41,7 @@ def main():
         sp.check_call(cmd, shell=True)
         df = pd.read_csv(os.path.join(csv_dir, query+".csv"), header=0)
         df['DATESTAMP'] = datestamp
-        if "COUNTRY" not in df.columns:
+        if "COUNTRY" not in df.columns and query != "pp_coverage":
             df["COUNTRY"] = df["CODE"]
         df = df[header_list[query]]
 
