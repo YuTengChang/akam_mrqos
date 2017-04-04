@@ -87,6 +87,7 @@ def main():
 
 
         # retire data from VM
+        logger.info("retire the expired data on VM")
         expire_pp_coverage_vm = 60*60*24*30 # 30 days expiration (~ 1-month)
         expire_date = time.strftime('%Y%m%d', time.gmtime(float(ts - expire_pp_coverage_vm)))
         sql_str = '''PRAGMA temp_store_directory='/opt/web-data/temp'; delete from %s where DATESTAMP<%s; vacuum;''' % (query, str(expire_date))
