@@ -25,7 +25,9 @@ def main():
 
     queryDict["geo_pp"] = """ select a.*, b.asns asns_7d, b.tot_demands tot_demands_7d, b.in_asn_pct in_asn_pct_7d, b.in_country_pct in_country_pct_7d, b.has_pp_pct has_pp_pct_7d, b.avg_distance distance_7d from (select * from geo_pp_coverage where datestamp={}) a join (select * from geo_pp_coverage where datestamp={}) b on a.country = b.country; """.format(ds_now, ds_1w)
 
-    for item in ["geo_pp", "geo_as_pp"]:
+    queryDict["pp"] = """ select * from pp_coverage where datestamp >={}; """.format(ds_1w)
+
+    for item in ["geo_pp", "geo_as_pp", "pp"]:
         query = queryDict[item]
         fileDest = os.path.join(fileLocation, "{}_{}.csv".format(item, ds_now))
         cmd_str = """ /opt/anaconda/bin/sqlite3 /opt/web-data/SQLite3/pp_coverage.db "{}" > {}""".format(query, fileDest)
