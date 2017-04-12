@@ -17,6 +17,7 @@ import configurations.config as config
 def main():
     ds_now = datetime.now().strftime('%Y%m%d')
     ds_1w = (datetime.now() - timedelta(days=7)).strftime('%Y%m%d')
+    file_ds_now = ds_now[:4] + "-" + ds_now[4:6] + "-" + ds_now[6:]
     fileLocation = '/var/www/txt/pp_coverage'
 
     queryDict = {}
@@ -29,7 +30,7 @@ def main():
 
     for item in ["geo_pp", "geo_as_pp", "pp"]:
         query = queryDict[item]
-        fileDest = os.path.join(fileLocation, "{}_{}.csv".format(item, ds_now))
+        fileDest = os.path.join(fileLocation, "{}.{}.csv".format(item, file_ds_now))
         cmd_str = """ /opt/anaconda/bin/sqlite3 /opt/web-data/SQLite3/pp_coverage.db "{}" > {}""".format(query, fileDest)
         sp.check_call(cmd_str, shell=True)
 
