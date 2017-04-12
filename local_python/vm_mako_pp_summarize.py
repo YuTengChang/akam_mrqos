@@ -29,7 +29,7 @@ mp={}) b on a.country = b.country and a.asnum = b.asnum; """.format(ds_now, ds_1
     for item in ["geo_pp", "geo_as_pp"]:
         query = queryDict[item]
         fileDest = os.path.join(fileLocation, "{}_{}.csv".format(item, ds_now))
-        cmd_str = """ /opt/anaconda/bin/sqlite3 /opt/web-data/SQLite3/pp_coverage.db '{}' > {}""".format(query, fileDest)
+        cmd_str = """ /opt/anaconda/bin/sqlite3 /opt/web-data/SQLite3/pp_coverage.db "{}" > {}""".format(query, fileDest)
         sp.check_call(cmd_str, shell=True)
 
 
