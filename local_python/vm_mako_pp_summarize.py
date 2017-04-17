@@ -6,7 +6,7 @@ Created on Thu Apr 16 16:47:15 2015
 """
 import sys, os
 import subprocess as sp
-import pandas as pd
+#import pandas as pd
 import time
 from datetime import datetime, timedelta
 
