@@ -53,7 +53,6 @@ def main():
                                  date_idx, uuid_idx)
             f.close()
             try:
-                logger.info(' '.join([x.rstrip().lstrip() for x in strcmd_s.split('\n')]))
                 beeline.bln_e(strcmd_s)
             except:
                 # delete the folder if summarization failed.
