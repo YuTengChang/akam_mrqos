@@ -1,6 +1,6 @@
 use mrqos;
 
-INSERT OVERWRITE TABLE mapmon_sum PARTITION (day=%s, mpd_uuid="%s")
+INSERT OVERWRITE TABLE mapmon_sum PARTITION (day=%s, mpd_uuid='%s')
 
 select * from
 (
@@ -49,7 +49,7 @@ select * from
                            ts
                     FROM   mapper.mapmon
                     WHERE  day = %s
-                    AND    uuid = "%s"
+                    AND    uuid = '%s'
                     GROUP  BY mpgid,
                               mrid,
                               mpd_uuid,
@@ -71,7 +71,7 @@ select * from
                            day
                     FROM   mapper.mapmon
                     WHERE  day = %s
-                    AND    uuid = "%s")a
+                    AND    uuid = '%s')a
             on  a.mpgid = b.mpgid
                    AND a.mrid = b.mrid
                    AND a.ts = b.ts
