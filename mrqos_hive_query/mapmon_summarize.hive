@@ -1,0 +1,83 @@
+use mrqos;
+
+INSERT OVERWRITE TABLE mapmon_sum PARTITION (day=%s, mpd_uuid="%s")
+
+select * from
+(
+    SELECT  mpgid, mrid, mpg_type, ra.region, ra.link,
+            min_s, max_s, min_r, max_r, ping, local,
+            ra.continent cont_fb, mpd_dftime,
+            ecor, bb.continent continent, country, latitude, longitude,
+            round(prp * ra.mpd_dftime, 4) prp
+    FROM
+    (   SELECT  region, ecor, continent, country, latitude, longitude,
+                case when prp="private" then 1 else 0 end prp
+        FROM mapper.barebones
+        WHERE day=%s
+    ) bb
+    INNER JOIN
+    (
+        SELECT  mpgid, mrid, mpg_type, region, link,
+                round(sum(min_s * mpd_dftime), 4) min_s,
+                round(sum(max_s * mpd_dftime), 4) max_s,
+                round(sum(min_r * mpd_dftime), 4) min_r,
+                round(sum(max_r * mpd_dftime), 4) max_r,
+                round(sum(ping * mpd_dftime), 4) ping,
+                round(sum(local * mpd_dftime), 4) local,
+                round(sum(continent * mpd_dftime), 4) continent,
+                round(sum(mpd_dftime),4) mpd_dftime
+        FROM
+        (
+            SELECT a.mpgid                                    mpgid,
+                   a.mrid                                     mrid,
+                   a.mpg_type                                 mpg_type,
+                   a.region                                   region,
+                   a.link                                     link,
+                   a.cnt                                      cnt,
+                   Round(Cast(a.cnt AS FLOAT) / b.sum_cnt, 5)*a.dftime mpd_dftime,
+                   a.min_s                                    min_s,
+                   a.max_s                                    max_s,
+                   a.min_r                                    min_r,
+                   a.max_r                                    max_r,
+                   case when pmod(a.min_s, 2) = 0 then 1 else 0 end     ping,
+                   case when pmod(a.min_s, 4) >=2 then 1 else 0 end     local,
+                   case when a.max_s > 65533 and a.max_r > 253 then 1 else 0 end        continent
+            FROM   (SELECT mpgid,
+                           mrid,
+                           Sum(cnt) sum_cnt,
+                           mpd_uuid,
+                           ts
+                    FROM   mapper.mapmon
+                    WHERE  day = %s
+                    AND    uuid = "%s"
+                    GROUP  BY mpgid,
+                              mrid,
+                              mpd_uuid,
+                              ts)b
+                    inner join
+                   (SELECT mpgid,
+                           mrid,
+                           mpg_type,
+                           region,
+                           link,
+                           cnt,
+                           min_s,
+                           max_s,
+                           min_r,
+                           max_r,
+                           dftime,
+                           mpd_uuid,
+                           ts,
+                           day
+                    FROM   mapper.mapmon
+                    WHERE  day = %s
+                    AND    uuid = "%s")a
+            on  a.mpgid = b.mpgid
+                   AND a.mrid = b.mrid
+                   AND a.ts = b.ts
+        ) sum_ts
+        GROUP BY mpgid, mrid, mpg_type, region, link
+        ORDER BY mpgid, mrid, mpg_type, mpd_dftime desc
+    ) ra
+    ON  ra.region = bb.region
+) all_table;

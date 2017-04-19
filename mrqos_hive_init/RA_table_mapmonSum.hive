@@ -1,0 +1,35 @@
+USE mrqos;
+
+drop table if exists mapmon_sum;
+
+create external table mapmon_sum (
+    mpgid INT,
+    mrid INT,
+    mpg_type INT,
+    region INT,
+    link INT,
+    min_s DOUBLE,
+    max_s DOUBLE,
+    min_r DOUBLE,
+    max_r DOUBLE,
+    ping DOUBLE,
+    local DOUBLE,
+    cont_fb DOUBLE,
+    mpd_dftime DOUBLE,
+    ecor INT,
+    continent STRING,
+    country STRING,
+    latitude DOUBLE,
+    longitude DOUBLE,
+    prp DOUBLE
+    )
+
+partitioned by (day bigint, mpd_uuid STRING)
+row format delimited
+fields terminated by '\t'
+lines terminated by '\n'
+location '/ghostcache/hadoop/data/MRQOS/mapmon_sum';
+
+
+
+
