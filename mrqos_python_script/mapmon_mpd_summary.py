@@ -40,6 +40,10 @@ def main():
                                            'mapmon_sum',
                                            'day={}'.format(date_idx),
                                            'mpg_uuid={}'.format(uuid_idx))
+        if hdfsutil.test_dic(file_location):
+            logger.info('creating folder: {}'.format(file_location))
+            hdfsutil.mkdir(file_location)
+
 
         if hdfsutil.test_file(os.path.join(file_location, '000000_0.deflate')):
             f = open(os.path.join(config.mrqos_hive_query, 'mapmon_summarize.hive'), 'r')
