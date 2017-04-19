@@ -11,7 +11,7 @@ select * from
             round(prp * ra.mpd_dftime, 4) prp
     FROM
     (   SELECT  region, ecor, continent, country, latitude, longitude,
-                case when prp="private" then 1 else 0 end prp
+                case when prp='private' then 1 else 0 end prp
         FROM mapper.barebones
         WHERE day=%s
     ) bb
