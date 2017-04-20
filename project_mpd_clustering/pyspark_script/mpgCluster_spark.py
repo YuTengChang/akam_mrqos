@@ -77,8 +77,8 @@ def main():
         return
 
     if len(day_bb) == 0:
-        logger.error('mapper.barebone data missing for this particular day.')
-        return
+        logger.warning('mapper.barebone data missing for this particular day.')
+        #return
 
     logger.info('Processing data in day=%s, uuid=%s' % (day_idx, uuid_idx))
 
