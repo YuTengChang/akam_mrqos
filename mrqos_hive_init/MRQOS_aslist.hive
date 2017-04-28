@@ -1,0 +1,14 @@
+USE mrqos;
+
+drop table if exists mrqos_asnum;
+
+create external table mrqos_asnum (
+    asnum INT,
+    netname STRING
+    )
+
+partitioned by (datestamp STRING)
+row format delimited
+fields terminated by ','
+lines terminated by '\n'
+location '/ghostcache/hadoop/data/MRQOS/mrqos_asnum';
