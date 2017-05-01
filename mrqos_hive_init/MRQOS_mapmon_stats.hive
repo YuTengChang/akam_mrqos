@@ -43,12 +43,3 @@ row format delimited
 fields terminated by ','
 lines terminated by '\n'
 location '/ghostcache/hadoop/data/MRQOS/mrqos_mapmon_stats';
-
-
-
-
-
-nsip=u'80.253.27.101', mrid=4679, ns_demand=3.53605, ns_asnum=39153, ns_country=u'RU', ns_continent=u'EU', ns_lat=51.97, ns_lon=49.77, mpgid=39358, mpg_type=1, mpg_load=3.88123, regions=[20665, 20850
-], region_links=[u'20665_0', u'20850_1474'], dftime_ratio=[49.6, 33.0], ecors=[5648, 5654], list_min_s=[21.35, 18.99], list_max_s=[24.02, 22.0], list_min_r=[0.0, 0.0], list_max_r=[0.0, 0.0], region_lats=[
-55.75, 55.75], region_lons=[37.58, 37.58], min_s=20.405, max_s=23.212, min_r=0.0, max_r=0.0, ping_ratio=100.0, local_ratio=100.0, cont_fb_ratio=0.0, in_cont_ratio=100.0, in_country_ratio=100.0, private_ra
-tio=60.07, avg_distance=56075.5, sum_dftime=11999.0
