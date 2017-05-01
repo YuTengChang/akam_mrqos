@@ -23,7 +23,7 @@ def main():
     update_machines = [x for x in remote_machines if x not in down_machines]
 
     for machine in update_machines:
-        cmd = 'rsync -r -v --exclude="*.tmp" --exclude="*.log" -e gwsh ~/Documents/Projects/18-DDC/MRQOS/ %s:~/MRQOS/;' % machine
+        cmd = 'rsync -r -v --exclude="*.tmp" --exclude="*.log" --exclude=".git" --exclude=".gitignore" -e gwsh ~/Documents/Projects/18-DDC/MRQOS/ %s:~/MRQOS/;' % machine
         sp.check_call(cmd, shell=True)
 
     print "updated (synced) machines:",
