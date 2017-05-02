@@ -14,7 +14,7 @@ sys.path.append('/home/ychang/Documents/Projects/18-DDC/MRQOS/')
 import configurations.config as config
 
 def main():
-    remote_machines = ['81.52.137.195', '81.52.137.180', '81.52.137.182', '81.52.137.183', '81.52.137.188', # old cluster
+    remote_machines = ['81.52.137.195', '81.52.137.180', '81.52.137.182', '81.52.137.188', # old cluster
                        '104.121.149.12', '104.121.149.14', '104.121.149.20', '104.121.149.27'] # new cluster
     down_machines = ['']
 
