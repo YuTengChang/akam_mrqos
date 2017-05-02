@@ -81,6 +81,9 @@
 #13 0 * * * /home/testgrp/doasme_YT python /home/testgrp/RAAnalysis/ra_python/ns_hadoop_insert.py >> /home/testgrp/RAAnalysis/hadoop_ns_insert.log 2>&1
 #21 0 * * * /home/testgrp/doasme_YT python /home/testgrp/RAAnalysis/ra_python/rg_hadoop_insert.py >> /home/testgrp/RAAnalysis/hadoop_rg_insert.log 2>&1
 
+# mapmon_summarization before pyspark process (s182m)
+0 6 * * * /home/testgrp/doas_YT python /home/testgrp/MRQOS/mrqos_python_script/mapmon_mpd_summary.py
+
 ##################################################
 # #############   Region Tracker   ###############
 ##################################################

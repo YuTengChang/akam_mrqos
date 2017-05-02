@@ -252,3 +252,17 @@ def drop_partitions(tablename, condition):
                                                                   condition)
     return bln_e(hiveql_str)
 
+
+# ==============================================================================
+# # alter table add partitions
+# ==============================================================================
+
+def add_partitions(tablename, partition):
+    """
+    :param tablename:
+    :param partition:
+    :return:
+    """
+    hiveql_str = 'alter table %s add partition(%s);' % (tablename,
+                                                        partition)
+    return bln_e(hiveql_str)
