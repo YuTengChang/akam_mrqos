@@ -26,6 +26,7 @@ def main():
 
         sp.check_call(cmd, shell=True)
 
+    print "\n"
     print "updated (synced) machines:",
     print update_machines
 
