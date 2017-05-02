@@ -29,7 +29,7 @@ hdfs_qos_case_view_hour = '/ghostcache/hadoop/data/MRQOS/case_view_hour/datestam
 # # Local File Locations
 #==============================================================================
 #mrqos_data = '/home/ychang/Documents/Projects/18-DDC/MRQOS/mrqos_data'
-#mrqos_query = '/home/ychang/Documents/Projects/18-DDC/MRQOS/mrqos_query'
+local_mrqos_root = '/home/ychang/Documents/Projects/18-DDC/MRQOS/'
 mrqos_data = '/home/testgrp/MRQOS/mrqos_data'
 mrqos_query = '/home/testgrp/MRQOS/mrqos_query'
 mrqos_data_backup = '/home/testgrp/MRQOS/mrqos_data/backup'
