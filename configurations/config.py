@@ -35,7 +35,6 @@ mrqos_query = '/home/testgrp/MRQOS/mrqos_query'
 mrqos_data_backup = '/home/testgrp/MRQOS/mrqos_data/backup'
 mrqos_hive_query = '/home/testgrp/MRQOS/mrqos_hive_query'
 mrqos_query_result = '/home/testgrp/query_results'
-#mrqos_data_join_backup = '/home/testgrp/MRQOS/mrqos_data/backup/000000_0.deflate'
 lp_solution_depot = '/home/testgrp/MRQOS/mrqos_data/lp'
 mrqos_logging = '/home/testgrp/logs'
 mako_local = mrqos_data_backup + '/mako_local'
@@ -78,14 +77,12 @@ add_rg_partition = 'use MRQOS; alter table mrqos_region add partition(datestamp=
 #==============================================================================
 region_view_hour_data_source = '81.52.137.180'
 mrqos_data_node = '81.52.137.195'
-#web_server_machine = '172.25.23.222' #(need to check periodically against: 'dev-platformperf-scidb02.kendall.corp.akamai.com')
+# dev-platformperf.scidb03.kendall.corp.akamai.com (VM)
 web_server_machine = '172.25.9.147'
 
 region_view_hour_db = '/opt/web-data/SQLite3/ra_mrqos.db'
 case_view_hour_db = '/opt/web-data/SQLite3/case_view_hour.db'
 pp_coverage_db = '/opt/web-data/SQLite3/pp_coverage.db'
-#case_view_hour_init = '/u4/ychang/Projects/18-MRQOS/SQLite3/case_view_hour_init.sql'
-#alist_init_import = '/u4/ychang/Projects/18-MRQOS/SQLite3/aslist_init_and_import.sql'
 region_view_hour_init = '/home/ychang/Documents/Projects/18-DDC/MRQOS/local_other_script/region_view_hour_init.sql'
 case_view_hour_init = '/home/ychang/Documents/Projects/18-DDC/MRQOS/local_other_script/case_view_hour_init.sql'
 pp_coverage_init = '/u0/ychang/Projects/18-DDC/MRQOS/akam_mrqos/local_other_script/pp_coverage_init.sql'
