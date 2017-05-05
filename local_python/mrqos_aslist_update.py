@@ -41,5 +41,10 @@ def main():
         import_str = ''' /opt/anaconda/bin/sqlite3 %s < %s ''' % (config.case_view_hour_db, config.alist_init_import)
         sp.check_call(import_str, shell=True)
 
+    # update the file for Hive data updates
+    cmd = """cat {} | awk -F, '{s=split($3,a,":"); for (i=1; i<=s; i++){print a[i]","$1}}' > {}""".format(config.aslist_file,
+                                                                                                          config.aslist_hive_file)
+    sp.check_call(cmd, shell=True)
+
 if __name__ == '__main__':
     sys.exit(main())

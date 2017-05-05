@@ -44,6 +44,5 @@ def main():
         logger.error('updating by query ASlist failed')
 
 
-
 if __name__ == '__main__':
     sys.exit(main())
