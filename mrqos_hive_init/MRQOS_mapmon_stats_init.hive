@@ -40,6 +40,6 @@ create external table mrqos_mapmon_stats (
 
 partitioned by (datestamp STRING, uuid STRING)
 row format delimited
-fields terminated by ','
+fields terminated by '\t'
 lines terminated by '\n'
 location '/ghostcache/hadoop/data/MRQOS/mrqos_mapmon_stats';
