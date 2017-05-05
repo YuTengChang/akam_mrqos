@@ -42,8 +42,8 @@ def main():
         sp.check_call(import_str, shell=True)
 
     # update the file for Hive data updates
-    cmd = """cat {} | awk -F, '\{s=split($3,a,\":\"); for (i=1; i<=s; i++){print a[i]\",\"$1\}\}' > {}""".format(config.aslist_file,
-                                                                                                            config.aslist_hive_file)
+    cmd = """cat %s | awk -F, '{s=split($3,a,":"); for (i=1; i<=s; i++){print a[i]","$1}}' > %s""" % (config.aslist_file,
+                                                                                                          config.aslist_hive_file)
     print cmd
     sp.check_call(cmd, shell=True)
 
