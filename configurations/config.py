@@ -4,6 +4,7 @@ Created on Wed Apr 22 10:57:38 2015
 
 @author: ychang
 """
+import os
 
 ### configuration files
 
@@ -26,18 +27,20 @@ hdfs_qos_rg_view_hour = '/ghostcache/hadoop/data/MRQOS/region_view_hour/datestam
 hdfs_qos_case_view_hour = '/ghostcache/hadoop/data/MRQOS/case_view_hour/datestamp=%s/hour=%s'
 
 #==============================================================================
-# # Local File Locations
+# # Node Directory Locations
 #==============================================================================
-#mrqos_data = '/home/ychang/Documents/Projects/18-DDC/MRQOS/mrqos_data'
 local_mrqos_root = '/home/ychang/Documents/Projects/18-DDC/MRQOS/'
-mrqos_data = '/home/testgrp/MRQOS/mrqos_data'
-mrqos_query = '/home/testgrp/MRQOS/mrqos_query'
-mrqos_data_backup = '/home/testgrp/MRQOS/mrqos_data/backup'
-mrqos_hive_query = '/home/testgrp/MRQOS/mrqos_hive_query'
+mrqos_root = '/home/testgrp/MRQOS/'
+mrqos_data = os.path.join(mrqos_root, 'mrqos_data')
+mrqos_query = os.path.join(mrqos_root, 'mrqos_query')
+mrqos_data_backup = os.path.join(mrqos_data, 'backup')
+mrqos_hive_query = os.path.join(mrqos_root, 'mrqos_hive_query')
+lp_solution_depot = os.path.join(mrqos_data, 'lp')
+mako_local = os.path.join(mrqos_data_backup, 'mako_local')
+
 mrqos_query_result = '/home/testgrp/query_results'
-lp_solution_depot = '/home/testgrp/MRQOS/mrqos_data/lp'
 mrqos_logging = '/home/testgrp/logs'
-mako_local = mrqos_data_backup + '/mako_local'
+
 
 #==============================================================================
 # # Constant Configurations
@@ -56,7 +59,6 @@ region_summary_back_filling = 6 # 6 hours
 #==============================================================================
 # # Shell Scripts
 #==============================================================================
-#provide_peak = '~/Documents/Projects/18-DDC/MRQOS/peak_label.sh'
 provide_peak = '/home/testgrp/MRQOS/peak_label.sh'
 provide_join = '/home/testgrp/MRQOS/query_table_join.sh'
 copy_from_last_join = '/home/testgrp/MRQOS/duplicate_from_last_join.sh'
