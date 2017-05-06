@@ -1,6 +1,5 @@
 add jar /a/libexec/ddr-1.0.jar;
 
-CREATE DATABASE IF NOT EXISTS mrqos;
 USE mrqos;
 
 drop table if exists score;

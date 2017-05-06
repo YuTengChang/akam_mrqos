@@ -15,9 +15,10 @@ def main():
     root = config.mrqos_root
     hive_init_query_loc = os.path.join(root, 'mrqos_hive_init')
     hive_init_list = glob.glob(os.path.join(hive_init_query_loc, '*.hive'))
+    hive_init_list = sorted(hive_init_list)
 
     for hive_init in hive_init_list:
-        print "now initializing HIVE table from file %s".format(hive_init)
+        print "now initializing HIVE table from file {}".format(hive_init)
         beeline.bln_f(hive_init)
 
 
