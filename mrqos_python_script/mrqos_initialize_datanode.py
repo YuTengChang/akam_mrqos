@@ -28,6 +28,7 @@ def main():
     for folder in folder_list:
         if not os.path.isdir(folder):
             os.makedirs(folder)
+            print "prepare directory: {}".format(folder)
 
     # copy file from /home/testgrp/MRQOS to /home/testgrp
     for fileid in file_list:
@@ -35,6 +36,7 @@ def main():
             file_name = fileid.split('/')[-1]
             shutil.copy2(os.path.join(config.mrqos_root, file_name),
                          fileid)
+            print "prepare file: {}".format(fileid)
 
 
 if __name__ == '__main__':
