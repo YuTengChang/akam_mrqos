@@ -35,6 +35,8 @@ create external table mrqos_mapmon_stats (
     weighted_avg_in_country_ratio DOUBLE,
     weighted_avg_private_ratio DOUBLE,
     weighted_avg_distance_mile DOUBLE,
+    num_region_mapped INT,
+    mapping_entropy DOUBLE,
     sum_dftime DOUBLE
     )
 
