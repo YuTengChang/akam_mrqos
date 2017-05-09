@@ -83,13 +83,21 @@ columns = ['startdate','enddate','maprule','geoname','netname',
 
 df.to_csv('/u4/ychang/Projects/18-MRQOS/Data/temp.csv', index=False, header=False)
 
-cmd_str = 'cat /u4/ychang/Projects/18-MRQOS/Data/mrqos_table_first_line.csv /u4/ychang/Projects/18-MRQOS/Data/temp.csv > /u4/ychang/Projects/18-MRQOS/Data/Mapper.1.MCM.Tables.mrqos_table.csv'
+prep_file = "/u4/ychang/Projects/18-MRQOS/Data/Mapper.1.MCM.Tables.mrqos_table.csv"
+u4_file = "/home/ychang/Workspace/mapgrp/config/sysData/staticInfoTables/tables/Mapper.1.MCM.Tables.mrqos_table.csv"
+
+cmd_str = 'cat /u4/ychang/Projects/18-MRQOS/Data/mrqos_table_first_line.csv /u4/ychang/Projects/18-MRQOS/Data/temp.csv > %s' % prep_file
 sp.check_call( cmd_str, shell=True )
 
+p4_setting = 'export P4PORT="rsh:ssh -q -a -x -l p4ssh -q -x perforce.akamai.com /bin/true";'
+
 # p4 folder sync
-cmd_str = 'export P4PORT="rsh:ssh -q -a -x -l p4ssh -q -x perforce.akamai.com /bin/true"; /usr/bin/p4 sync /home/ychang/Workspace/mapgrp/config/sysData/staticInfoTables/tables/Mapper.1.MCM.Tables.mrqos_table.csv'
+cmd_str = p4_setting + ' /usr/bin/p4 sync %s' % u4_file
 sp.check_call( cmd_str, shell=True )
 
 # p4 edit and update
-cmd_str = 'export P4PORT="rsh:ssh -q -a -x -l p4ssh -q -x perforce.akamai.com /bin/true"; /usr/bin/p4 edit /home/ychang/Workspace/mapgrp/config/sysData/staticInfoTables/tables/Mapper.1.MCM.Tables.mrqos_table.csv; cp /u4/ychang/Projects/18-MRQOS/Data/Mapper.1.MCM.Tables.mrqos_table.csv /home/ychang/Workspace/mapgrp/config/sysData/staticInfoTables/tables/Mapper.1.MCM.Tables.mrqos_table.csv; /usr/bin/p4 submit -d"file update" /home/ychang/Workspace/mapgrp/config/sysData/staticInfoTables/tables/Mapper.1.MCM.Tables.mrqos_table.csv;'
+cmd_str = p4_setting + ' /usr/bin/p4 edit %s; cp %s %s; /usr/bin/p4 submit -d"file update" %s;' % (u4_file,
+                                                                                                    prep_file,
+                                                                                                    u4_file,
+                                                                                                    u4_file)
 sp.check_call( cmd_str, shell=True )
