@@ -30,6 +30,7 @@ hdfs_qos_case_view_hour = '/ghostcache/hadoop/data/MRQOS/case_view_hour/datestam
 # # Node Directory Locations
 #==============================================================================
 local_mrqos_root = '/home/ychang/Documents/Projects/18-DDC/MRQOS/'
+local_mrqos_data = '/home/ychang/Documents/Projects/18-DDC/MRQOS_local_data'
 mrqos_root = '/home/testgrp/MRQOS/'
 mrqos_data = os.path.join(mrqos_root, 'mrqos_data')
 mrqos_query = os.path.join(mrqos_root, 'mrqos_query')
@@ -78,10 +79,13 @@ add_rg_partition = 'use MRQOS; alter table mrqos_region add partition(datestamp=
 # # Local Parameter Settings
 #==============================================================================
 region_view_hour_data_source = '81.52.137.180'
-mrqos_data_node = '81.52.137.195'
+mrqos_data_node = '81.52.137.188'
 # dev-platformperf.scidb03.kendall.corp.akamai.com (VM)
 web_server_machine = '172.25.9.147'
 
+local_mrqos_data_summary_stats = os.path.join(local_mrqos_data, 'mrqos_summary_statistics')
+
+# db and initializations
 region_view_hour_db = '/opt/web-data/SQLite3/ra_mrqos.db'
 case_view_hour_db = '/opt/web-data/SQLite3/case_view_hour.db'
 pp_coverage_db = '/opt/web-data/SQLite3/pp_coverage.db'
