@@ -35,8 +35,8 @@ def main():
     output = proc.stdout.read().split('\n')[0]
     source_path = os.path.join(config.local_mrqos_data_summary_stats, 'compound_metric.csv')
     dest_path = os.path.join(config.local_mrqos_data_summary_stats, 'compound_metric_comma.csv')
-    cmd_str = ''' cat {} | awk -v var="$timenow" '{print var, $0}' | sed 's/\s\+/,/g' > {} '''.format(source_path,
-                                                                                                      dest_path)
+    cmd_str = ''' cat {} | awk -v var="$timenow" '\{print var, $0\}' | sed 's/\s\+/,/g' > {} '''.format(source_path,
+                                                                                                        dest_path)
     cmd_str = 'timenow=$({});'.format(output) + cmd_str
     sp.check_call(cmd_str, shell=True)
     vm_txt_root = '/var/www/txt/'
