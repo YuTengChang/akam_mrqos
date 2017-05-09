@@ -23,7 +23,7 @@ def main():
         source_path = os.path.join(config.mrqos_data,
                                    fetch_item)
         dest_path = os.path.join(config.local_mrqos_data_summary_stats,
-                                 fetch_item)
+                                 fetch_item.split('.')[0]+'.csv')
         cmd_str = 'scp -Sgwsh testgrp@{}:{} {}'.format(config.mrqos_data_node,
                                                        source_path,
                                                        dest_path)
