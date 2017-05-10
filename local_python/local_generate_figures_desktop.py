@@ -9,23 +9,30 @@ Created on Thu Dec 11 15:32:42 2014
 #==============================================================================
 # this is importation of the modules
 #==============================================================================
-import pygal;
-import os, sys;
-import subprocess as sp;
-import csv;
-import numpy;
-import pandas as pd;
+import pygal
+import os, sys
+import subprocess as sp
+import numpy
+import pandas as pd
+import shutil
+sys.path.append('/home/ychang/Documents/Projects/18-DDC/MRQOS/')
+import configurations.config as config
 
 # %% DATA PRE-PROCESS
 #==============================================================================
 # this is the proprocessing for the MRQOS data
 #==============================================================================
-cmd = "cat /u4/ychang/Projects/18-MRQOS/Data/summarized_table.csv | sed s:NULL:0:g | sed 's/\t/,/g' | awk -F',' '{x=length($4); if(x==2){print $0;}}' | awk -F',' '{if($3>0){print $0;}}' > /u4/ychang/Projects/18-MRQOS/Data/processed.csv";
-sp.check_call( cmd, shell=True );
+root = os.path.join(config.local_mrqos_data,
+                    'mrqos_summary_statistics')
+source_path = os.path.join(root, 'summarized_table.csv')
+dest_path = os.path.join(root, 'processed.csv')
+cmd = "cat %s | sed s:NULL:0:g | sed 's/\t/,/g' | awk -F',' '{x=length($4); if(x==2){print $0;}}' | awk -F',' '{if($3>0){print $0;}}' > %s" % (source_path,
+                                                                                                                                               dest_path)
+sp.check_call(cmd, shell=True)
 
 
 # the mixed-data-type
-data = numpy.genfromtxt('/u4/ychang/Projects/18-MRQOS/Data/processed.csv',delimiter=',', dtype='str');
+data = numpy.genfromtxt(dest_path, delimiter=',', dtype='str')
 headers = ['startdate','enddate','maprule','geoname','netname',
            'sp99_t95','sp99_t90','sp99_t85','sp99_t75','sp99_t50',
            'sp95_t95','sp95_t90','sp95_t85','sp95_t75','sp95_t50',
@@ -49,41 +56,56 @@ headers = ['startdate','enddate','maprule','geoname','netname',
            'dp90_cd','dp90_cw','dp75_cd','dp75_cw','icy_cd','icy_cw',
            'ict_cd','ict_cw','zero_ping_count','zp_ratio','n_count',
            'avg_sp99d','avg_sp95d','avg_sp90d','avg_sp75d','avg_dp99d',
-           'avg_dp95d','avg_dp90d','avg_dp75d','avg_icyd','avg_ictd'];
+           'avg_dp95d','avg_dp90d','avg_dp75d','avg_icyd','avg_ictd']
 
-
-dff = pd.DataFrame(data,columns=headers)
+dff = pd.DataFrame(data, columns=headers)
 df = dff.convert_objects(convert_numeric=True)
-DateStart = df.iloc[0,0]
-DateEnd = df.iloc[0,1]
+DateStart = df.iloc[0, 0]
+DateEnd = df.iloc[0, 1]
 DatePeriod = DateStart+" ~ "+DateEnd
 
 # if data exist, then copy to /var/www/txt/ folder
-cmd = "cp /u4/ychang/Projects/18-MRQOS/Data/processed.csv /var/www/txt/processed.csv"
-sp.check_call( cmd, shell=True );
-cmd = "cat /u4/ychang/Projects/18-MRQOS/Data/processed_2wjoin.csv | tail -n+2 | sed 's/\t/,/g' > /var/www/txt/processed_2wjoin.csv"
-sp.check_call( cmd, shell=True );
-cmd = "cat /u4/ychang/Projects/18-MRQOS/Data/processed_2wjoin_full.csv | tail -n+2 | sed 's/\t/,/g' > /var/www/txt/processed_2wjoin_full.csv"
-sp.check_call( cmd, shell=True );
-cmd = "cat /u4/ychang/Projects/18-MRQOS/Data/processed_2wjoin_full_wloads.csv | tail -n+2 | sed 's/\t/,/g' > /var/www/txt/processed_2wjoin_full_wloads.csv"
-sp.check_call( cmd, shell=True );
-cmd = "cat /u4/ychang/Projects/18-MRQOS/Data/processed_3djoin_full_wloads.csv | tail -n+2 | sed 's/\t/,/g' > /var/www/txt/processed_3djoin_full_wloads.csv"
-sp.check_call( cmd, shell=True );
-cmd = "cat /u4/ychang/Projects/18-MRQOS/Data/processed_2wjoin_full_wloads_wio.csv | tail -n+2 | sed 's/\t/,/g' > /var/www/txt/processed_2wjoin_full_wloads_wio.csv"
-sp.check_call( cmd, shell=True );
-cmd = "cat /u4/ychang/Projects/18-MRQOS/Data/processed_3djoin_full_wloads_wio.csv | tail -n+2 | sed 's/\t/,/g' > /var/www/txt/processed_3djoin_full_wloads_wio.csv"
-sp.check_call( cmd, shell=True );
+shutil.copy2(dest_path, os.path.join(config.front_end_txt,
+                                     'processed.csv'))
+# reformatting the file to comma-separated files
+file_list = ['processed_2wjoin.csv',
+             'processed_2wjoin_full.csv',
+             'processed_2wjoin_full_wloads.csv',
+             'processed_3djoin_full_wloads.csv',
+             'processed_2wjoin_full_wloads_wio.csv',
+             'processed_3djoin_full_wloads_wio.csv',
+             ]
+for file_id in file_list:
+    source_path = os.path.join(root, file_id)
+    dest_path = os.path.join(config.front_end_txt, file_id)
+    cmd = "cat {} | tail -n+2 | sed 's/\t/,/g' > {}".format(source_path, dest_path)
+    sp.check_call(cmd, shell=True)
+# cmd = "cat /u4/ychang/Projects/18-MRQOS/Data/processed_2wjoin.csv | tail -n+2 | sed 's/\t/,/g' > /var/www/txt/processed_2wjoin.csv"
+# sp.check_call( cmd, shell=True )
+# cmd = "cat /u4/ychang/Projects/18-MRQOS/Data/processed_2wjoin_full.csv | tail -n+2 | sed 's/\t/,/g' > /var/www/txt/processed_2wjoin_full.csv"
+# sp.check_call( cmd, shell=True )
+# cmd = "cat /u4/ychang/Projects/18-MRQOS/Data/processed_2wjoin_full_wloads.csv | tail -n+2 | sed 's/\t/,/g' > /var/www/txt/processed_2wjoin_full_wloads.csv"
+# sp.check_call( cmd, shell=True )
+# cmd = "cat /u4/ychang/Projects/18-MRQOS/Data/processed_3djoin_full_wloads.csv | tail -n+2 | sed 's/\t/,/g' > /var/www/txt/processed_3djoin_full_wloads.csv"
+# sp.check_call( cmd, shell=True )
+# cmd = "cat /u4/ychang/Projects/18-MRQOS/Data/processed_2wjoin_full_wloads_wio.csv | tail -n+2 | sed 's/\t/,/g' > /var/www/txt/processed_2wjoin_full_wloads_wio.csv"
+# sp.check_call( cmd, shell=True )
+# cmd = "cat /u4/ychang/Projects/18-MRQOS/Data/processed_3djoin_full_wloads_wio.csv | tail -n+2 | sed 's/\t/,/g' > /var/www/txt/processed_3djoin_full_wloads_wio.csv"
+# sp.check_call( cmd, shell=True )
 
 # run the report generating script
-cmd = "/opt/anaconda/bin/python /u4/ychang/Projects/18-MRQOS/python_scripts/generate_Fred_reports.py"
-sp.check_call( cmd, shell=True );
+cmd = "/opt/anaconda/bin/python {}".format(os.path.join(config.local_mrqos_root,
+                                                        'local_python',
+                                                        'local_generate_Fred_reports.py'))
+sp.check_call(cmd, shell=True)
 
 # %% GEO and MR LIST DEFINITION
 #==============================================================================
 # this is definition
 #==============================================================================
 geo_list = numpy.unique(dff.geoname)
-maprule_list = [1,3,121,122,153,197,198,290,332,382,388,436,2903,2905,2911,2916,2923,4114,4992];
+maprule_list = [1, 3, 121, 122, 153, 197, 198, 290, 332, 382,
+                388, 436, 2903, 2905, 2911, 2916, 2923, 4114, 4992]
 
 
 # %% E2-Figures
@@ -108,11 +130,11 @@ plot_index = [['sp99_t95', 'sp99_t90', 'sp99_t85', 'sp99_t75', 'sp99_t50',
               ['icy_t95', 'icy_t90', 'icy_t85', 'icy_t75', 'icy_t50', 'icy_tar',
                'ict_t95', 'ict_t90', 'ict_t85', 'ict_t75', 'ict_t50', 'ict_tar']];
 plot_type = ['Score','Distance','Other']
-x_pct = numpy.array([0.95,0.90,0.85,0.75,0.5])
+x_pct = numpy.array([0.95, 0.90, 0.85, 0.75, 0.5])
 
 for ct in geo_list:
     for mrid in maprule_list:
-        df2 = df[(df['geoname']==ct)&(df['maprule']==mrid)];
+        df2 = df[(df['geoname']==ct)&(df['maprule']==mrid)]
         ntlist = numpy.unique(df2.netname);
         for nt in ntlist:
             for type_scan in range(len(plot_type)):

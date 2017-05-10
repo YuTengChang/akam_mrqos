@@ -9,7 +9,6 @@ This script do the distance calculation
 
 """
 import sys,os
-import math
 import numpy
 import time
 import pandas as pd
@@ -65,18 +64,19 @@ def main():
 
     sp.check_call(cmd_str, shell=True)
 
-    data = numpy.genfromtxt(file_source,delimiter=',', dtype='str')
+    data = numpy.genfromtxt(file_source, delimiter=',', dtype='str')
 
     dff = pd.DataFrame(data,columns=headers)
     df = dff.convert_objects(convert_numeric=True)
 
-    df.load_2w = [ str(int(round((x-y)/y*100,0))) if y>0 else '0' for (x,y) in zip(df.load, df.load_2w) ]
+    df.load_2w = [ str(int(round((x-y)/y*100,0))) if y>0 else '0' for (x, y) in zip(df.load, df.load_2w) ]
     df.load = [ str(x)+' ('+y+'%)' for (x,y) in zip(df.load, df.load_2w) ]
 
     df = df.loc[:,['startdate','enddate','Service','Group','mrname','priority',
-            'maprule','geoname','netname',
-            'sp95_t95','sp75_t95','ocy_t95','io_t95','load',
-            'sp95_t95_2w','sp75_t95_2w','ocy_t95_2w','io_t95_2w']]
+                    'maprule','geoname','netname',
+                    'sp95_t95','sp75_t95','ocy_t95','io_t95','load',
+                    'sp95_t95_2w','sp75_t95_2w','ocy_t95_2w','io_t95_2w',
+                   ]]
 
     #df2 = df[df.maprule.isin(map_idx) & df.geoname.isin(inGeo) & df.netname.isin(['ANY'])];
     df2 = df[df.maprule.isin(map_idx) & df.netname.isin(['ANY'])]
@@ -88,7 +88,7 @@ def main():
     filename = 'processed_3djoin_full_wloads_wio.csv'
     reportname = 'Fred3DReport.%s.csv' % (str(today))
 
-    file_source =  os.path.join(filedir, reportname)
+    file_source = os.path.join(filedir, reportname)
 
     cmd_str = ''' awk -F, 'FNR==NR{a[$1]=$0;next}{print $0","a[$3]}' %s %s | awk -F, 'NF>37' > %s ''' % (dictionary_file,
                          os.path.join(filedir, filename),
@@ -96,7 +96,7 @@ def main():
 
     sp.check_call(cmd_str, shell=True)
 
-    data = numpy.genfromtxt(file_source,delimiter=',', dtype='str')
+    data = numpy.genfromtxt(file_source, delimiter=',', dtype='str')
 
     dff = pd.DataFrame(data, columns=headers)
     df = dff.convert_objects(convert_numeric=True)
@@ -115,4 +115,4 @@ def main():
     df2.to_csv(os.path.join(filedir,reportname), header=False, index=False)
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())
