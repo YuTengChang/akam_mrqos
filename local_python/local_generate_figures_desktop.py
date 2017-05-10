@@ -80,18 +80,6 @@ for file_id in file_list:
     dest_path = os.path.join(config.front_end_txt, file_id)
     cmd = "cat {} | tail -n+2 | sed 's/\t/,/g' > {}".format(source_path, dest_path)
     sp.check_call(cmd, shell=True)
-# cmd = "cat /u4/ychang/Projects/18-MRQOS/Data/processed_2wjoin.csv | tail -n+2 | sed 's/\t/,/g' > /var/www/txt/processed_2wjoin.csv"
-# sp.check_call( cmd, shell=True )
-# cmd = "cat /u4/ychang/Projects/18-MRQOS/Data/processed_2wjoin_full.csv | tail -n+2 | sed 's/\t/,/g' > /var/www/txt/processed_2wjoin_full.csv"
-# sp.check_call( cmd, shell=True )
-# cmd = "cat /u4/ychang/Projects/18-MRQOS/Data/processed_2wjoin_full_wloads.csv | tail -n+2 | sed 's/\t/,/g' > /var/www/txt/processed_2wjoin_full_wloads.csv"
-# sp.check_call( cmd, shell=True )
-# cmd = "cat /u4/ychang/Projects/18-MRQOS/Data/processed_3djoin_full_wloads.csv | tail -n+2 | sed 's/\t/,/g' > /var/www/txt/processed_3djoin_full_wloads.csv"
-# sp.check_call( cmd, shell=True )
-# cmd = "cat /u4/ychang/Projects/18-MRQOS/Data/processed_2wjoin_full_wloads_wio.csv | tail -n+2 | sed 's/\t/,/g' > /var/www/txt/processed_2wjoin_full_wloads_wio.csv"
-# sp.check_call( cmd, shell=True )
-# cmd = "cat /u4/ychang/Projects/18-MRQOS/Data/processed_3djoin_full_wloads_wio.csv | tail -n+2 | sed 's/\t/,/g' > /var/www/txt/processed_3djoin_full_wloads_wio.csv"
-# sp.check_call( cmd, shell=True )
 
 # run the report generating script
 cmd = "/opt/anaconda/bin/python {}".format(os.path.join(config.local_mrqos_root,
