@@ -10,16 +10,16 @@ This script do the distance calculation
 """
 import sys,os
 import numpy
-import time
 import pandas as pd
 from datetime import date, timedelta
 import subprocess as sp
 import locale
+sys.path.append('/home/ychang/Documents/Projects/18-DDC/MRQOS/')
+import configurations.config as config
 
 def main():
     # current time. Labeled as yesterday because the summarization ends D-1
     locale.setlocale(locale.LC_ALL, 'en_US')
-    timenow = int(time.time())
     today = date.today() - timedelta(1)
 
     # parameters:
@@ -48,15 +48,17 @@ def main():
                 11238,11239,11240,11241,11242,11243,11244,11245,11246,11247,11248,11249,11520,
                 7660,7661,7662,7663,7664,7665,7666,7667,7668,7669,7647,7648,7950,7951,7952,7953,7954,7955,7956,7957]
 
-    filedir = '/var/www/txt'
-    dictionary_file = '/u4/ychang/Projects/18-MRQOS/Data/mr_final_dictionary.txt'
+    filedir = config.front_end_txt
+    dictionary_file = os.path.join(config.local_mrqos_root,
+                                   'local_other_script',
+                                   'mr_final_dictionary.txt')
 
     ## 2W Report Summary
     # generate the dictionary-looked-up file, append the date
     filename = 'processed_2wjoin_full_wloads_wio.csv'
     reportname = 'Fred2WReport.%s.csv' % (str(today))
 
-    file_source =  os.path.join(filedir, reportname)
+    file_source = os.path.join(filedir, reportname)
 
     cmd_str = ''' awk -F, 'FNR==NR{a[$1]=$0;next}{print $0","a[$3]}' %s %s | awk -F, 'NF>37' > %s ''' % (dictionary_file,
                          os.path.join(filedir, filename),
@@ -78,10 +80,9 @@ def main():
                     'sp95_t95_2w','sp75_t95_2w','ocy_t95_2w','io_t95_2w',
                    ]]
 
-    #df2 = df[df.maprule.isin(map_idx) & df.geoname.isin(inGeo) & df.netname.isin(['ANY'])];
     df2 = df[df.maprule.isin(map_idx) & df.netname.isin(['ANY'])]
 
-    df2.to_csv(os.path.join(filedir,reportname), header=False, index=False)
+    df2.to_csv(os.path.join(filedir, reportname), header=False, index=False)
 
     ## 3D Report Summary
     # generate the dictionary-looked-up file, append the date
@@ -109,7 +110,6 @@ def main():
             'sp95_t95','sp75_t95','ocy_t95','io_t95','load',
             'sp95_t95_2w','sp75_t95_2w','ocy_t95_2w','io_t95_2w']]
 
-    #df2 = df[df.maprule.isin(map_idx) & df.geoname.isin(inGeo) & df.netname.isin(['ANY'])];
     df2 = df[df.maprule.isin(map_idx) & df.netname.isin(['ANY'])]
 
     df2.to_csv(os.path.join(filedir,reportname), header=False, index=False)
