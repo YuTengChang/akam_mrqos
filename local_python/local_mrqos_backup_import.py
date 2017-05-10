@@ -39,7 +39,7 @@ def main():
                                                                                                   dest_path)
     cmd_str = 'timenow=$(echo {});'.format(output) + cmd_str
     sp.check_call(cmd_str, shell=True)
-    vm_txt_root = '/var/www/txt/'
+    vm_txt_root = config.front_end_txt
     cmd_str = 'cp {} {}'.format(dest_path,
                                 os.path.join(vm_txt_root,
                                              'compound_metric_comma.csv'))

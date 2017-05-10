@@ -42,7 +42,7 @@ mako_local = os.path.join(mrqos_data_backup, 'mako_local')
 mrqos_query_result = '/home/testgrp/query_results'
 mrqos_logging = '/home/testgrp/logs'
 
-front_end_txt = '/var/www/txt'
+front_end_txt = '/var/www/txt/'
 
 #==============================================================================
 # # Constant Configurations
