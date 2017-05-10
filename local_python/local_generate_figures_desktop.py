@@ -68,7 +68,7 @@ DatePeriod = DateStart+" ~ "+DateEnd
 shutil.copy2(dest_path, os.path.join(config.front_end_txt,
                                      'processed.csv'))
 # reformatting the file to comma-separated files
-file_list = ['processed_2wjoin.csv',
+file_list = [#'processed_2wjoin.csv',
              'processed_2wjoin_full.csv',
              'processed_2wjoin_full_wloads.csv',
              'processed_3djoin_full_wloads.csv',
