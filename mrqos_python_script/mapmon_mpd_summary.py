@@ -39,7 +39,7 @@ def main():
         file_location = os.path.join(config.hdfs_table,
                                            'mapmon_sum',
                                            'day={}'.format(date_idx),
-                                           'mpg_uuid={}'.format(uuid_idx))
+                                           'mpd_uuid={}'.format(uuid_idx))
         if hdfsutil.test_dic(file_location):
             logger.info('creating folder: {}'.format(file_location))
             hdfsutil.mkdir(file_location)
