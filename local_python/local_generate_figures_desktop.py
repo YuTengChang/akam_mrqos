@@ -199,8 +199,8 @@ for ct in geo_list:
                                                      numpy.round((100-tt[6:8])/(100-tt[8]), decimals=2),
                                                      numpy.round((100-tt[9:11])/(100-tt[11]), decimals=2),
                                                      numpy.round(numpy.array([(1-(tt[13]+0.001)/(tt[12]+0.001))/0.05,
-                                                                              tt[14]/9500]), decimals=2)
-                                                    ), axis=1),[5,2]).T
+                                                                              tt[14]/9500]), decimals=2),
+                                                     ), axis=1), [5, 2]).T
 
             stats = numpy.minimum(10,stats)
             #print stats;
