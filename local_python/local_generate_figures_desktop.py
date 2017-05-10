@@ -117,7 +117,7 @@ maprule_list = [1, 3, 121, 122, 153, 197, 198, 290, 332, 382,
 ## distance
 ## in_continent x in_country
 ##
-filedir = '/var/www/Figures/E2/';
+filedir = '/var/www/Figures/E2/'
 #print ct+"::"+nt+"::MR_"+str(mrid)
 plot_index = [['sp99_t95', 'sp99_t90', 'sp99_t85', 'sp99_t75', 'sp99_t50',
                'sp95_t95', 'sp95_t90', 'sp95_t85', 'sp95_t75', 'sp95_t50',
@@ -179,19 +179,19 @@ ploygon_hover_index = ['Score','Distance','Out of Country','Out of Continent','n
 #print ct+"::"+nt+"::MR_"+str(mrid)
 for ct in geo_list:
     for mrid in maprule_list:
-        df2 = df[(df['geoname']==ct)&(df['maprule']==mrid)];
+        df2 = df[(df['geoname']==ct)&(df['maprule']==mrid)]
         ntlist = numpy.unique(df2.netname);
         for nt in ntlist:
             #print ct+"::"+nt+"::MR_"+str(mrid)
             radar_chart = pygal.Radar(dots_size=5, legend_font_size=15, x_label_font_size=15)
-            radar_chart.title = ct+"::"+nt+"::MR_"+str(mrid);
-            str_for_name = ct+"_"+nt+"_"+str(mrid)+'.svg';
+            radar_chart.title = ct+"::"+nt+"::MR_"+str(mrid)
+            str_for_name = ct+"_"+nt+"_"+str(mrid)+'.svg'
             tt = numpy.array(df2[(df2['netname']==nt)].loc[:,['sp95_t95', 'sp95_t50', 'star',
                                                               'dp95_t95', 'dp95_t50', 'dtar',
                                                               'icy_t95', 'icy_t50', 'icy_tar',
                                                               'ict_t95', 'ict_t50', 'ict_tar',
                                                               'total_mbps','ping_mbps','p2t_bps_pct_min'
-                                                              ]])[0,:];
+                                                              ]])[0,:]
 
 
             stats = numpy.reshape(numpy.concatenate((numpy.round(tt[0:2]/tt[2], decimals=2),
