@@ -202,7 +202,7 @@ for ct in geo_list:
                                                                               tt[14]/9500]), decimals=2),
                                                      ), axis=1), [5, 2]).T
 
-            stats = numpy.minimum(10,stats)
+            stats = numpy.minimum(10, stats)
             #print stats;
             temp_targets = numpy.array([str(tt[2]),str(tt[5]),str(100-tt[8]),str(100-tt[11]),'5'])
             temp_truevalue = numpy.array([str(tt[0]),
