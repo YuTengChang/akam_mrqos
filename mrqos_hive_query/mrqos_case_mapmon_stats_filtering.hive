@@ -1,0 +1,51 @@
+SELECT * FROM
+(
+SELECT  b.mrid maprule,
+        b.ns_country geoname,
+        a.netname netname,
+        b.nsip nsip,
+        b.ns_demand ns_demand,
+        b.ns_asnum ns_asnum,
+        b.ns_continent continent,
+        b.ns_lat ns_lat,
+        b.ns_lon ns_lon,
+        b.mpg_type mpg_type,
+        b.mpg_load mpg_load,
+        b.regions regions,
+        b.region_links region_links,
+        b.dftime_percentage_ratio dftime_percentage_ratio,
+        b.ecors ecors,
+        b.list_min_score list_min_score,
+        b.list_max_score list_max_score,
+        b.weighted_avg_min_score avg_min_score,
+        b.weighted_avg_max_score avg_max_score,
+        b.weighted_avg_min_rank avg_min_rank,
+        b.weighted_avg_max_rank avg_max_rank,
+        b.weighted_avg_ping_ratio avg_ping_ratio,
+        b.weighted_avg_local_ratio avg_local_ratio,
+        b.weighted_avg_cont_fb_ratio avg_cont_fb_ratio,
+        b.weighted_avg_in_cont_ratio avg_in_cont_ratio,
+        b.weighted_avg_in_country_ratio avg_in_country_ratio,
+        b.weighted_avg_private_ratio avg_private_ratio,
+        b.weighted_avg_distance_mile avg_distance,
+        b.num_region_mapped num_region_mapped,
+        b.mapping_entropy mapping_entropy,
+        b.sum_dftime sum_dftime
+FROM
+    mrqos.mrqos_asnum a
+INNER JOIN
+    mrqos.mrqos_mapmon_stats b
+ON
+    a.asnum = b.ns_asnum) c
+WHERE
+    maprule = 9644 and geoname='IT' and
+    (
+    c.mapping_entropy > 0.9 OR
+    c.avg_ping_ratio < 0.1 OR
+    c.avg_cont_fb_ratio > 0.2 OR
+    c.avg_in_country_ratio < 0.2 OR
+    c.avg_in_cont_ratio < 0.05 OR
+    c.avg_distance > 2000
+    )
+ORDER BY maprule, geoname, netname, ns_demand DESC
+LIMIT 100;
