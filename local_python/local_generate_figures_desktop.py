@@ -160,15 +160,15 @@ print "finished E2 Figures!"
 ## in_country
 ## io_ratio
 ## ping-based_to_all traffic
-filedir = '/var/www/Figures/E/';
-xfiledir = '/Figures/E2/';
+filedir = '/var/www/Figures/E/'
+xfiledir = '/Figures/E2/'
 ploygon_hover_index = ['Score','Distance','Out of Country','Out of Continent','non-P2T']
 
 #print ct+"::"+nt+"::MR_"+str(mrid)
 for ct in geo_list:
     for mrid in maprule_list:
         df2 = df[(df['geoname']==ct)&(df['maprule']==mrid)]
-        ntlist = numpy.unique(df2.netname);
+        ntlist = numpy.unique(df2.netname)
         for nt in ntlist:
             #print ct+"::"+nt+"::MR_"+str(mrid)
             radar_chart = pygal.Radar(dots_size=5, legend_font_size=15, x_label_font_size=15)
@@ -181,17 +181,15 @@ for ct in geo_list:
                                                               'total_mbps','ping_mbps','p2t_bps_pct_min'
                                                               ]])[0,:]
 
-
-            stats = numpy.reshape(numpy.concatenate((numpy.round(tt[0:2]/tt[2], decimals=2),
-                                                     numpy.round(tt[3:5]/tt[5], decimals=2),
-                                                     numpy.round((100-tt[6:8])/(100-tt[8]), decimals=2),
-                                                     numpy.round((100-tt[9:11])/(100-tt[11]), decimals=2),
-                                                     numpy.round(numpy.array([(1-(tt[13]+0.001)/(tt[12]+0.001))/0.05,
-                                                                              tt[14]/9500]), decimals=2),
-                                                     ), axis=1), [5, 2]).T
+            stats = numpy.vstack((numpy.round(tt[0:2]/tt[2], decimals=2),
+                                  numpy.round(tt[3:5]/tt[5], decimals=2),
+                                  numpy.round((100-tt[6:8])/(100-tt[8]), decimals=2),
+                                  numpy.round((100-tt[9:11])/(100-tt[11]), decimals=2),
+                                  numpy.round(numpy.array([(1-(tt[13]+0.001)/(tt[12]+0.001))/0.05,
+                                                          tt[14]/9500]), decimals=2),
+                                  )).T
 
             stats = numpy.minimum(10, stats)
-            #print stats;
             temp_targets = numpy.array([str(tt[2]),str(tt[5]),str(100-tt[8]),str(100-tt[11]),'5'])
             temp_truevalue = numpy.array([str(tt[0]),
                                           str(tt[3]),
@@ -364,8 +362,8 @@ for mrid in maprule_list:
         temp = numpy.array(df2[df2.geoname == ct])[0,1::]
         # replace 'in_country' by 'in_continent' if in the list 'geo_go_by_continent'
         if ct.lower() in geo_go_by_continent:
-            temp[2] = temp[3];
-            temp[6] = temp[7];
+            temp[2] = temp[3]
+            temp[6] = temp[7]
 
         hex_colors = '#%0.2x' % (255 * (1-numpy.exp(-1*temp[0]/Tscale))) + '%0.2x' % (255 * (1-numpy.exp(-1*temp[1]/Tscale))) + '%0.2x' % (255 * (1-numpy.exp(-1*temp[2]/Tscale)))
         color_set = color_set + "'%s'," % hex_colors
@@ -377,9 +375,9 @@ for mrid in maprule_list:
     worldmap.title = 'Maprule '+str(mrid)
 
     # measurement type temp string:
-    Score_str = '';
-    Distance_str = '';
-    OutGeo_str = '';
+    Score_str = ''
+    Distance_str = ''
+    OutGeo_str = ''
     # add the categorical data for later plots
     for ct in geo_data:
         temp = numpy.array(df2[df2.geoname == ct])[0,1::]
@@ -429,11 +427,11 @@ print "finished A2 & A4 Figures!" # < 15 sec
 #==============================================================================
 ## this is the procedure to create A-figures: Geo WorldMap for overall (cumulative) flags
 ## this is the procedure to create B-figures: Geo StackedBar Figure for each (individual) flags
-xfiledir = '/Figures/J/';  # load from
-filedir = '/var/www/Figures/A3/';   # save to
-F_set = ['Score','Distance','OutGeo'];
+xfiledir = '/Figures/J/'  # load from
+filedir = '/var/www/Figures/A3/'   # save to
+F_set = ['Score','Distance','OutGeo']
 
-geo_list = numpy.unique(df.geoname);
+geo_list = numpy.unique(df.geoname)
 
 geo_dictionary = {'ad': 'Andorra',
 'ae': 'United Arab Emirates',
@@ -673,9 +671,9 @@ for mrid in maprule_list:
     worldmap.title = 'Maprule '+str(mrid)
 
     # measurement type temp string:
-    Score_str = '';
-    Distance_str = '';
-    OutGeo_str = '';
+    Score_str = ''
+    Distance_str = ''
+    OutGeo_str = ''
     # add the categorical data for later plots
     for ct in geo_data:
         temp = numpy.array(df2[df2.geoname == ct])[0,1::]
@@ -690,8 +688,8 @@ for mrid in maprule_list:
     # plot the categorical data
     for item in range(len(F_set)):
         exec('str_tmp='+F_set[item]+'_str;')
-        str_tmp = "worldmap.add('"+F_set[item]+"', ["+str_tmp[:len(str_tmp)-1]+"])";
-        exec(str_tmp);
+        str_tmp = "worldmap.add('"+F_set[item]+"', ["+str_tmp[:len(str_tmp)-1]+"])"
+        exec(str_tmp)
 
     # plot per country(geo) data
     for ct in geo_data:
