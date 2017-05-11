@@ -1,0 +1,73 @@
+SHELL=/bin/bash
+SSH_AUTH_SOCK=/tmp/ssh-SmCP6pgCbwPW/agent.4719
+SSH_AGENT_PID=4721
+USER=ychang
+PERL5LIB=/u4/ccare/perl5:/home/lguo/lib/perl5/share/perl/5.8.8:/home/lguo/lib/perl5/lib/perl/5.8.8
+#UP4PORT=rsh:ssh -2 -q -a -x -l p4ssh1681 perforce.akamai.com /bin/true
+
+######################################################
+# mrqos import from ddr and process/generate figures #
+######################################################
+0 6 * * * /home/ychang/Documents/Projects/18-DDC/history_summarized_report/doasYC python /home/ychang/Documents/Projects/18-DDC/MRQOS/local_python/local_mrqos_backup_import.py
+
+####################################################
+# grab region information from mcm_regions (daily) #
+####################################################
+40 1 * * * /home/ychang/Documents/Projects/18-DDC/history_summarized_report/doasYC /home/ychang/Documents/Projects/09-SystemInfo/region_info_grab >> /home/ychang/Documents/Projects/09-SystemInfo/input_process.log 2>&1
+
+0 3 * * 0 cp /home/ychang/Documents/Projects/09-SystemInfo/RG_info/`ls -ltr /home/ychang/Documents/Projects/09-SystemInfo/RG_info | tail -1 | awk '{print $NF}'` /home/ychang/Documents/Projects/09-SystemInfo/mcm_Regions_grab.txt
+
+#########################################
+# grab ns information from mako (daily) # set to get UTC time, 19:10 EST = 0:10 UTC next day
+#########################################
+9 19 * * * /home/ychang/Documents/Projects/18-DDC/history_summarized_report/doasYC /home/ychang/Documents/Projects/22-RAAnalysis/RAAnalysis/ra_shell_scripts/get_ns_info.sh >> /home/ychang/Documents/Projects/09-SystemInfo/input_process.log 2>&1
+12 2,8,14,20 * * * /home/ychang/Documents/Projects/18-DDC/history_summarized_report/doasYC /home/ychang/Documents/Projects/22-RAAnalysis/RAAnalysis/ra_shell_scripts/get_pp_info.sh >> /home/ychang/Documents/Projects/09-SystemInfo/input_process.log 2>&1
+15 *  * * * /home/ychang/Documents/Projects/18-DDC/history_summarized_report/doasYC /home/ychang/Documents/Projects/22-RAAnalysis/RAAnalysis/ra_shell_scripts/ra_push.sh >> /home/ychang/Documents/Projects/09-SystemInfo/uploadNS.log 2>&1
+
+###############################################################################################
+# grab mrqos REGION information from mapmon # every ten minutes  and upload to cluster DDC-95 #
+###############################################################################################
+5,15,25,35,45,55 * * * * /home/ychang/Documents/Projects/18-DDC/history_summarized_report/doasYC python /home/ychang/Documents/Projects/18-DDC/MRQOS/mrqos_view_by_region_fetch_n_process.py >> /home/ychang/Documents/Projects/09-SystemInfo/mrqos_region_query_n_process_to_cluster.log 2>&1
+
+##############################################################################################
+# fetch the data from cluster and insert into the SQLite DB. Retirement and removal included #
+##############################################################################################
+40 * * * * /home/ychang/Documents/Projects/18-DDC/history_summarized_report/doasYC python /home/ychang/Documents/Projects/18-DDC/MRQOS/local_python/local_region_view_hour_insert.py >> /home/ychang/Documents/Projects/18-DDC/MRQOS_local_data/region_view_hour_process.log 2>&1
+
+
+#######################################################
+# grab the RA assignment message from mapmon (hourly) #
+#######################################################
+37 * * * * /home/ychang/Documents/Projects/18-DDC/history_summarized_report/doasYC /home/ychang/Documents/Projects/09-SystemInfo/ra_mapmon_grab >> /home/ychang/Documents/Projects/09-SystemInfo/ra_input_process.log 2>&1
+
+################################################
+# system-wise update and upgrade check (daily) #
+################################################
+
+##################################
+# clear all temp figures (daily) #
+##################################
+25 2 * * * /home/ychang/Documents/Projects/18-DDC/history_summarized_report/doasYC /home/ychang/Documents/Projects/09-SystemInfo/figure_clear
+
+
+##################################
+# temp: cp geo loader per 10 min #
+##################################
+*/5 * * * * /home/ychang/Documents/Projects/18-DDC/history_summarized_report/doasYC /home/ychang/Documents/Projects/10-Task/26-CodeJam/cp_query.sh >> /home/ychang/Documents/Projects/10-Task/26-CodeJam/cpgeoload_qr.log 2>&1
+
+###########################################
+# EXP: any experiment (temp) crontab here #
+###########################################
+0 5 * * * /home/ychang/Documents/Projects/18-DDC/history_summarized_report/doasYC /opt/anaconda/bin/python /home/ychang/Documents/Projects/18-DDC/MRQOS/local_python/local_mako_pp_coverage.py
+
+############################################
+# check SCIDB for new LP solutions (daily) #
+############################################
+0 23 * * * /home/ychang/Documents/Projects/18-DDC/history_summarized_report/doasYC /opt/anaconda/bin/python /home/ychang/Documents/Projects/18-DDC/MRQOS/local_python/local_check_push_LPsolution_2_cluster.py >> /home/ychang/Documents/Projects/18-DDC/MRQOS_local_data/lp_check_and_upload_to_cluster.log 2>&1
+
+######################################################
+# mrqos import from ddr and process/generate figures #
+# ######################################################
+# 10 12 * * * /home/ychang/Documents/Projects/18-DDC/history_summarized_report/doasYC /opt/anaconda/bin/python /u4/ychang/Projects/18-MRQOS/python_scripts/static_table_generate_mrqos_processed.py
+2 13   * * 1-4 test -x /usr/local/bin/cert-check && /usr/local/bin/cert-check --auto
+2 *   * * 1-5 test -x /usr/local/bin/cert-get && /usr/local/bin/cert-get --auto
