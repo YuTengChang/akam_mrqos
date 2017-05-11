@@ -667,7 +667,10 @@ for mrid in maprule_list:
     cmd_str = "custom_style = Style( colors=(%s) )" % color_set[0:len(color_set)-1]
     from pygal.style import Style
     exec(cmd_str)
-    worldmap = pygal.Worldmap(show_legend=False, style=custom_style);
+    if int((pygal.__version__)[0]) > 1:
+        worldmap = pygal.maps.world.World(show_legend=False, style=custom_style)
+    else:
+        worldmap = pygal.Worldmap(show_legend=False, style=custom_style)
     worldmap.title = 'Maprule '+str(mrid)
 
     # measurement type temp string:
