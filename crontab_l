@@ -83,6 +83,9 @@
 
 # mapmon_summarization before pyspark process (s182m)
 5 2 * * * /home/testgrp/doasme_YT python /home/testgrp/MRQOS/mrqos_python_script/mapmon_mpd_summary.py
+# ra summary cron-analysis (s182m)
+# 0 6 * * * /home/testgrp/doasme_YT /a/bin/spark-submit --master yarn --num-executors 10 --executor-cores 4 --executor-memory 12G --conf spark.storage.blockManagerSlaveTimeoutMs=240000 --conf spark.default.parallelism=150 /home/testgrp/MRQOS/project_ra_summary/pyspark_script/raSummary_spark.py
+
 
 ##################################################
 # #############   Region Tracker   ###############
